@@ -31,7 +31,7 @@ if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
 endif()
 
 # Set dependency list
-set(${extProjName}_DEPENDENCIES ITKv4 SlicerExecutionModel ANTs VTK DCMTK JPEG TIFF Boost teem)
+set(${extProjName}_DEPENDENCIES ITKv4 SlicerExecutionModel ANTs VTK DCMTK JPEG TIFF Boost teem ReferenceAtlas)
 #if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
@@ -56,7 +56,6 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
   # message("ITK_DIR: ${ITK_DIR}")
   # message("SlicerExecutionModel_DIR: ${SlicerExecutionModel_DIR}")
   # message("BOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}")
-
   set(${proj}_CMAKE_OPTIONS
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
       -DBUILD_EXAMPLES:BOOL=OFF
@@ -67,6 +66,8 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DUSE_SYSTEM_Teem:BOOL=ON
       -DUSE_SYSTEM_TIFF:BOOL=ON
       -DUSE_SYSTEM_JPEG:BOOL=ON
+      -DUSE_SYSTEM_ReferenceAtlas:BOOL=ON
+      -DReferenceAtlas_DIR:STRING=${ReferenceAtlas_DIR}
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
       -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY}
       -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR}
@@ -128,12 +129,13 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "87fd2b14bd65ace5dcf590ccf12cc2e1fc033ca5")
+  set(${proj}_GIT_TAG "6ec64f8579f7a2f9ff0aa15bc60d4bd570f11026")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
+    UPDATE_COMMAND ""
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
     LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
     LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
