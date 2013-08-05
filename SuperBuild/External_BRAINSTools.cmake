@@ -135,7 +135,6 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
-    UPDATE_COMMAND ""
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
     LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
     LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards

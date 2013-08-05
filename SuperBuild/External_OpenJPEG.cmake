@@ -61,7 +61,6 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ExternalProject_Add(${proj}
     SVN_REPOSITORY ${${proj}_REPOSITORY}
     SVN_REVISION -r ${${proj}_SVN_REVISION}
-    UPDATE_COMMAND ""
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards

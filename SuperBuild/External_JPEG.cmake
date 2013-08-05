@@ -81,7 +81,6 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     "CFLAGS=${${proj}_CFLAGS}"
     "CXXFLAGS=${${proj}_CXXFLAGS}"
 ## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
-    UPDATE_COMMAND ""
     INSTALL_DIR ${proj}-install
     DEPENDS
       ${${proj}_DEPENDENCIES}
