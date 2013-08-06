@@ -69,13 +69,13 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DUSE_SYSTEM_BOOST:BOOL=ON
       -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
       -DBoost_DIR:PATH=${BOOST_ROOT}
+      -DBOOST_DIR:PATH=${BOOST_ROOT}
       -DBOOST_ROOT:PATH=${BOOST_ROOT}
       -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
    )
-
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-  set(${proj}_GIT_TAG "df3fedb563b180802cf63cad8813abbef7ebd193")
+  set(${proj}_GIT_TAG "31ad1fb57ded6227bf3fa180e01d07f853e075e4")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
