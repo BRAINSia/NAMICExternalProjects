@@ -78,6 +78,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DUSE_SYSTEM_Boost:BOOL=ON
       -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
       -DBoost_DIR:PATH=${BOOST_ROOT}
+      -DBOOST_DIR:PATH=${BOOST_ROOT}
       -DBOOST_ROOT:PATH=${BOOST_ROOT}
       -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
       -DDCMTK_DIR:PATH=${DCMTK_DIR}
@@ -129,7 +130,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "6ec64f8579f7a2f9ff0aa15bc60d4bd570f11026")
+  set(${proj}_GIT_TAG "7d560df8126b2e3d5bb0ab96912894f72fb37eaa")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
