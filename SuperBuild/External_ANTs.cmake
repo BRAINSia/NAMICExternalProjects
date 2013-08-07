@@ -64,7 +64,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DITK_DIR:PATH=${ITK_DIR}
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_TESTING:BOOL=OFF
-      -DANTs_SUPERBUILD:BOOL=OFF
+      -DANTS_SUPERBUILD:BOOL=OFF
       -DUSE_SYSTEM_Boost:BOOL=ON
       -DUSE_SYSTEM_BOOST:BOOL=ON
       -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
@@ -73,9 +73,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DBOOST_ROOT:PATH=${BOOST_ROOT}
       -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
    )
+ if(${PRIMARY_PROJECT_NAME}_USE_QT)
+   list(APPEND ${proj}_CMAKE_OPTIONS -DANTS_USE_QT:BOOL=ON)
+ endif()
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-  set(${proj}_GIT_TAG "31ad1fb57ded6227bf3fa180e01d07f853e075e4")
+  set(${proj}_GIT_TAG "0f5bb854782643ae938db9963d11f6dc3bad82e6")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
