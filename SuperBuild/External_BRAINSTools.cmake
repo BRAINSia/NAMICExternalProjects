@@ -31,10 +31,11 @@ if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
 endif()
 
 # Set dependency list
-set(${extProjName}_DEPENDENCIES ITKv4 SlicerExecutionModel ANTs VTK DCMTK JPEG TIFF Boost teem ReferenceAtlas OpenCV)
-#if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
-#  list(APPEND ${proj}_DEPENDENCIES DCMTK)
-#endif()
+set(${extProjName}_DEPENDENCIES ITKv4 SlicerExecutionModel VTK DCMTK JPEG TIFF Boost teem ReferenceAtlas OpenCV)
+
+if(USE_ANTs)
+  list(APPEND ${extProjName}_DEPENDENCIES ANTs)
+endif()
 
 # Include dependent projects if any
 SlicerMacroCheckExternalProjectDependency(${proj})
@@ -51,6 +52,23 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET})
   endif()
 
+  set(BRAINS_ANTS_PARAMS
+    -DUSE_ANTS:BOOL=${USE_ANTs}
+    -DUSE_ANTs:BOOL=${USE_ANTs}
+    )
+  if(USE_ANTs)
+    list(APPEND BRAINS_ANTS_PARAMS
+      -DUSE_SYSTEM_ANTS:BOOL=ON
+      -DANTs_SOURCE_DIR:PATH=${ANTs_SOURCE_DIR}
+      -DANTs_LIBRARY_DIR:PATH=${ANTs_LIBRARY_DIR}
+      -DUSE_SYSTEM_Boost:BOOL=ON
+      -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
+      -DBoost_DIR:PATH=${BOOST_ROOT}
+      -DBOOST_DIR:PATH=${BOOST_ROOT}
+      -DBOOST_ROOT:PATH=${BOOST_ROOT}
+      -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
+      )
+  endif()
   ### --- Project specific additions here
   # message("VTK_DIR: ${VTK_DIR}")
   # message("ITK_DIR: ${ITK_DIR}")
@@ -73,16 +91,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
       -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY}
       -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR}
-      -DUSE_SYSTEM_ANTs:BOOL=ON
-      -DANTs_SOURCE_DIR:PATH=${ANTs_SOURCE_DIR}
-      -DANTs_LIBRARY_DIR:PATH=${ANTs_LIBRARY_DIR}
       -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
-      -DUSE_SYSTEM_Boost:BOOL=ON
-      -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
-      -DBoost_DIR:PATH=${BOOST_ROOT}
-      -DBOOST_DIR:PATH=${BOOST_ROOT}
-      -DBOOST_ROOT:PATH=${BOOST_ROOT}
-      -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
       -DDCMTK_DIR:PATH=${DCMTK_DIR}
       -DDCMTK_config_INCLUDE_DIR:PATH=${DCMTK_DIR}/include
       -DJPEG_DIR:PATH=${JPEG_DIR}
@@ -101,7 +110,6 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DITK_DIR:PATH=${ITK_DIR}
       -DVTK_DIR:PATH=${VTK_DIR}
       -DTeem_DIR:PATH=${Teem_DIR}
-      -DUSE_ANTs:BOOL=ON
       -D${proj}_USE_QT:BOOL=${LOCAL_PROJECT_NAME}_USE_QT
       -DUSE_SYSTEM_ZLIB:BOOL=ON
       -Dzlib_DIR:PATH=${zlib_DIR}
@@ -129,6 +137,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DUSE_ICCDEF:BOOL=OFF
       -DUSE_ImageCalculator:BOOL=ON
       -DUSE_AutoWorkup:BOOL=OFF
+      ${BRAINS_ANTS_PARAMS}
     )
 
   ### --- End Project specific additions
@@ -157,7 +166,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
     )
   set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
   set(${extProjName}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
-  set(BRAINSCommonLib_DIR    ${CMAKE_BINARY_DIR}/${proj}-build/BRAINSTools-build/BRAINSCommonLib)
+  set(BRAINSCommonLib_DIR    ${CMAKE_BINARY_DIR}/${proj}-build/BRAINSCommonLib)
 else()
   if(${USE_SYSTEM_${extProjName}})
     find_package(${extProjName} ${${extProjName}_REQUIRED_VERSION} REQUIRED)

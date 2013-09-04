@@ -51,11 +51,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET})
   endif()
 
-  set(BRAINSCommonLibWithANTs ON)
-  if(BRAINSCommonLibWithANTs)
-    set(BRAINSCommonLibWithANTs_OPTIONS
-      -DBRAINSTools_SOURCE_DIR:PATH=${BRAINSTools_SOURCE_DIR}
-      -DUSE_ANTs:BOOL=ON
+  set(BRAINSCommonLibWithANTs_OPTIONS
+    -DUSE_ANTS:BOOL=${USE_ANTs}
+    -DUSE_ANTs:BOOL=${USE_ANTs}
+    )
+  if(USE_ANTs)
+    list(APPEND BRAINSCommonLibWithANTs_OPTIONS
       -DUSE_SYSTEM_ANTs:BOOL=ON
       -DANTs_SOURCE_DIR:PATH=${ANTs_SOURCE_DIR}
       -DANTs_LIBRARY_DIR:PATH=${ANTs_LIBRARY_DIR}
@@ -66,11 +67,9 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
       -DDTIPrepTools_SUPERBUILD:STRING=OFF
       )
-  else()
-    set(BRAINSCommonLibWithANTs_OPTIONS
-      -DUSE_ANTs:BOOL=OFF)
   endif()
 
+  message("BRAINSCommonLibWithANTs_OPTIONS=${BRAINSCommonLibWithANTs_OPTIONS}")
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
@@ -84,10 +83,10 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DDCMTK_DIR:PATH=${DCMTK_DIR}
       -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}
       -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
-      -DBRAINSTools_SOURCE_DIR:PATH=${BRAINSTools_SOURCE_DIR}
       -DBRAINSCommonLib_DIR:PATH=${BRAINSCommonLib_DIR}
       -D${proj}_USE_QT:BOOL=${LOCAL_PROJECT_NAME}_USE_QT
-      -D${proj}_SUPERBUILD:BOOL=OFF
+      -DDTIPrepTools_SUPERBUILD:STRING=OFF
+      -DBRAINSTools_SOURCE_DIR:PATH=${BRAINSTools_SOURCE_DIR}
       ${BRAINSCommonLibWithANTs_OPTIONS}
     )
 
