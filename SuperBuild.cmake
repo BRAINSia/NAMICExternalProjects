@@ -124,6 +124,7 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   NIPYPE
   ReferenceAtlas
   DTI_Tract_Stat
+  MultiAtlas
   DTIReg
   DTIProcess
   niral_utilities
