@@ -64,8 +64,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
 
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY git@github.com:BRAINSia/MultiAtlas.git)
-  set(${proj}_GIT_TAG ad5f9a731256168acc6a4015e83f779154ce6b66)
+  set(${proj}_REPOSITORY "git@github.com:BRAINSia/MultiAtlas.git")
+  set(${proj}_GIT_TAG "bc711502f0eb8115b732372e0b5112776aec8e32")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
