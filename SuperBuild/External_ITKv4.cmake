@@ -120,7 +120,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DITK_USE_SYSTEM_DCMTK:BOOL=${${PROJECT_NAME}_BUILD_DICOM_SUPPORT}
       -DUSE_SYSTEM_OpenJPEG:BOOL=ON
       -DOpenJPEG_DIR:PATH=${OpenJPEG_DIR}
-      -DFetch_MGHIO:BOOL=ON  # Allow building of the MGHIO classes
+      -DModule_MGHIO:BOOL=ON  # Allow building of the MGHIO classes
       -DITK_USE_SYSTEM_TIFF:BOOL=ON
       -DTIFF_LIBRARY:FILEPATH=${TIFF_LIBRARY}
       -DTIFF_INCLUDE_DIR:PATH=${TIFF_INCLUDE_DIR}
@@ -139,7 +139,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG 0f41a1e630463aaa3c69a58bc5d700cb3d003bab) # Sept 1 2013
+  set(${proj}_GIT_TAG b6f6f0e0b9c5d92d589743f4abaf359784fed174) # Sept 1 2013
   set(ITK_VERSION_ID ITK-4.5)
 
   ExternalProject_Add(${proj}
