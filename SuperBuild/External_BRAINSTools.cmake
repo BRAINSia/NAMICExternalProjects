@@ -88,6 +88,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DOpenCV_DIR:PATH=${OpenCV_DIR}
       -DUSE_SYSTEM_ReferenceAtlas:BOOL=ON
       -DReferenceAtlas_DIR:STRING=${ReferenceAtlas_DIR}
+      -DATLAS_NAME:STRING=${ATLAS_NAME}
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
       -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY}
       -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR}
@@ -142,7 +143,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "ddf903b56fd6633945e1927b54393f7c65268dea")
+  set(${proj}_GIT_TAG "225a142b835124c75b8a0284a55cea24ba083be0")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
