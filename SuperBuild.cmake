@@ -136,6 +136,7 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   UKF
   UnbiasedNonLocalMeans
   ANTs
+  LogSymmetricDemons
   #python
   )
 
