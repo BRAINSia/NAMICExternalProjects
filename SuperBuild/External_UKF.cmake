@@ -66,7 +66,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "git://github.com/BRAINSia/ukftractography.git")
-  set(${proj}_GIT_TAG "7c9ea9b8240fc4c9958a18fbb537fd65ae7ab54e")
+  set(${proj}_GIT_TAG "2c0f774ce0bc368cf945e257f4c90c951f80d61a")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
