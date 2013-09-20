@@ -69,7 +69,6 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       )
   endif()
 
-  message("BRAINSCommonLibWithANTs_OPTIONS=${BRAINSCommonLibWithANTs_OPTIONS}")
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
