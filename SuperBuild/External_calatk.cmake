@@ -17,8 +17,8 @@ ProjectDependancyPush(CACHED_proj ${proj})
 # Make sure that the ExtProjName/IntProjName variables are unique globally
 # even if other External_${ExtProjName}.cmake files are sourced by
 # SlicerMacroCheckExternalProjectDependency
-set(extProjName calakt) #The find_package known name
-set(proj        calakt) #This local name
+set(extProjName calatk) #The find_package known name
+set(proj        calatk) #This local name
 set(${extProjName}_REQUIRED_VERSION "")  #If a required version is necessary, then set this, else leave blank
 
 #if(${USE_SYSTEM_${extProjName}})
@@ -31,7 +31,7 @@ if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
 endif()
 
 # Set dependency list
-set(${proj}_DEPENDENCIES "")
+set(${proj}_DEPENDENCIES ITKv4)
 #if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
@@ -54,16 +54,21 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+      -DUSE_SYSTEM_ITK:BOOL=ON
+      -DITK_DIR:PATH=${ITK_DIR}
+      -DFFTW_LIB:FILEPATH=${FFTW_LIB}
+      -DFFTWD_LIB:FILEPATH=${FFTWD_LIB}
+      -DFFTW_PATH:PATH=${FFTW_INCLUDE_DIR}
     )
 
-  ### --- End Project specific additions
-  set(${proj}_REPOSITORY git@www.calakt.org:calakt.git)
-  set(${proj}_GIT_TAG HEAD)
+  set(${proj}_REPOSITORY ${git_protocol}://www.calatk.org/calatk.git)
+  set(${proj}_GIT_TAG master)
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
+    INSTALL_COMMAND ""
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
     LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
     LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards

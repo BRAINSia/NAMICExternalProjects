@@ -61,6 +61,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DModule_ITKIODCMTK:BOOL=ON
       )
   endif()
+  set(${PROJECT_NAME}_BUILD_FFTWF_SUPPORT ON)
+  set(${PROJECT_NAME}_BUILD_FFTWFD_SUPPORT ON)
 
   if(${PROJECT_NAME}_BUILD_FFTWF_SUPPORT)
     set(${proj}_FFTWF_ARGS
@@ -162,6 +164,14 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       ${${proj}_DEPENDENCIES}
   )
   set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/${ITK_VERSION_ID})
+  if(${PROJECT_NAME}_BUILD_FFTWF_SPPORT)
+    set(FFTWF_LIB ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install/lib/${ITK_VERSION}/libfftw3f.a)
+    set(FFTW_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install/include/${ITK_VERSION}/Algorithms)
+  endif()
+  if(${PROJECT_NAME}_BUILD_FFTWD_SPPORT)
+    set(FFTWD_LIB ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install/lib/${ITK_VERSION}/libfftw3.a)
+    set(FFTW_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install/include/${ITK_VERSION}/Algorithms)
+  endif()
 else()
   if(${USE_SYSTEM_${extProjName}})
     find_package(${extProjName} ${ITK_VERSION_MAJOR} REQUIRED)
