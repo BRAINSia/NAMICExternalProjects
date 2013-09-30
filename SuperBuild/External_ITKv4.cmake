@@ -61,19 +61,23 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DModule_ITKIODCMTK:BOOL=ON
       )
   endif()
+
   set(${PROJECT_NAME}_BUILD_FFTWF_SUPPORT ON)
-  set(${PROJECT_NAME}_BUILD_FFTWFD_SUPPORT ON)
+  set(${PROJECT_NAME}_BUILD_FFTWD_SUPPORT ON)
+
+  set(${PROJECT_NAME}_FFTW_ARGS)
 
   if(${PROJECT_NAME}_BUILD_FFTWF_SUPPORT)
-    set(${proj}_FFTWF_ARGS
+    list(APPEND ${proj}_FFTW_ARGS
       -DITK_USE_FFTWF:BOOL=ON
       )
   endif()
   if(${PROJECT_NAME}_BUILD_FFTWD_SUPPORT)
-    set(${proj}_FFTWD_ARGS
+    list(APPEND ${proj}_FFTW_ARGS
       -DITK_USE_FFTWD:BOOL=ON
       )
   endif()
+  MESSAGE("${proj}_FFTW_ARGS=${${proj}_FFTW_ARGS}")
 
   set(${proj}_WRAP_ARGS)
   #if(foo)
@@ -136,8 +140,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DZLIB_LIBRARIES:STRING=${ZLIB_LIBRARIES}
       ${${proj}_DCMTK_ARGS}
       ${${proj}_WRAP_ARGS}
-      ${${proj}_FFTWF_ARGS}
-      ${${proj}_FFTWD_ARGS}
+      ${${proj}_FFTW_ARGS}
     )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)

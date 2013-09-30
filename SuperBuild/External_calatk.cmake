@@ -56,13 +56,16 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
       -DUSE_SYSTEM_ITK:BOOL=ON
       -DITK_DIR:PATH=${ITK_DIR}
-      -DFFTW_LIB:FILEPATH=${FFTW_LIB}
-      -DFFTWD_LIB:FILEPATH=${FFTWD_LIB}
+      -DFFTW_LIB:FILEPATH=${FFTWD_LIB}
+      -DFFTWF_LIB:FILEPATH=${FFTW_LIB}
       -DFFTW_PATH:PATH=${FFTW_INCLUDE_DIR}
+      -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
+      -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
+      -DCALATK_USE_SUPERBUILD:BOOL=OFF
     )
 
-  set(${proj}_REPOSITORY ${git_protocol}://www.calatk.org/calatk.git)
-  set(${proj}_GIT_TAG master)
+  set(${proj}_REPOSITORY ${git_protocol}://www.github.com/BRAINSia/calatk.git)
+  set(${proj}_GIT_TAG WarningsAndErrors)
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}

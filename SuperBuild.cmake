@@ -106,7 +106,7 @@ set(ITK_EXTERNAL_NAME ITKv${ITK_VERSION_MAJOR})
 
 ## for i in SuperBuild/*; do  echo $i |sed 's/.*External_\([a-zA-Z]*\).*/\1/g'|fgrep -v cmake|fgrep -v Template; done|sort -u
 set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
-  #  calatk
+  calatk
   tract_querier
   SlicerExecutionModel
   ${ITK_EXTERNAL_NAME}
