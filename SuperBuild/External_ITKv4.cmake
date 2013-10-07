@@ -144,7 +144,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG b6f6f0e0b9c5d92d589743f4abaf359784fed174) # Sept 1 2013
+  set(${proj}_GIT_TAG 82b676555f8764d171038d1197d458e1a1efae5e) # Performance Improvements for registration
   set(ITK_VERSION_ID ITK-4.5)
 
   ExternalProject_Add(${proj}
@@ -162,11 +162,13 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       ${COMMON_EXTERNAL_PROJECT_ARGS}
       ${${proj}_CMAKE_OPTIONS}
-## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
+## We really do want to install in order to limit # of include paths
+    INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
   )
-  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/${ITK_VERSION_ID})
+  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  #set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/${ITK_VERSION_ID})
   if(${PROJECT_NAME}_BUILD_FFTWF_SPPORT)
     set(FFTWF_LIB ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install/lib/${ITK_VERSION}/libfftw3f.a)
     set(FFTW_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install/include/${ITK_VERSION}/Algorithms)

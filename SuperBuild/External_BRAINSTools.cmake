@@ -143,7 +143,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "225a142b835124c75b8a0284a55cea24ba083be0")
+  set(${proj}_GIT_TAG "ebe68a10c44b18b9d0f433f1039c3c597da35e11")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
