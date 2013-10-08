@@ -17,10 +17,13 @@ ProjectDependancyPush(CACHED_proj ${proj})
 # Make sure that the ExtProjName/IntProjName variables are unique globally
 # even if other External_${ExtProjName}.cmake files are sourced by
 # SlicerMacroCheckExternalProjectDependency
-set(extProjName UKF) #The find_package known name
-set(proj        UKF) #This local name
-set(${extProjName}_REQUIRED_VERSION "")
+set(extProjName Eigen) #The find_package known name
+set(proj        Eigen) #This local name
+set(${extProjName}_REQUIRED_VERSION "")  #If a required version is necessary, then set this, else leave blank
 
+#if(${USE_SYSTEM_${extProjName}})
+#  unset(${extProjName}_DIR CACHE)
+#endif()
 
 # Sanity checks
 if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
@@ -28,7 +31,7 @@ if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
 endif()
 
 # Set dependency list
-set(${proj}_DEPENDENCIES VTK teem Boost SlicerExecutionModel)
+set(${proj}_DEPENDENCIES "")
 #if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
@@ -51,46 +54,27 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
-      -DUSE_SYSTEM_ITK:BOOL=ON
-      -DUSE_SYSTEM_SLICER_EXECUTION_MODEL:BOOL=ON
-      -DITK_DIR:PATH=${ITK_DIR}
-      -DVTK_DIR:PATH=${VTK_DIR}
-      -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-      -DUKF_SUPERBUILD:BOOL=OFF
-      -DEigen_INCLUDE_DIR:PATH=${Eigen_INCLUDE_DIR}
-      -DTeem_DIR:PATH=${Teem_DIR}
-      -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
-      -DSlicer_SOURCE_DIR:BOOL=ON ## THIS is a hack to prevent looking for slicer
-      -DUKFTractography_SuperBuild:BOOL=ON ## THIS should be the single flag
     )
 
   ### --- End Project specific additions
-  # set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
-  # set(${proj}_GIT_TAG "669378f16697eebbe69c690b6b5c5d42675ecda8")
-  set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
-  set(${proj}_GIT_TAG "c8d67d0484a6fbd0db2d79f0a5e29e0388864b78"
   ExternalProject_Add(${proj}
-    GIT_REPOSITORY ${${proj}_REPOSITORY}
-    GIT_TAG ${${proj}_GIT_TAG}
+    URL https://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
     LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
     LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
     LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
-    INSTALL_COMMAND ""
     ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
-      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-      ${COMMON_EXTERNAL_PROJECT_ARGS}
-      ${${proj}_CMAKE_OPTIONS}
+    ${${proj}_CMAKE_OPTIONS}
 ## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
   )
-  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install)
+  set(${extProjName}_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${proj}-install/include/eigen3)
 else()
   if(${USE_SYSTEM_${extProjName}})
     find_package(${extProjName} ${${extProjName}_REQUIRED_VERSION} REQUIRED)
