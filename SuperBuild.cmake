@@ -97,17 +97,23 @@ option(USE_SYSTEM_SlicerExecutionModel "Build using an externally defined versio
 option(USE_SYSTEM_VTK "Build using an externally defined version of VTK" OFF)
 option(USE_SYSTEM_DCMTK "Build using an externally defined version of DCMTK" OFF)
 option(${PROJECT_NAME}_BUILD_DICOM_SUPPORT "Build Dicom Support" ON)
+
+option(BUILD_CALATK "build the calatk project" ON)
+set(CALATK_DEP)
+if(${BUILD_CALATK})
+  set(CALATK_DEP calatk)
+endif()
+
 #------------------------------------------------------------------------------
 # ${PRIMARY_PROJECT_NAME} dependency list
 #------------------------------------------------------------------------------
-
 set(ITK_EXTERNAL_NAME ITKv${ITK_VERSION_MAJOR})
 
 
 ## for i in SuperBuild/*; do  echo $i |sed 's/.*External_\([a-zA-Z]*\).*/\1/g'|fgrep -v cmake|fgrep -v Template; done|sort -u
 set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   Eigen
-  calatk
+  ${CALATK_DEP}
   tract_querier
   SlicerExecutionModel
   ${ITK_EXTERNAL_NAME}
