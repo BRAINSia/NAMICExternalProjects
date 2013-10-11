@@ -138,6 +138,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DITK_USE_SYSTEM_ZLIB:BOOL=ON
       -DZLIB_INCLUDE_DIRS:STRING=${ZLIB_INCLUDE_DIRS}
       -DZLIB_LIBRARIES:STRING=${ZLIB_LIBRARIES}
+      -DModule_ITKIOPhilipsREC:BOOL=ON
       ${${proj}_DCMTK_ARGS}
       ${${proj}_WRAP_ARGS}
       ${${proj}_FFTW_ARGS}
