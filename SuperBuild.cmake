@@ -114,52 +114,48 @@ set(ITK_EXTERNAL_NAME ITKv${ITK_VERSION_MAJOR})
 set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   MRParameterMaps
   Eigen
-  ${CALATK_DEP}
-  tract_querier
   SlicerExecutionModel
   ${ITK_EXTERNAL_NAME}
   DCMTK
   VTK
   OpenCV
   JPEG
-  BatchMake
   GDCM
-  SimpleITK
-  PCRE
-  Swig
-#  -- This si itself a superbuild, and we are not ready to tackle that yet.  ANTs
   Boost
   DoubleConvert
-  qhull
   NIPYPE
   ReferenceAtlas
-  DTI_Tract_Stat
   MultiAtlas
   DTIReg
   DTIProcess
-  niral_utilities
   BRAINSTools
   DTIPrep
-  #  HACK  FAILS currently DTIPrep
   teem
   SlicerJointRicianAnisotropicLMMSEFilter
   UKF
   UnbiasedNonLocalMeans
   ANTs
-  LogSymmetricDemons
+## These packages are not yet needed, but will evenutally be needed.
+  #qhull
+  #${CALATK_DEP}
+  #tract_querier
+  #BatchMake
+  #  -- This recursively builds DTIProcess, but does not pass the flags DTI_Tract_Stat
+  #niral_utilities
+  #LogSymmetricDemons
   #python
   )
 
 set(${PRIMARY_PROJECT_NAME}_USE_QT ON)
+#list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES SimpleITK)
+list(APPEND SimpleITK_DEPENDENCIES PCRE Swig)
+list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES NIPYPE)
+#list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES Ipopt)
 
 if(BUILD_STYLE_UTILS)
   list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES Cppcheck KWStyle ) #Uncrustify)
 endif()
 
-list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES SimpleITK)
-list(APPEND SimpleITK_DEPENDENCIES PCRE Swig)
-list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES NIPYPE)
-#list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES Ipopt)
 #-----------------------------------------------------------------------------
 # Define Superbuild global variables
 #-----------------------------------------------------------------------------

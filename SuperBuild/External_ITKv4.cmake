@@ -145,7 +145,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG ConvergenceWindowMatchType) # Performance Improvements for registration
+  set(${proj}_GIT_TAG 4331896394ef7e8fac5dfbdd214a8242d2cbfbdc)
   set(ITK_VERSION_ID ITK-4.5)
 
   ExternalProject_Add(${proj}
