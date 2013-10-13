@@ -1,3 +1,6 @@
+# ignore the entire tree for ExternalSources
+*ExternalSources*
+
 # Compiled Object files
 *.slo
 *.lo
