@@ -77,7 +77,6 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DITK_USE_FFTWD:BOOL=ON
       )
   endif()
-  MESSAGE("${proj}_FFTW_ARGS=${${proj}_FFTW_ARGS}")
 
   set(${proj}_WRAP_ARGS)
   #if(foo)
