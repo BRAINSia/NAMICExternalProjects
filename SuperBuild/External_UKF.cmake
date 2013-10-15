@@ -69,7 +69,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   # set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
   # set(${proj}_GIT_TAG "669378f16697eebbe69c690b6b5c5d42675ecda8")
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
-  set(${proj}_GIT_TAG "be3173840199a0eb0eed778eb137fadcd0d97430")
+  set(${proj}_GIT_TAG "PERF_TESTING")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
