@@ -1,6 +1,9 @@
 # ignore the entire tree for ExternalSources
 *ExternalSources*
 
+# Ignore git merge temporaries.
+*.orig
+
 # Compiled Object files
 *.slo
 *.lo
