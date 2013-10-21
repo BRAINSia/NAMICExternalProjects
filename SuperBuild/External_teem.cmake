@@ -54,6 +54,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
     -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+    -DBUILD_TESTING:BOOL=ON
+    -DBUILD_EXPERIMENTAL_APPS:BOOL=ON
     -DTeem_USE_LIB_INSTALL_SUBDIR:BOOL=ON
     -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF
     -DTeem_PTHREAD:BOOL=OFF
@@ -88,6 +90,15 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     DEPENDS
       ${${proj}_DEPENDENCIES}
   )
+  ExternalProject_Add_Step(${proj} fix_stupid_sane
+    COMMAND ${CMAKE_COMMAND} -DSANE_FILE=${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/air/sane.c
+    -P ${CMAKE_CURRENT_LIST_DIR}/TeemPatch.cmake
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/bane/bane.h
+    ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem/bane.h
+    DEPENDEES download
+    DEPENDERS configure
+    )
   set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/Teem-1.10.0)
 else()
   if(${USE_SYSTEM_${extProjName}})
