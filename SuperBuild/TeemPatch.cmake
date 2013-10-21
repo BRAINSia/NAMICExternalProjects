@@ -1,4 +1,5 @@
-file(READ ${SANE_FILE} code)
-string(REPLACE "static int _airSanity=0;"
-  "static int _airSanity=1;" code "${code}")
-file(WRITE ${SANE_FILE} "${code}")
+file(READ ${AIR_FILE} code)
+string(REPLACE "#if defined(_WIN32) || defined(__ECC) /* NrrdIO-hack-002 */"
+  "#if defined(_WIN32) || defined(__ECC) || defined(__INTEL_COMPILER) /* NrrdIO-hack-002 */"
+  code "${code}" )
+file(WRITE ${AIR_FILE} "${code}")

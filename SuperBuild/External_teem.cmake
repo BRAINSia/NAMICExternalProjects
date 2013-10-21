@@ -90,8 +90,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     DEPENDS
       ${${proj}_DEPENDENCIES}
   )
-  ExternalProject_Add_Step(${proj} fix_stupid_sane
-    COMMAND ${CMAKE_COMMAND} -DSANE_FILE=${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/air/sane.c
+  ExternalProject_Add_Step(${proj} fix_AIR_EXISTS
+    COMMAND ${CMAKE_COMMAND} -DAIR_FILE=${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/air/air.h
     -P ${CMAKE_CURRENT_LIST_DIR}/TeemPatch.cmake
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/bane/bane.h
