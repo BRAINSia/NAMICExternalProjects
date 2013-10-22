@@ -54,8 +54,9 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
     -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
-    -DBUILD_TESTING:BOOL=ON
-    -DBUILD_EXPERIMENTAL_APPS:BOOL=ON
+    -DBUILD_TESTING:BOOL=OFF
+    -DBUILD_EXPERIMENTAL_LIBS:BOOL=OFF
+    -DBUILD_EXPERIMENTAL_APPS:BOOL=OFF
     -DTeem_USE_LIB_INSTALL_SUBDIR:BOOL=ON
     -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF
     -DTeem_PTHREAD:BOOL=OFF
@@ -69,11 +70,11 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
 
   ### --- End Project specific additions
-  set(${proj}_URL http://svn.slicer.org/Slicer3-lib-mirrors/trunk/teem-1.10.0-src.tar.gz)
-  set(${proj}_MD5 efe219575adc89f6470994154d86c05b)
+  set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/teem.git")
+  set(${proj}_TAG "8d42894ee0f17f676a508f780d40caedb64e04d9")
   ExternalProject_Add(${proj}
-    URL ${${proj}_URL}
-    URL_MD5 ${${proj}_MD5}
+    GIT_REPOSITORY ${${proj}_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
@@ -99,7 +100,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     DEPENDEES download
     DEPENDERS configure
     )
-  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/Teem-1.10.0)
+  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/Teem-1.11.1)
 else()
   if(${USE_SYSTEM_${extProjName}})
     find_package(${extProjName} ${${extProjName}_REQUIRED_VERSION} REQUIRED)
