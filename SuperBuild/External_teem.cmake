@@ -71,7 +71,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/teem.git")
-  set(${proj}_TAG "8d42894ee0f17f676a508f780d40caedb64e04d9")
+  set(${proj}_TAG "9db65f15e554119989bb49d12b404e7e44f150e4")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
