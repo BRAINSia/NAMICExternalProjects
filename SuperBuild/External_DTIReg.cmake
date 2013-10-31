@@ -53,15 +53,22 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
+    -DUSE_SYSTEM_BatchMake:BOOL=ON
+    -DUSE_SYSTEM_ITK:BOOL=ON
+    -DUSE_SYSTEM_VTK:BOOL=ON
+    -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
      -DBatchMake_DIR:PATH=${BatchMake_DIR}
      -DITK_DIR:PATH=${ITK_DIR}
+     -DVTK_DIR:PATH=${VTK_DIR}
+     -DCOMPILE_EXTERNAL_dtiprocess:BOOL=OFF
+     -DDTIReg_SUPERBUILD:BOOL=OFF
      -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
      -DDTIReg_ADDITIONAL_LINK_DIRS:PATH=${CMAKE_CURRENT_BINARY_DIR}/lib
     )
 
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY https://www.nitrc.org/svn/dtireg/trunk/DTI-Reg)
-  set(${proj}_REVISION -r "43") ## Fix SlicerExecutionModel find_package
+  set(${proj}_REPOSITORY https://www.nitrc.org/svn/dtireg/trunk)
+  set(${proj}_REVISION -r "47") ## Fix SlicerExecutionModel find_package
 
   ExternalProject_Add(${proj}
     SVN_REPOSITORY ${${proj}_REPOSITORY}

@@ -54,11 +54,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   set(${proj}_CMAKE_OPTIONS
     -DITK_DIR:PATH=${ITK_DIR}
+    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
     )
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://batchmake.org/BatchMake.git)
-  set(${proj}_GIT_TAG "1f5bf4f92e8678c34dc6f7558be5e6613804d988")
+  set(${proj}_GIT_TAG "aee6ff198a392e6026730784d9c1c19a1296c465")
 
   #message(STATUS "${__indent}Adding project ${proj}")
   ExternalProject_Add(${proj}
@@ -80,11 +81,10 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DUSE_FLTK:BOOL=OFF
       -DGRID_SUPPORT:BOOL=ON
       -DUSE_SPLASHSCREEN:BOOL=OFF
-    INSTALL_COMMAND ""
     DEPENDS ${${proj}_DEPENDENCIES}
     )
 
-  set(${extProjName}_DIR  ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
+  set(${extProjName}_DIR  ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install/lib/BatchMake)
 else()
   if(${USE_SYSTEM_${extProjName}})
     find_package(${extProjName} ${${extProjName}_REQUIRED_VERSION} REQUIRED)
