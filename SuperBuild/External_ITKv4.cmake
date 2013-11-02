@@ -115,11 +115,10 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DITK_LEGACY_REMOVE:BOOL=OFF
       -DITK_FUTURE_LEGACY_REMOVE:=BOOL=ON
       -DITKV3_COMPATIBILITY:BOOL=ON
-      -DITK_BUILD_ALL_MODULES:BOOL=ON
+      -DITK_BUILD_DEFAULT_MODULES:BOOL=ON
       -DITK_USE_REVIEW:BOOL=ON
       -DModule_ITKReview:BOOL=ON
       #-DITK_INSTALL_NO_DEVELOPMENT:BOOL=ON
-      -DITK_BUILD_ALL_MODULES:BOOL=ON
       -DKWSYS_USE_MD5:BOOL=ON # Required by SlicerExecutionModel
       -DITK_WRAPPING:BOOL=OFF #${BUILD_SHARED_LIBS} ## HACK:  QUICK CHANGE
       -DITK_USE_SYSTEM_DCMTK:BOOL=${${PROJECT_NAME}_BUILD_DICOM_SUPPORT}
@@ -143,8 +142,10 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       ${${proj}_FFTW_ARGS}
     )
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG 4331896394ef7e8fac5dfbdd214a8242d2cbfbdc)
+  ## set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
+
+  set(${proj}_GIT_TAG UnusedFunction)
   set(ITK_VERSION_ID ITK-4.5)
 
   ExternalProject_Add(${proj}
