@@ -77,7 +77,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
   set(${proj}_CMAKE_OPTIONS
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
       -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
+      -DBUILD_TESTING:BOOL=ON
       -DUSE_SYSTEM_ITK:BOOL=ON
       -DUSE_SYSTEM_VTK:BOOL=ON
       -DUSE_SYSTEM_DCMTK:BOOL=ON
@@ -143,7 +143,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "76f9e979d777c162315157c92c58601441dd44d9")
+  set(${proj}_GIT_TAG "d10552282af9af23744b88fa72376d10026e29b1")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
