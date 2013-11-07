@@ -62,7 +62,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DTeem_DIR:PATH=${Teem_DIR}
       -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
       -DSlicer_SOURCE_DIR:BOOL=ON ## THIS is a hack to prevent looking for slicer
-      -DUKFTractography_SuperBuild:BOOL=ON ## THIS should be the single flag
+      -DUKFTractography_SUPERBUILD:BOOL=OFF
     )
 
   ### --- End Project specific additions
