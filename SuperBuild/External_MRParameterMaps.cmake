@@ -59,7 +59,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY https://github.com/BRAINSia/MRParameterMaps.git)
-  set(${proj}_GIT_TAG 4a5e3cf59f9c43a893adc67f1f2ce20f6789a261)
+  set(${proj}_GIT_TAG "20916cfc442f80afc0b8bdba2a47b777e9c3e94c")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
