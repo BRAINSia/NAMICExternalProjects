@@ -136,6 +136,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DUSE_DebugImageViewer:BOOL=OFF
       -DUSE_GTRACT:BOOL=ON
       -DUSE_ICCDEF:BOOL=OFF
+      -DUSE_ConvertBetweenFileFormats:BOOL=ON
       -DUSE_ImageCalculator:BOOL=ON
       -DUSE_AutoWorkup:BOOL=OFF
       ${BRAINS_ANTS_PARAMS}
