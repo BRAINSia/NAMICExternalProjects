@@ -49,6 +49,13 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   endif()
 
   ### --- Project specific additions here
+  set(${proj}_DCMTK_ARGS)
+  if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
+    set(${proj}_DCMTK_ARGS
+      -DDCMTK_DIR:PATH=${DCMTK_DIR}
+      )
+  endif()
+
   set(${proj}_CMAKE_OPTIONS
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_TESTING:BOOL=OFF
@@ -67,7 +74,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/Slicer/SlicerExecutionModel.git")
-  set(${proj}_GIT_TAG "9202673b809fb7df0890a2b01c288dae0b02c598")
+  set(${proj}_GIT_TAG "ca00f71c44322b7153d66170f7221cd143ef1cc7")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
@@ -83,6 +90,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
       ${COMMON_EXTERNAL_PROJECT_ARGS}
       ${${proj}_CMAKE_OPTIONS}
+      ${${proj}_DCMTK_ARGS}
     INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}

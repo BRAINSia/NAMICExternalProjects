@@ -79,7 +79,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- End Project specific additions
   #set(${proj}_REPOSITORY "https://github.com/BRAINSia/ANTs.git")
   set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-  set(${proj}_GIT_TAG "ed2577dfe759c3e7adedd38d768ce14e737073bf")
+  set(${proj}_GIT_TAG "5daaef605052404a790f739cc89fb1823692e347")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
