@@ -133,6 +133,8 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       -DUSE_BRAINSSnapShotWriter:BOOL=ON
       -DUSE_BRAINSSurfaceTools:BOOL=ON
       -DUSE_BRAINSTransformConvert:BOOL=ON
+      -DUSE_BRAINSPosteriorToContinuousClass:BOOL=ON
+      -DUSE_BRAINSCreateLabelMapFromProbabilityMaps:BOOL=ON
       -DUSE_DebugImageViewer:BOOL=OFF
       -DUSE_GTRACT:BOOL=ON
       -DUSE_ICCDEF:BOOL=OFF
