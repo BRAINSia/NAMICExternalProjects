@@ -60,13 +60,14 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     -DUSE_SYSTEM_VTK:BOOL=ON
     -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
     -DITK_DIR:PATH=${ITK_DIR}
+    -DDCMTK_DIR:PATH=${DCMTK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
     )
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "https://www.nitrc.org/svn/dtiprocess/trunk")
-  set(${proj}_SVN_REVISION -r "202")
+  set(${proj}_SVN_REVISION -r "203")
   ExternalProject_Add(${proj}
     SVN_REPOSITORY ${${proj}_REPOSITORY}
     SVN_REVISION ${${proj}_GIT_TAG}
