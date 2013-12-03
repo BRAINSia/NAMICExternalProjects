@@ -191,12 +191,15 @@ endmacro()
 #-----------------------------------------------------------------------------
 # Common external projects CMake variables
 #-----------------------------------------------------------------------------
+set(CMAKE_INCLUDE_DIRECTORIES_BEFORE ON CACHE BOOL "Set default to prepend include directories.")
+
 list(APPEND ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARS
   MAKECOMMAND:STRING
   CMAKE_SKIP_RPATH:BOOL
   CMAKE_MODULE_PATH:PATH
   CMAKE_BUILD_TYPE:STRING
   BUILD_SHARED_LIBS:BOOL
+  CMAKE_INCLUDE_DIRECTORIES_BEFORE:BOOL
   CMAKE_CXX_COMPILER:PATH
   CMAKE_CXX_FLAGS:STRING
   CMAKE_CXX_FLAGS_DEBUG:STRING
