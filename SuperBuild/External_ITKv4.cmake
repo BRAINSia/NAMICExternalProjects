@@ -142,9 +142,9 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       ${${proj}_FFTW_ARGS}
     )
   ### --- End Project specific additions
-##set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
-  set(${proj}_GIT_TAG PerfImprovement)
+  set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
+  ##set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
+  set(${proj}_GIT_TAG cdffb425350c97b423d702c62ada5f2b7fc2bfff)
   set(ITK_VERSION_ID ITK-4.5)
 
   ExternalProject_Add(${proj}
