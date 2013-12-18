@@ -121,7 +121,7 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   OpenCV
   JPEG
   GDCM
-  Boost
+#  Boost
   DoubleConvert
   NIPYPE
   ReferenceAtlas
