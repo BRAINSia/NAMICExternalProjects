@@ -108,10 +108,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   find_package(ZLIB REQUIRED)
 
+  set(${proj}_INSTALL_PATH "${CMAKE_CURRENT_BINARY_DIR}/${proj}-install")
+
   set(${proj}_CMAKE_OPTIONS
       -DBUILD_TESTING:BOOL=OFF
       -DBUILD_EXAMPLES:BOOL=OFF
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+      -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_INSTALL_PATH}
       -DITK_LEGACY_REMOVE:BOOL=OFF
       -DITK_FUTURE_LEGACY_REMOVE:=BOOL=ON
       -DITKV3_COMPATIBILITY:BOOL=ON
@@ -144,7 +146,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
   ##set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
-  set(${proj}_GIT_TAG cdffb425350c97b423d702c62ada5f2b7fc2bfff)
+  set(${proj}_GIT_TAG b23ee20eee5e68cc405e90cb036a5d3c80996abb)
   set(ITK_VERSION_ID ITK-4.5)
 
   ExternalProject_Add(${proj}

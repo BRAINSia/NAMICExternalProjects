@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.9) #2.8.9 needed for ExternalProject Simplifi
 cmake_policy(VERSION 2.8.9)
 
 set(PRIMARY_PROJECT_NAME NAMICExternalProjects)
-
 ## NOTE THERE SHOULD BE NO PROJECT STATEMENT HERE!
 ## This file acts as a simple switch to initiate
 ## two completely independant CMake build environments.
