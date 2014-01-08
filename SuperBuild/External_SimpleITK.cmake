@@ -106,7 +106,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}")
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY https://github.com/SimpleITK/SimpleITK.git)
-  set(${proj}_GIT_TAG 6422ede80b87965afedc8faec3ef9de0e95138d1)
+  set(${proj}_GIT_TAG eb16d9834f21c85530e2f38b8fa07962d91d5b93)
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
