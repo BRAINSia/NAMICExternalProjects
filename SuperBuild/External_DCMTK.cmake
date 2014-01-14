@@ -72,11 +72,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DDCMTK_FORCE_FPIC_ON_UNIX:BOOL=ON
       -DDCMTK_OVERWRITE_WIN32_COMPILER_FLAGS:BOOL=OFF
       -DDCMTK_WITH_WRAP:BOOL=OFF   # CTK does not build on Mac with this option turned ON due to library dependencies missing
-#      -DTIFF_DIR:PATH=${TIFF_DIR}
-      -DTIFF_LIBRARY:FILEPATH=${TIFF_LIBRARY}
-      -DTIFF_INCLUDE_DIR:PATH=${TIFF_INCLUDE_DIR}
-      -DJPEG_LIBRARY:FILEPATH=${JPEG_LIBRARY}
-      -DJPEG_INCLUDE_DIR:PATH=${JPEG_INCLUDE_DIR}
+      -DTIFF_DIR:PATH=${TIFF_DIR}
+      -DJPEG_DIR:FILEPATH=${JPEG_DIR}
   )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://github.com/commontk/DCMTK.git)
