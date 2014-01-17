@@ -55,7 +55,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "https://github.com/demianw/tract_querier.git")
-  set(${proj}_GIT_TAG "7efd87166e8ecf143f75d10125bfefbdbaae7ec2")
+  set(${proj}_GIT_TAG "490fe5446d0e890e23b3e988be52cb066e2e6653")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
