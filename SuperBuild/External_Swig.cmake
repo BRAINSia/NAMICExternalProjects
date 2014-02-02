@@ -29,23 +29,42 @@ if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
   message(FATAL_ERROR "${extProjName}_DIR variable is defined but corresponds to non-existing directory (${${extProjName}_DIR})")
 endif()
 
-set( TARGET_SWIG_VERSION 2.0.9 )
 if(NOT SWIG_DIR)
+
+  set(SWIG_TARGET_VERSION 2.0.11)
+  set(SWIG_DOWNLOAD_SOURCE_HASH "291ba57c0acd218da0b0916c280dcbae")
+  set(SWIG_DOWNLOAD_WIN_HASH "b902bac6500eb3ea8c6e62c4e6b3832c" )
+
+
   if(WIN32)
+    # binary SWIG for windows
+    #------------------------------------------------------------------------------
+
+
+    set(swig_source_dir ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION})
+
+    # patch step
+    configure_file(
+      ${CMAKE_CURRENT_LIST_DIR}/External_Swig_patch_step.cmake.in
+      ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_patch_step.cmake
+      @ONLY)
+    set(swig_PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_patch_step.cmake)
+
     # swig.exe available as pre-built binary on Windows:
     ExternalProject_Add(${proj}
-      URL http://prdownloads.sourceforge.net/swig/swigwin-${TARGET_SWIG_VERSION}.zip
-      URL_MD5 a1dc34766cf599f49e2092f7973c85f4
-      SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${TARGET_SWIG_VERSION}
+      URL http://midas3.kitware.com/midas/api/rest?method=midas.bitstream.download&checksum=${SWIG_DOWNLOAD_WIN_HASH}&name=swigwin-${SWIG_TARGET_VERSION}.zip
+      URL_MD5 ${SWIG_DOWNLOAD_WIN_HASH}
+      SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}
       ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
+      PATCH_COMMAND ${swig_PATCH_COMMAND}
       CONFIGURE_COMMAND ""
       BUILD_COMMAND ""
       INSTALL_COMMAND ""
       )
 
-    set(SWIG_DIR ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${TARGET_SWIG_VERSION}) # ??
-    set(SWIG_EXECUTABLE ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${TARGET_SWIG_VERSION}/swig.exe)
-    set(Swig_DEPEND Swig)
+    set(SWIG_DIR ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}) # path specified as source in ep
+    set(SWIG_EXECUTABLE ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}/swig.exe)
+    set(Swig_DEPEND "")
   else()
     # Set dependency list
     set(${proj}_DEPENDENCIES "PCRE")
@@ -61,32 +80,47 @@ if(NOT SWIG_DIR)
     set(BISON_FLAGS "" CACHE STRING "Flags used by bison")
     mark_as_advanced(BISON_FLAGS)
 
+
     # follow the standard EP_PREFIX locations
     set(swig_binary_dir ${CMAKE_CURRENT_BINARY_DIR}/Swig-prefix/src/Swig-build)
     set(swig_source_dir ${CMAKE_CURRENT_BINARY_DIR}/Swig-prefix/src/Swig)
-    set(swig_install_dir ${CMAKE_CURRENT_BINARY_DIR}/Swig/install)
+    set(swig_install_dir ${CMAKE_CURRENT_BINARY_DIR}/Swig)
 
+    # configure step
     configure_file(
       ${CMAKE_CURRENT_LIST_DIR}/External_Swig_configure_step.cmake.in
       ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_configure_step.cmake
       @ONLY)
-    set ( swig_CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_configure_step.cmake )
+    set(swig_CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_configure_step.cmake)
+
+    # patch step
+    configure_file(
+      ${CMAKE_CURRENT_LIST_DIR}/External_Swig_patch_step.cmake.in
+      ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_patch_step.cmake
+      @ONLY)
+    set(swig_PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_patch_step.cmake)
 
     ExternalProject_Add(${proj}
-      URL http://prdownloads.sourceforge.net/swig/swig-${TARGET_SWIG_VERSION}.tar.gz
-      URL_MD5  54d534b14a70badc226129159412ea85
+      URL http://midas3.kitware.com/midas/api/rest?method=midas.bitstream.download&checksum=${SWIG_DOWNLOAD_SOURCE_HASH}&name=swig-${SWIG_TARGET_VERSION}.tar.gz
+      URL_MD5 ${SWIG_DOWNLOAD_SOURCE_HASH}
       LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
       LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
       LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
       LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
       ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
       CONFIGURE_COMMAND ${swig_CONFIGURE_COMMAND}
-      DEPENDS PCRE
+      PATCH_COMMAND ${swig_PATCH_COMMAND}
+      DEPENDS ${${proj}_DEPENDENCIES}
       )
 
-    set(SWIG_DIR ${swig_install_dir}/share/swig/${TARGET_SWIG_VERSION})
+    set(SWIG_DIR ${swig_install_dir}/share/swig/${SWIG_TARGET_VERSION})
     set(SWIG_EXECUTABLE ${swig_install_dir}/bin/swig)
-    set(Swig_DEPEND Swig)
+    set(Swig_DEPEND ${${proj}_DEPENDENCIES})
+
+    ExternalProject_Add_Step(${proj} cpvec
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/External_Swig_std_vector_for_R_swig.i ${SWIG_DIR}/r/std_vector.i
+       DEPENDEES install
+    )
   endif()
 endif()
 
