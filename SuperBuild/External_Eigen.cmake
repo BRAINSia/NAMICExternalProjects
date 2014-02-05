@@ -59,8 +59,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/eigen.git")
   set(${proj}_GIT_TAG "master")
-  ExternalProject_Add(${proj}
     #URL https://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
+  ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
@@ -72,7 +72,9 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
-    ${${proj}_CMAKE_OPTIONS}
+      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
+      ${COMMON_EXTERNAL_PROJECT_ARGS}
+      ${${proj}_CMAKE_OPTIONS}
 ## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
