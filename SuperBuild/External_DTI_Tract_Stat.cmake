@@ -65,7 +65,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   set(${proj}_REPOSITORY "https://www.nitrc.org/svn/dti_tract_stat/trunk")
   ExternalProject_Add(${proj}
     SVN_REPOSITORY ${${proj}_REPOSITORY}
-    SVN_REVISION -r "128"
+    SVN_REVISION -r "131"
     SVN_USERNAME slicerbot
     SVN_PASSWORD slicer
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
