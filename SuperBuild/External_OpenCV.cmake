@@ -87,6 +87,11 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DBUILD_opencv_video:BOOL=OFF
       -DBUILD_opencv_videostab:BOOL=OFF
       -DBUILD_opencv_world:BOOL=OFF
+## Turn off GPU supports
+      -DWITH_CUDA:BOOL=OFF
+      -DWITH_CUFFT:BOOL=OFF
+      -DWITH_OPENCL:BOOL=OFF
+      -DWITH_OPENCLAMDFFT:BOOL=OFF
 
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-install
