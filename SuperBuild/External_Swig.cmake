@@ -31,9 +31,10 @@ endif()
 
 if(NOT SWIG_DIR)
 
-  set(SWIG_TARGET_VERSION 2.0.11)
-  set(SWIG_DOWNLOAD_SOURCE_HASH "291ba57c0acd218da0b0916c280dcbae")
-  set(SWIG_DOWNLOAD_WIN_HASH "b902bac6500eb3ea8c6e62c4e6b3832c" )
+  set(SWIG_TARGET_VERSION 2.0.11-1) # package which contains patches
+  set(SWIG_DOWNLOAD_SOURCE_HASH "c6c23afc5d4df6c87c0205053a3a84dc")
+  set(SWIG_DOWNLOAD_WIN_HASH "8fd2837dd42933a8a85644c39a5c912b" )
+
 
 
   if(WIN32)
@@ -43,20 +44,12 @@ if(NOT SWIG_DIR)
 
     set(swig_source_dir ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION})
 
-    # patch step
-    configure_file(
-      ${CMAKE_CURRENT_LIST_DIR}/External_Swig_patch_step.cmake.in
-      ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_patch_step.cmake
-      @ONLY)
-    set(swig_PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_patch_step.cmake)
-
     # swig.exe available as pre-built binary on Windows:
     ExternalProject_Add(${proj}
       URL http://midas3.kitware.com/midas/api/rest?method=midas.bitstream.download&checksum=${SWIG_DOWNLOAD_WIN_HASH}&name=swigwin-${SWIG_TARGET_VERSION}.zip
       URL_MD5 ${SWIG_DOWNLOAD_WIN_HASH}
       SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}
       ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
-      PATCH_COMMAND ${swig_PATCH_COMMAND}
       CONFIGURE_COMMAND ""
       BUILD_COMMAND ""
       INSTALL_COMMAND ""
@@ -93,12 +86,6 @@ if(NOT SWIG_DIR)
       @ONLY)
     set(swig_CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_configure_step.cmake)
 
-    # patch step
-    configure_file(
-      ${CMAKE_CURRENT_LIST_DIR}/External_Swig_patch_step.cmake.in
-      ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_patch_step.cmake
-      @ONLY)
-    set(swig_PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/External_Swig_patch_step.cmake)
 
     ExternalProject_Add(${proj}
       URL http://midas3.kitware.com/midas/api/rest?method=midas.bitstream.download&checksum=${SWIG_DOWNLOAD_SOURCE_HASH}&name=swig-${SWIG_TARGET_VERSION}.tar.gz
@@ -109,7 +96,6 @@ if(NOT SWIG_DIR)
       LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
       ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
       CONFIGURE_COMMAND ${swig_CONFIGURE_COMMAND}
-      PATCH_COMMAND ${swig_PATCH_COMMAND}
       DEPENDS ${${proj}_DEPENDENCIES}
       )
 
@@ -117,10 +103,6 @@ if(NOT SWIG_DIR)
     set(SWIG_EXECUTABLE ${swig_install_dir}/bin/swig)
     set(Swig_DEPEND ${${proj}_DEPENDENCIES})
 
-    ExternalProject_Add_Step(${proj} cpvec
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/External_Swig_std_vector_for_R_swig.i ${SWIG_DIR}/r/std_vector.i
-       DEPENDEES install
-    )
   endif()
 endif()
 
