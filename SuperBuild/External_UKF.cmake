@@ -63,13 +63,19 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
       -DSlicer_SOURCE_DIR:BOOL=ON ## THIS is a hack to prevent looking for slicer
       -DUKFTractography_SUPERBUILD:BOOL=OFF
+
+      -DUSE_SYSTEM_Boost:BOOL=ON
+      -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
+      -DBoost_DIR:PATH=${BOOST_ROOT}
+      -DBOOST_ROOT:PATH=${BOOST_ROOT}
+      -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
     )
 
   ### --- End Project specific additions
   # set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
   # set(${proj}_GIT_TAG "53b72b9a9623a2f02f85208f2cbba501c0ef3ee7")
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
-  set(${proj}_GIT_TAG "53b72b9a9623a2f02f85208f2cbba501c0ef3ee7")
+  set(${proj}_GIT_TAG "12016f222c4daa90cbde14507438ac47691f8bb7")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
