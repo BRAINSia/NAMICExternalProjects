@@ -32,7 +32,7 @@ if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
 endif()
 
 # Set dependency list
-set(${proj}_DEPENDENCIES "ITKv4")
+set(${proj}_DEPENDENCIES "ITKv4" "SlicerExecutionModel" )
 #if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
@@ -60,7 +60,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY https://github.com/BRAINSia/MRParameterMaps.git)
-  set(${proj}_GIT_TAG "20916cfc442f80afc0b8bdba2a47b777e9c3e94c")
+  set(${proj}_GIT_TAG "321cd180c959b09921ad12f3f85243ae92832812")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
