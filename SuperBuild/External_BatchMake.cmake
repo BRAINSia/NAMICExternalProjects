@@ -59,7 +59,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://batchmake.org/BatchMake.git)
-  set(${proj}_GIT_TAG "aee6ff198a392e6026730784d9c1c19a1296c465")
+  set(${proj}_GIT_TAG "7da88ae6027eb4eac363c09834a6e014306f3038")
 
   #message(STATUS "${__indent}Adding project ${proj}")
   ExternalProject_Add(${proj}

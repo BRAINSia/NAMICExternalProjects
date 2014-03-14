@@ -53,9 +53,13 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/Utils
   )
   ### --- End Project specific additions
+  ##set(${proj}_REPOSITORY ${git_protocol}://github.com/Kitware/KWStyle.git)
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/KWStyle.git)
+  set(${proj}_GIT_TAG 0cdca9fa1eba11e19af53a1a14234a1dfb7a2515)
+
   ExternalProject_Add(${proj}
-    CVS_REPOSITORY :pserver:anoncvs@public.kitware.com:/cvsroot/KWStyle
-    CVS_MODULE KWStyle
+    GIT_REPOSITORY ${${proj}_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards

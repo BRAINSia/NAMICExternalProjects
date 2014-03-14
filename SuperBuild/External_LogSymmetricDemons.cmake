@@ -60,7 +60,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/LogSymmetricDemons.git)
-  set(${proj}_GIT_TAG "77f0a8ae53218acdda1cf278d764ce00b1c09f4f")
+  set(${proj}_GIT_TAG "8a79adf90d0a4d6f07175fd11242604af833900e")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
