@@ -56,12 +56,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   AutoConf_FLAGS(${proj}_CXXFLAGS CXX "${APPLE_CFLAGS}")
 
   ### --- End Project specific additions
-  set(${proj}_URL "http://download.osgeo.org/libtiff/tiff-4.0.3.tar.gz")
-  set(${proj}_MD5 "051c1068e6a0627f461948c365290410")
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/libtiff.git)
+  set(${proj}_GIT_TAG f696451cb05a8f33ec477eadcadd10fae9f58c39)
+
   ExternalProject_Add(${proj}
-    URL ${${proj}_URL}
-    ${URL_HASH_CLAUSE}
-    URL_MD5 ${${proj}_MD5}
+    GIT_REPOSITORY ${${proj}_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
     INSTALL_DIR ${proj}-install
