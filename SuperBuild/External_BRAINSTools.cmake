@@ -70,7 +70,7 @@ if(NOT ( DEFINED "${extProjName}_SOURCE_DIR" OR ( DEFINED "USE_SYSTEM_${extProjN
       )
   endif()
   ### --- Project specific additions here
-  # message("VTK_DIR: ${VTK_DIR}")
+  message("VTK_DIR: ${VTK_DIR}")
   # message("ITK_DIR: ${ITK_DIR}")
   # message("SlicerExecutionModel_DIR: ${SlicerExecutionModel_DIR}")
   # message("BOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}")

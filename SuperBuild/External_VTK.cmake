@@ -19,8 +19,13 @@ ProjectDependancyPush(CACHED_proj ${proj})
 # SlicerMacroCheckExternalProjectDependency
 set(extProjName VTK) #The find_package known name
 set(proj        VTK) #This local name
-set(${extProjName}_REQUIRED_VERSION "5.10")  #If a required version is necessary, then set this, else leave blank
+option(USE_VTK_6 "Build using VTK version 6" OFF)
 
+if(USE_VTK_6)
+  set(${extProjName}_REQUIRED_VERSION "6.10")  #If a required version is necessary, then set this, else leave blank
+else()
+  set(${extProjName}_REQUIRED_VERSION "5.10")  #If a required version is necessary, then set this, else leave blank
+endif()
 #if(${USE_SYSTEM_${extProjName}})
 #  unset(${extProjName}_DIR CACHE)
 #endif()
@@ -32,6 +37,7 @@ endif()
 
 # Set dependency list
 set(${proj}_DEPENDENCIES "")
+set(${PROJECT_NAME}_USE_PYTHONQT ON)
 if (${PROJECT_NAME}_USE_PYTHONQT)
   list(APPEND ${proj}_DEPENDENCIES python)
 endif()
@@ -73,8 +79,15 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   set(VTK_QT_ARGS)
   if(${PRIMARY_PROJECT_NAME}_USE_QT)
-    if(NOT APPLE)
+    if(USE_VTK_6)
       set(VTK_QT_ARGS
+        -DModule_vtkGUISupportQt:BOOL=ON
+        )
+    else()
+      set(VTK_QT_ARGS)
+    endif()
+    if(NOT APPLE)
+      list(APPEND VTK_QT_ARGS
         #-DDESIRED_QT_VERSION:STRING=4 # Unused
         -DVTK_USE_GUISUPPORT:BOOL=ON
         -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
@@ -82,7 +95,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
         -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
         )
     else()
-      set(VTK_QT_ARGS
+      list(APPEND VTK_QT_ARGS
         -DVTK_USE_CARBON:BOOL=OFF
         # Default to Cocoa, VTK/CMakeLists.txt will enable Carbon and disable cocoa if needed
         -DVTK_USE_COCOA:BOOL=ON
@@ -161,7 +174,11 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
+if(USE_VTK_6)
+  set(${proj}_GIT_TAG "v6.1.0")
+else()
   set(${proj}_GIT_TAG "release-5.10")
+endif()
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
@@ -183,17 +200,23 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       ${${proj}_DEPENDENCIES}
     )
 
-  set(VTKPatchScript ${CMAKE_CURRENT_LIST_DIR}/External_VTK_patch.cmake)
-  ExternalProject_Add_Step(${proj} VTKPatch
-    COMMENT "get rid of obsolete C/CXX flags"
-    DEPENDEES download
-    DEPENDERS configure
-    COMMAND ${CMAKE_COMMAND}
-    -DVTKSource=<SOURCE_DIR>
-    -P ${VTKPatchScript}
-    )
 
+  # set(VTKPatchScript ${CMAKE_CURRENT_LIST_DIR}/External_VTK_patch.cmake)
+  # ExternalProject_Add_Step(${proj} VTKPatch
+  #   COMMENT "get rid of obsolete C/CXX flags"
+  #   DEPENDEES download
+  #   DEPENDERS configure
+  #   COMMAND ${CMAKE_COMMAND}
+  #   -DVTKSource=<SOURCE_DIR>
+  #   -P ${VTKPatchScript}
+  #   )
+
+if(USE_VTK_6)
+  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.1)
+else()
   set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/vtk-5.10)
+endif()
+
 else()
   if(${USE_SYSTEM_${extProjName}})
     find_package(${extProjName} ${${extProjName}_REQUIRED_VERSION} REQUIRED)
