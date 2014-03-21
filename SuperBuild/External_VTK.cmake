@@ -201,15 +201,16 @@ endif()
     )
 
 
-  # set(VTKPatchScript ${CMAKE_CURRENT_LIST_DIR}/External_VTK_patch.cmake)
-  # ExternalProject_Add_Step(${proj} VTKPatch
-  #   COMMENT "get rid of obsolete C/CXX flags"
-  #   DEPENDEES download
-  #   DEPENDERS configure
-  #   COMMAND ${CMAKE_COMMAND}
-  #   -DVTKSource=<SOURCE_DIR>
-  #   -P ${VTKPatchScript}
-  #   )
+  set(VTKPatchScript ${CMAKE_CURRENT_LIST_DIR}/External_VTK_patch.cmake)
+  ExternalProject_Add_Step(${proj} VTKPatch
+    COMMENT "get rid of obsolete C/CXX flags"
+    DEPENDEES download
+    DEPENDERS configure
+    COMMAND ${CMAKE_COMMAND}
+    -DVTKSource=<SOURCE_DIR>
+    -DUSE_VTK_6=${USE_VTK_6}
+    -P ${VTKPatchScript}
+    )
 
 if(USE_VTK_6)
   set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.1)
