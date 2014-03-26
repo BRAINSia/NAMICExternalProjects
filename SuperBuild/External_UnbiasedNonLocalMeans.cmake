@@ -1,16 +1,23 @@
 # Make sure this file is included only once by creating globally unique varibles
 # based on the name of this included file.
-get_filename_component(CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
-if(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED)
-  return()
-endif()
-set(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1)
+# get_filename_component(CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
+# if(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED)
+#   return()
+# endif()
+# set(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1)
 
+superbuild_stack_push(CACHED_extProjName ${extProjName})
+superbuild_stack_push(CACHED_proj ${proj})
+
+set(extProjName UnbiasedNonLocalMeans)
 set(proj UnbiasedNonLocalMeans)
-set(${proj}_GIT_REPOSITORY "git://github.com/BRAINSia/UnbiasedNonLocalMeans.git")
-set(${proj}_GIT_TAG "master")
 
 set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel )
+# Include dependent projects if any
+ExternalProject_Include_Dependencies(${proj}  PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
+
+set(${proj}_GIT_REPOSITORY "git://github.com/BRAINSia/UnbiasedNonLocalMeans.git")
+set(${proj}_GIT_TAG "master")
 
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
@@ -23,7 +30,7 @@ ExternalProject_Add(${proj}
   LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
   ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
   CMAKE_GENERATOR ${gen}
-  CMAKE_ARGS
+  CMAKE_CACHE_ARGS
    -Wno-dev
    --no-warn-unused-cli
   ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
@@ -40,8 +47,7 @@ ExternalProject_Add(${proj}
   -DUnbiasedNonLocalMeansTractography_SuperBuild:BOOL=ON ## THIS should be the single flag
   ${${proj}_CMAKE_OPTIONS}
   INSTALL_COMMAND ""
-  DEPENDS
-  ${${proj}_DEPENDENCIES}
+  DEPENDS ${${proj}_DEPENDENCIES}
   )
 #ExternalProject_Add_Step(${proj} forcebuild
 #    COMMAND ${CMAKE_COMMAND} -E remove
@@ -50,3 +56,5 @@ ExternalProject_Add(${proj}
 #    DEPENDERS build
 #    ALWAYS 1
 #  )
+superbuild_stack_pop(CACHED_extProjName extProjName)
+superbuild_stack_pop(CACHED_proj proj)

@@ -1,26 +1,3 @@
-# Make sure this file is included only once by creating globally unique varibles
-# based on the name of this included file.
-get_filename_component(CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
-if(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED)
-  return()
-endif()
-set(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1)
-
-## External_${extProjName}.cmake files can be recurisvely included,
-## and cmake variables are global, so when including sub projects it
-## is important make the extProjName and proj variables
-## appear to stay constant in one of these files.
-## Store global variables before overwriting (then restore at end of this file.)
-ProjectDependancyPush(CACHED_extProjName ${extProjName})
-ProjectDependancyPush(CACHED_proj ${proj})
-
-# Make sure that the ExtProjName/IntProjName variables are unique globally
-# even if other External_${ExtProjName}.cmake files are sourced by
-# SlicerMacroCheckExternalProjectDependency
-set(extProjName python) #The find_package known name
-set(proj        python) #This local name
-set(${extProjName}_REQUIRED_VERSION "")  #If a required version is necessary, then set this, else leave blank
-
 
 set(proj python)
 
@@ -29,7 +6,8 @@ set(${proj}_DEPENDENCIES zlib)
 if(NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_python)
   list(APPEND ${proj}_DEPENDENCIES CTKAPPLAUNCHER)
 endif()
-if(Slicer_USE_PYTHONQT_WITH_TCL)
+
+if(${CMAKE_PROJECT_NAME}_USE_PYTHONQT_WITH_TCL)
   if(WIN32)
     list(APPEND ${proj}_DEPENDENCIES tcl)
   else()
@@ -41,7 +19,7 @@ if(PYTHON_ENABLE_SSL)
 endif()
 
 # Include dependent projects if any
-SlicerMacroCheckExternalProjectDependency(${proj})
+ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   unset(PYTHON_INCLUDE_DIR CACHE)
@@ -58,7 +36,7 @@ if((NOT DEFINED PYTHON_INCLUDE_DIR
    OR NOT DEFINED PYTHON_LIBRARY
    OR NOT DEFINED PYTHON_EXECUTABLE) AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
-  set(python_SOURCE_DIR "${CMAKE_BINARY_DIR}/Python-2.7.3")
+  set(python_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/ExternalSources/Python-2.7.3")
 
   set(EXTERNAL_PROJECT_OPTIONAL_ARGS)
   if(MSVC)
@@ -187,26 +165,23 @@ if((NOT DEFINED PYTHON_INCLUDE_DIR
   endif()
 
 else()
-  SlicerMacroEmptyExternalProject(${proj} DEPENDS ${${proj}_DEPENDENCIES})
+  ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
 
-# mark_as_superbuild(
-#   VARS
-#     PYTHON_EXECUTABLE:FILEPATH
-#     PYTHON_INCLUDE_DIR:PATH
-#     PYTHON_LIBRARY:FILEPATH
-#   LABELS "FIND_PACKAGE"
-#   )
+mark_as_superbuild(
+  VARS
+    PYTHON_EXECUTABLE:FILEPATH
+    PYTHON_INCLUDE_DIR:PATH
+    PYTHON_LIBRARY:FILEPATH
+  LABELS "FIND_PACKAGE"
+  )
 
-message(${proj} "PYTHON_EXECUTABLE:${PYTHON_EXECUTABLE}")
-message(${proj} "PYTHON_INCLUDE_DIR:${PYTHON_INCLUDE_DIR}")
-message(${proj} "PYTHON_LIBRARY:${PYTHON_LIBRARY}")
+ExternalProject_Message(${proj} "PYTHON_EXECUTABLE:${PYTHON_EXECUTABLE}")
+ExternalProject_Message(${proj} "PYTHON_INCLUDE_DIR:${PYTHON_INCLUDE_DIR}")
+ExternalProject_Message(${proj} "PYTHON_LIBRARY:${PYTHON_LIBRARY}")
 
 if(WIN32)
   set(PYTHON_DEBUG_LIBRARY ${PYTHON_LIBRARY})
   mark_as_superbuild(VARS PYTHON_DEBUG_LIBRARY LABELS "FIND_PACKAGE")
-  message(${proj} "PYTHON_DEBUG_LIBRARY:${PYTHON_DEBUG_LIBRARY}")
+  ExternalProject_Message(${proj} "PYTHON_DEBUG_LIBRARY:${PYTHON_DEBUG_LIBRARY}")
 endif()
-
-ProjectDependancyPop(CACHED_extProjName extProjName)
-ProjectDependancyPop(CACHED_proj proj)
