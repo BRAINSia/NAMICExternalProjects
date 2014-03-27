@@ -1,5 +1,6 @@
 set(proj        BRAINSTools) #This local name
 
+set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel VTK DCMTK JPEG TIFF Boost teem ReferenceAtlas OpenCV)
 if(USE_ANTs)
   list(APPEND ${proj}_DEPENDENCIES ANTs)
 endif()
@@ -37,6 +38,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("ITK_DIR: ${ITK_DIR}")
   # message("SlicerExecutionModel_DIR: ${SlicerExecutionModel_DIR}")
   # message("BOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}")
+  message("${PRIMARY_PROJECT_NAME}_USE_QT=${${PRIMARY_PROJECT_NAME}_USE_QT}")
   set(${proj}_CMAKE_OPTIONS
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
       -DBUILD_EXAMPLES:BOOL=OFF
@@ -66,11 +68,11 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DITK_DIR:PATH=${ITK_DIR}
       -DVTK_DIR:PATH=${VTK_DIR}
       -DTeem_DIR:PATH=${Teem_DIR}
-      -D${proj}_USE_QT:BOOL=${LOCAL_PROJECT_NAME}_USE_QT
+      -D${proj}_USE_QT:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT}
       -DUSE_SYSTEM_ZLIB:BOOL=ON
       -Dzlib_DIR:PATH=${zlib_DIR}
-      -DZLIB_ROOT:PATH=${zlib_DIR}
-      -DZLIB_INCLUDE_DIR:PATH=${zlib}_DIR}/include
+      -DZLIB_ROOT:PATH=${ZLIB_ROOT}
+      -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
       -DUSE_BRAINSABC:BOOL=ON
       -DUSE_BRAINSConstellationDetector:BOOL=ON
@@ -98,7 +100,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_AutoWorkup:BOOL=OFF
       ${BRAINS_ANTS_PARAMS}
     )
-
+  # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
   set(${proj}_GIT_TAG "2eac2cee3ba5f2e7b910b13105237c3b4f4807fc")

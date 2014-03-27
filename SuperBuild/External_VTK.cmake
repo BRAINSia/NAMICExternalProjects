@@ -3,7 +3,8 @@ set(proj VTK)
 
 # Set dependency list
 set(${proj}_DEPENDENCIES "zlib")
-if (Slicer_USE_PYTHONQT)
+
+if (${PROJECT_NAME}_USE_PYTHONQT)
   list(APPEND ${proj}_DEPENDENCIES python)
 endif()
 
@@ -204,12 +205,7 @@ else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
 
-mark_as_superbuild(VTK_SOURCE_DIR:PATH)
-
 mark_as_superbuild(
-  VARS VTK_DIR:PATH
+  VARS VTK_DIR:PATH VTK_SOURCE_DIR:PATH
   LABELS "FIND_PACKAGE"
   )
-
-ExternalProject_Message(${proj} "PNG_INCLUDE_DIR:${PNG_INCLUDE_DIR}")
-ExternalProject_Message(${proj} "PNG_LIBRARY:${PNG_LIBRARY}")
