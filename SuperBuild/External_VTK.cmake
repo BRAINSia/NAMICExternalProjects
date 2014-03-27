@@ -1,6 +1,13 @@
 
 set(proj VTK)
 
+option(USE_VTK_6 "Build using VTK version 6" OFF)
+if(USE_VTK_6)
+  set(${proj}_REQUIRED_VERSION "6.10")  #If a required version is necessary, then set this, else leave blank
+else()
+  set(${proj}_REQUIRED_VERSION "5.10")  #If a required version is necessary, then set this, else leave blank
+endif()
+
 # Set dependency list
 set(${proj}_DEPENDENCIES "zlib")
 
@@ -35,12 +42,15 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   set(VTK_WRAP_PYTHON OFF)
   set(BUILD_SHARED_LIBS OFF)
 
-  if(Slicer_USE_PYTHONQT)
+  if(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT)
     set(VTK_WRAP_PYTHON ON)
-    set(BUILD_SHARED_LIBS ON)
+    if(USE_VTK_6)
+      list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
+        -DModule_vtkGUISupportQt:BOOL=ON)
+    endif()
   endif()
 
-  if(Slicer_USE_PYTHONQT)
+  if(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT)
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
       -DVTK_INSTALL_PYTHON_USING_CMAKE:BOOL=ON
       -DPYTHON_EXECUTABLE:PATH=${PYTHON_EXECUTABLE}
@@ -72,7 +82,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   endif()
 
   # Disable Tk when Python wrapping is enabled
-  if(Slicer_USE_PYTHONQT)
+  if(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT)
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS -DVTK_USE_TK:BOOL=OFF)
   endif()
 
@@ -104,23 +114,33 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -P ${CMAKE_CURRENT_BINARY_DIR}/VTK_build_step.cmake)
   endif()
 
-  set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY "github.com/Slicer/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
-  set(${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG "c88dfedb277969e5f1f6c5349d8f7898610e75f4" CACHE STRING "VTK git tag to use" FORCE)
-
-  mark_as_advanced(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG)
-
+  # Slicer settings
+  # set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY 
+  #   "github.com/Slicer/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
+  # set(${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
+  #   "c88dfedb277969e5f1f6c5349d8f7898610e75f4" CACHE STRING "VTK git tag to use" FORCE)
+  #
+  # mark_as_advanced(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG)
   if(NOT DEFINED git_protocol)
     set(git_protocol "git")
+  endif()
+
+  set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
+  if(USE_VTK_6)
+    set(${proj}_GIT_TAG "v6.1.0")
+  else()
+    set(${proj}_GIT_TAG "release-5.10")
   endif()
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
-    GIT_REPOSITORY "${git_protocol}://${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
-    GIT_TAG ${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}
+    GIT_REPOSITORY "${${proj}_REPOSITORY}"
+    GIT_TAG ${${proj}_GIT_TAG}
     ${CUSTOM_BUILD_COMMAND}
     CMAKE_CACHE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
@@ -132,8 +152,8 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DVTK_DEBUG_LEAKS:BOOL=${VTK_DEBUG_LEAKS}
       -DVTK_LEGACY_REMOVE:BOOL=ON
       -DVTK_WRAP_TCL:BOOL=${VTK_WRAP_TCL}
-      #-DVTK_USE_RPATH:BOOL=ON # Unused
       -DVTK_WRAP_PYTHON:BOOL=${VTK_WRAP_PYTHON}
+<<<<<<< HEAD
 <<<<<<< HEAD
       -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
       -DVTK_INSTALL_LIB_DIR:PATH=${${PROJECT_NAME}_INSTALL_LIB_DIR}
@@ -169,17 +189,28 @@ endif()
 ## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
 =======
       -DVTK_INSTALL_LIB_DIR:PATH=${Slicer_INSTALL_LIB_DIR}
+=======
+      -DVTK_INSTALL_LIB_DIR:PATH=${${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR}
+>>>>>>> COMP: update some git tags, and backport the VTK6 stuff
       -DVTK_USE_SYSTEM_ZLIB:BOOL=ON
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
       -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
       ${EXTERNAL_PROJECT_OPTIONAL_ARGS}
+<<<<<<< HEAD
     INSTALL_COMMAND ""
 >>>>>>> COMP: use Artichoke for managing ExternalProject dependencies
+=======
+>>>>>>> COMP: update some git tags, and backport the VTK6 stuff
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
-  set(VTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  if(USE_VTK_6)
+    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.1)
+  else()
+    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/vtk-5.10)
+  endif()
+
   set(VTK_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
 <<<<<<< HEAD
