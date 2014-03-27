@@ -26,6 +26,7 @@ if(NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   set(SimpleITK_REPOSITORY ${git_protocol}://itk.org/SimpleITK.git)
   set(SimpleITK_GIT_TAG v0.8rc1 )
+  set(SimpleITK_GIT_TAG e6c18e682c46a7fc7963192039028a8dc19f7204)
 
   ExternalProject_add(SimpleITK
     ${${proj}_EP_ARGS}

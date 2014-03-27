@@ -42,12 +42,13 @@ else()
     )
 endif()
 
-set(teem_URL http://svn.slicer.org/Slicer3-lib-mirrors/trunk/teem-1.10.0-src.tar.gz)
-set(teem_MD5 efe219575adc89f6470994154d86c05b)
+set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/teem.git")
+set(${proj}_TAG "9db65f15e554119989bb49d12b404e7e44f150e4")
 
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
-  URL ${teem_URL}
+  GIT_REPOSITORY ${${proj}_REPOSITORY}
+  GIT_TAG ${${proj}_TAG}
   URL_MD5 ${teem_MD5}
   DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}
   SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem
@@ -62,10 +63,11 @@ ExternalProject_Add(${proj}
   ${CMAKE_PROJECT_INCLUDE_EXTERNAL_PROJECT_ARG}
   -DTeem_USE_LIB_INSTALL_SUBDIR:BOOL=ON
   -DCMAKE_VERBOSE_MAKEFILE:BOOL=OFF
+  -DVTK_DIR:PATH=${VTK_DIR}
   -DTeem_PTHREAD:BOOL=OFF
   -DTeem_BZIP2:BOOL=OFF
   -DTeem_ZLIB:BOOL=ON
-  -DTeem_PNG:BOOL=ON
+  -DTeem_PNG:BOOL=OFF
   -DZLIB_ROOT:PATH=${ZLIB_ROOT}
   -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
   -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
@@ -77,6 +79,16 @@ ExternalProject_Add(${proj}
   DEPENDS
   ${${proj}_DEPENDENCIES}
   )
+
+ExternalProject_Add_Step(${proj} fix_AIR_EXISTS
+    COMMAND ${CMAKE_COMMAND} -DAIR_FILE=${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/air/air.h
+    -P ${CMAKE_CURRENT_LIST_DIR}/TeemPatch.cmake
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/bane/bane.h
+    ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem/bane.h
+    DEPENDEES download
+    DEPENDERS configure
+    )
 
 set(Teem_DIR ${CMAKE_BINARY_DIR}/teem-build)
 

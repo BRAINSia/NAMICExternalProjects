@@ -127,7 +127,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
 
   set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
   if(USE_VTK_6)
-    set(${proj}_GIT_TAG "v6.1.0")
+    set(${proj}_GIT_TAG "e234a80e1925f41d51f139969ba60b630ae21759")
   else()
     set(${proj}_GIT_TAG "release-5.10")
   endif()
@@ -206,7 +206,7 @@ endif()
       ${${proj}_DEPENDENCIES}
     )
   if(USE_VTK_6)
-    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.1)
+    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.2)
   else()
     set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/vtk-5.10)
   endif()
@@ -236,7 +236,9 @@ else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
 
+mark_as_superbuild(VTK_SOURCE_DIR:PATH)
+
 mark_as_superbuild(
-  VARS VTK_DIR:PATH VTK_SOURCE_DIR:PATH
+  VARS VTK_DIR:PATH
   LABELS "FIND_PACKAGE"
   )
