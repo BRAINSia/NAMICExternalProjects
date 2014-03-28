@@ -35,7 +35,6 @@ endif()
 # Enable and setup External project global properties
 #-----------------------------------------------------------------------------
 include(ExternalProject)
-include(Artichoke)
 
 # Compute -G arg for configuring external projects with the same CMake generator:
 if(CMAKE_EXTRA_GENERATOR)

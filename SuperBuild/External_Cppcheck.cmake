@@ -77,7 +77,7 @@ else()
   endif()
   # The project is provided using ${extProjName}_EXE, nevertheless since other
   # project may depend on ${extProjName}, let's add an 'empty' one
-  SlicerMacroEmptyExternalProject(${proj} "${${proj}_DEPENDENCIES}")
+  ExternalProject_Add_empty(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
 list(APPEND ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARS ${extProjName}_EXE:FILEPATH)
