@@ -1,6 +1,7 @@
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/CMake)
 
 include(CMakeDependentOption)
+include(Artichoke)
 
 option(${PRIMARY_PROJECT_NAME}_INSTALL_DEVELOPMENT "Install development support include and libraries for external packages." OFF)
 mark_as_advanced(${PRIMARY_PROJECT_NAME}_INSTALL_DEVELOPMENT)
@@ -35,6 +36,9 @@ if(${PRIMARY_PROJECT_NAME}_USE_QT)
     include(${QT_USE_FILE})
   endif()
 endif()
+
+cmake_dependent_option(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT "Use python with QT" ON
+  "${PRIMARY_PROJECT_NAME}_USE_QT" OFF)
 
 if( USE_BRAINSFit ) ## This is to force configuration of python early.
   ## NIPYPE is not stable under python 2.6, so require 2.7 when using autoworkup
@@ -162,3 +166,46 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
   endif()
 endif()
 
+#
+# SimpleITK has large internal libraries, which take an extremely long
+# time to link on windows when they are static. Creating shared
+# SimpleITK internal libraries can reduce linking time. Also the size
+# of the debug libraries are monstrous. Using shared libraries for
+# debug, reduce disc requirements, and can improve linking
+# times. However, these shared libraries take longer to load than the
+# monolithic target from static libraries.
+#
+set( ${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT OFF)
+string(TOUPPER "${CMAKE_BUILD_TYPE}" _CMAKE_BUILD_TYPE)
+if(MSVC OR _CMAKE_BUILD_TYPE MATCHES "DEBUG")
+  set(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT ON)
+endif()
+CMAKE_DEPENDENT_OPTION(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED "Build SimpleITK with shared libraries. Reduces linking time, increases run-time load time." ${${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT} "${PRIMARY_PROJECT_NAME}_USE_SimpleITK" OFF )
+mark_as_superbuild(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED)
+
+# TODO: figure out what this Slicer rigamarole is actually supposed to be doing
+#-----------------------------------------------------------------------------
+# ${PRIMARY_PROJECT_NAME} install directories
+#-----------------------------------------------------------------------------
+set(${PRIMARY_PROJECT_NAME}_INSTALL_ROOT "./")
+set(${PRIMARY_PROJECT_NAME}_BUNDLE_LOCATION "${${PRIMARY_PROJECT_NAME}_MAIN_PROJECT_APPLICATION_NAME}.app/Contents")
+# NOTE: Make sure to update vtk${PRIMARY_PROJECT_NAME}ApplicationLogic::IsEmbeddedModule if
+#       the following variables are changed.
+set(${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRBASENAME "Extensions")
+set(${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRNAME "${${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRBASENAME}-${${PRIMARY_PROJECT_NAME}_WC_REVISION}")
+if(APPLE)
+  set(${PRIMARY_PROJECT_NAME}_INSTALL_ROOT "${${PRIMARY_PROJECT_NAME}_BUNDLE_LOCATION}/") # Set to create Bundle
+endif()
+
+set(${PRIMARY_PROJECT_NAME}_INSTALL_BIN_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_BIN_DIR}")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_LIB_DIR}")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_INCLUDE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_INCLUDE_DIR}")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_SHARE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_SHARE_DIR}")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_ITKFACTORIES_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR}/ITKFactories")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_QM_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_QM_DIR}")
+
+if(${PRIMARY_PROJECT_NAME}_BUILD_CLI_SUPPORT)
+  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_BIN_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_BIN_DIR}")
+  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_LIB_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_LIB_DIR}")
+  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_SHARE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_SHARE_DIR}")
+endif()
