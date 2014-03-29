@@ -61,9 +61,11 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- Project specific additions here
   set(VTK_WRAP_TCL OFF)
   set(VTK_WRAP_PYTHON OFF)
+  set(BUILD_SHARED_LIBS OFF)
 
   if (${PROJECT_NAME}_USE_PYTHONQT)
     set(VTK_WRAP_PYTHON ON)
+    set(BUILD_SHARED_LIBS ON)
   endif()
 
   set(VTK_PYTHON_ARGS
@@ -167,6 +169,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       #-DVTK_USE_RPATH:BOOL=ON # Unused
       ${VTK_TCL_ARGS}
       -DVTK_WRAP_PYTHON:BOOL=${VTK_WRAP_PYTHON}
+      -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
       -DVTK_INSTALL_LIB_DIR:PATH=${${PROJECT_NAME}_INSTALL_LIB_DIR}
       ${VTK_PYTHON_ARGS}
       ${VTK_QT_ARGS}
