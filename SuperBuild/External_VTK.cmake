@@ -37,7 +37,7 @@ endif()
 
 # Set dependency list
 set(${proj}_DEPENDENCIES "")
-set(${PROJECT_NAME}_USE_PYTHONQT ON)
+set(${PROJECT_NAME}_USE_PYTHONQT OFF)
 if (${PROJECT_NAME}_USE_PYTHONQT)
   list(APPEND ${proj}_DEPENDENCIES python)
 endif()
@@ -176,11 +176,13 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       ${VTK_MAC_ARGS}
     )
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
 if(USE_VTK_6)
+  set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
   set(${proj}_GIT_TAG "v6.1.0")
 else()
-  set(${proj}_GIT_TAG "release-5.10")
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/VTK.git)
+  #set(${proj}_GIT_TAG "release-5.10")
+  set(${proj}_GIT_TAG "80b124ff13bbab363bece53e850ba50f139a9d93")
 endif()
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
