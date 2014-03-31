@@ -34,11 +34,14 @@ set(${proj}_CMAKE_OPTIONS
   -DBoost_DIR:PATH=${BOOST_ROOT}
   -DBOOST_ROOT:PATH=${BOOST_ROOT}
   -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
+  -DBOOST_INCLUDEDIR:PATH=${BOOST_INCLUDE_DIR}
   )
+
+message("BOOST_ROOT=${BOOST_ROOT} BOOST_INCLUDE_DIR=${BOOST_INCLUDE_DIR}")
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
-set(${proj}_GIT_TAG "eee65abd870e3ae874c32ddedb665f3110af610e")
+set(${proj}_GIT_TAG "f4dc9b2bd8ada127ced3a603b18b1b7e919a73fb")
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}

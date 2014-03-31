@@ -160,40 +160,6 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       ${VTK_MAC_ARGS}
     )
   ### --- End Project specific additions
-if(USE_VTK_6)
-  set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
-  set(${proj}_GIT_TAG "v6.1.0")
-else()
-  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/VTK.git)
-  #set(${proj}_GIT_TAG "release-5.10")
-  set(${proj}_GIT_TAG "80b124ff13bbab363bece53e850ba50f139a9d93")
-endif()
-  ExternalProject_Add(${proj}
-    GIT_REPOSITORY ${${proj}_REPOSITORY}
-    GIT_TAG ${${proj}_GIT_TAG}
-    SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
-    BINARY_DIR ${proj}-build
-    BUILD_COMMAND ${VTK_BUILD_STEP}
-    LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
-    LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
-    LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
-    LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
-    ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
-    CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS
-      ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-      ${COMMON_EXTERNAL_PROJECT_ARGS}
-      ${${proj}_CMAKE_OPTIONS}
-## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
-      -DVTK_INSTALL_LIB_DIR:PATH=${${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR}
-      -DVTK_USE_SYSTEM_ZLIB:BOOL=ON
-      -DZLIB_ROOT:PATH=${ZLIB_ROOT}
-      -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
-      -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
-      ${EXTERNAL_PROJECT_OPTIONAL_ARGS}
-    DEPENDS
-      ${${proj}_DEPENDENCIES}
-    )
   if(USE_VTK_6)
     set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.2)
   else()
