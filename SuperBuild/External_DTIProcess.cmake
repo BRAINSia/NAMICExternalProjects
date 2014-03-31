@@ -21,7 +21,7 @@ set(${proj}_CMAKE_OPTIONS
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://www.nitrc.org/svn/dtiprocess/trunk")
-set(${proj}_SVN_REVISION -r "216")
+set(${proj}_SVN_REVISION -r "217")
 ExternalProject_Add(${proj}
   SVN_REPOSITORY ${${proj}_REPOSITORY}
   SVN_REVISION ${${proj}_GIT_TAG}

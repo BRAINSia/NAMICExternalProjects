@@ -136,7 +136,7 @@ if((NOT DEFINED PYTHON_INCLUDE_DIR
   else()
     message(FATAL_ERROR "Unknown system !")
   endif()
-
+  set(PYTHON_INCLUDE_DIRS ${PYTHON_INCLUDE_DIR})
   if(NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_python)
 
     # Configure python launcher
