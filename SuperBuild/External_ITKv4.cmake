@@ -1,9 +1,8 @@
 
 set(proj ITKv4)
-
+set(ITK_EXTERNAL_NAME ${proj})
 # Set dependency list
-set(${proj}_DEPENDENCIES "zlib")
-list(APPEND ${proj}_DEPENDENCIES DCMTK)
+set(${proj}_DEPENDENCIES zlib DCMTK)
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
@@ -24,9 +23,8 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       set(git_protocol "git")
   endif()
 
-  set(ITKv4_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  ##set(ITKv4_GIT_TAG 754278cb7ab50ae3e64dc0a413aef4b9ff0ff1f0) # 4.5.0-6 release branch
-  set(ITKv4_GIT_TAG c2d702f6234471998de209cb474b21f6e5de4eae)
+  set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
+  set(${proj}_GIT_TAG 1339123b17c54461758848823bb3eb21bc87ba2f)
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
@@ -39,7 +37,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+#      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
       -DBUILD_TESTING:BOOL=OFF
       -DBUILD_EXAMPLES:BOOL=OFF
       -DITK_LEGACY_REMOVE:BOOL=OFF
@@ -59,10 +57,12 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
       -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
+    INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
-  set(ITK_DIR ${CMAKE_BINARY_DIR}/${proj}-install//lib/cmake/ITK-4.6)
+ # set(ITK_DIR ${CMAKE_BINARY_DIR}/${proj}-install//lib/cmake/ITK-4.6)
+ set(ITK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
 
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})

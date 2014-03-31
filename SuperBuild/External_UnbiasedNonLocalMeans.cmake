@@ -31,8 +31,6 @@ ExternalProject_Add(${proj}
   ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
   CMAKE_GENERATOR ${gen}
   CMAKE_CACHE_ARGS
-   -Wno-dev
-   --no-warn-unused-cli
   ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
   -DUSE_SYSTEM_ITK:BOOL=ON
   -DUSE_SYSTEM_SLICER_EXECUTION_MODEL:BOOL=ON
