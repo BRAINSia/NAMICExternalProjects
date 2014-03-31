@@ -153,8 +153,6 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DVTK_LEGACY_REMOVE:BOOL=ON
       -DVTK_WRAP_TCL:BOOL=${VTK_WRAP_TCL}
       -DVTK_WRAP_PYTHON:BOOL=${VTK_WRAP_PYTHON}
-<<<<<<< HEAD
-<<<<<<< HEAD
       -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
       -DVTK_INSTALL_LIB_DIR:PATH=${${PROJECT_NAME}_INSTALL_LIB_DIR}
       ${VTK_PYTHON_ARGS}
@@ -187,21 +185,12 @@ endif()
       ${COMMON_EXTERNAL_PROJECT_ARGS}
       ${${proj}_CMAKE_OPTIONS}
 ## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
-=======
-      -DVTK_INSTALL_LIB_DIR:PATH=${Slicer_INSTALL_LIB_DIR}
-=======
       -DVTK_INSTALL_LIB_DIR:PATH=${${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR}
->>>>>>> COMP: update some git tags, and backport the VTK6 stuff
       -DVTK_USE_SYSTEM_ZLIB:BOOL=ON
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
       -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
       ${EXTERNAL_PROJECT_OPTIONAL_ARGS}
-<<<<<<< HEAD
-    INSTALL_COMMAND ""
->>>>>>> COMP: use Artichoke for managing ExternalProject dependencies
-=======
->>>>>>> COMP: update some git tags, and backport the VTK6 stuff
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
@@ -213,10 +202,6 @@ endif()
 
   set(VTK_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
-<<<<<<< HEAD
-if(USE_VTK_6)
-  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.1)
-=======
   set(PNG_INCLUDE_DIR ${VTK_SOURCE_DIR}/Utilities/vtkpng)
 
   set(PNG_LIBRARY_DIR ${VTK_DIR}/bin)
@@ -231,7 +216,6 @@ if(USE_VTK_6)
     set(PNG_LIBRARY ${PNG_LIBRARY_DIR}/libvtkpng.so)
   endif()
 
->>>>>>> COMP: use Artichoke for managing ExternalProject dependencies
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
