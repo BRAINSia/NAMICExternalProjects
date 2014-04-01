@@ -66,6 +66,7 @@ set(${proj}_CMAKE_OPTIONS
     BINARY_DIR SimpleITK-build
     GIT_REPOSITORY ${SimpleITK_REPOSITORY}
     GIT_TAG ${SimpleITK_GIT_TAG}
+    CMAKE_ARGS -Wno-dev --no-warn-unused-cli
     CMAKE_CACHE_ARGS
     #
     ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}

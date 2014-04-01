@@ -32,6 +32,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     GIT_TAG ${ITKv4_GIT_TAG}
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
     BINARY_DIR ${proj}-build
+    CMAKE_ARGS -Wno-dev --no-warn-unused-cli
     CMAKE_CACHE_ARGS
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}

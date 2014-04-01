@@ -53,6 +53,7 @@ ExternalProject_Add(${proj}
   DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}
   SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem
   BINARY_DIR teem-build
+  CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
   -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
   # Not needed -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
