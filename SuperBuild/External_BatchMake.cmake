@@ -21,6 +21,7 @@ ExternalProject_Add(${proj}
   GIT_TAG "7da88ae6027eb4eac363c09834a6e014306f3038"
   SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/BatchMake
   BINARY_DIR BatchMake-build
+  CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
     -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
     -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
