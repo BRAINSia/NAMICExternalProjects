@@ -190,7 +190,7 @@ endmacro()
 #-----------------------------------------------------------------------------
 # Common external projects CMake variables
 #-----------------------------------------------------------------------------
-set(CMAKE_INCLUDE_DIRECTORIES_BEFORE ON CACHE BOOL "Set default to prepend include directories.")
+set(CMAKE_INCLUDE_DIRECTORIES_BEFORE OFF CACHE BOOL "Set default to prepend include directories.")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Write compile_commands.json")
 
