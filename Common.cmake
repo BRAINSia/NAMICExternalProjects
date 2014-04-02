@@ -165,7 +165,6 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
   endif()
 endif()
-
 #
 # SimpleITK has large internal libraries, which take an extremely long
 # time to link on windows when they are static. Creating shared
