@@ -79,7 +79,8 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
 
   if(USE_VTK_6)
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      -DModule_vtkGUISupportQt:BOOL=ON)
+      -DModule_vtkGUISupportQt:BOOL=ON
+      -DModule_vtkGUISupportQtOpenGL:BOOL=ON)
   endif()
 
   # Disable Tk when Python wrapping is enabled
@@ -126,11 +127,12 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
     set(git_protocol "git")
   endif()
 
-  set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
   if(USE_VTK_6)
-    set(${proj}_GIT_TAG "e234a80e1925f41d51f139969ba60b630ae21759")
+    set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
+    set(${proj}_GIT_TAG "v6.1.0")
   else()
-    set(${proj}_GIT_TAG "release-5.10")
+    set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/VTK.git)
+    set(${proj}_GIT_TAG "80b124ff13bbab363bece53e850ba50f139a9d93")    set(${proj}_GIT_TAG "release-5.10")
   endif()
 
   ExternalProject_Add(${proj}
@@ -143,6 +145,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
     CMAKE_ARGS -Wno-dev --no-warn-unused-cli
     CMAKE_CACHE_ARGS
       ${COMMON_EXTERNAL_PROJECT_ARGS}
+      ${EXTERNAL_PROJECTS_OPTIONAL_ARGS}
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
       -DBUILD_TESTING:BOOL=OFF
       -DBUILD_EXAMPLES:BOOL=OFF
@@ -160,7 +163,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
     )
   ### --- End Project specific additions
   if(USE_VTK_6)
-    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.2)
+    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.1)
   else()
     set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/vtk-5.10)
   endif()
