@@ -126,13 +126,13 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   if(NOT DEFINED git_protocol)
     set(git_protocol "git")
   endif()
-
+  message("EXTERNAL_PROJECT_OPTIONAL_ARGS=${EXTERNAL_PROJECT_OPTIONAL_ARGS}")
   if(USE_VTK_6)
     set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
-    set(${proj}_GIT_TAG "v6.1.0")
+    set(${proj}_GIT_TAG "3702626745922c5677a4562a00eb2d58dda17f52")
   else()
     set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/VTK.git)
-    set(${proj}_GIT_TAG "7e252a2afc61911b3854d841b9772139ea81c50c")
+    set(${proj}_GIT_TAG "80b124ff13bbab363bece53e850ba50f139a9d93")
   endif()
 
   ExternalProject_Add(${proj}
@@ -151,7 +151,6 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DBUILD_TESTING:BOOL=OFF
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_SHARED_LIBS:BOOL=ON
-      -DVTK_REQUIRED_OBJCXX_FLAGS:STRING=
       -DVTK_USE_PARALLEL:BOOL=ON
       -DVTK_DEBUG_LEAKS:BOOL=${VTK_DEBUG_LEAKS}
       -DVTK_LEGACY_REMOVE:BOOL=ON
@@ -165,7 +164,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
     )
   ### --- End Project specific additions
   if(USE_VTK_6)
-    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.1)
+    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.2)
   else()
     set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/vtk-5.10)
   endif()
