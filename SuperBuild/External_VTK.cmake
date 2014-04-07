@@ -165,7 +165,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
     )
   ### --- End Project specific additions
   if(USE_VTK_6)
-    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.2)
+    set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/vtk-6.1)
   else()
     set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/vtk-5.10)
   endif()
