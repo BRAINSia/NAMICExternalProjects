@@ -49,7 +49,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   endif()
 
   ### --- Project specific additions here
-
+  set(CPPCHECK_BUILD_ENVIRONMENT HAVE_RULES=no CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER}
+    DESTDIR=${CMAKE_BINARY_DIR}/ PREFIX=Utils )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://github.com/danmar/cppcheck.git)
   set(${proj}_GIT_TAG origin/master)
@@ -64,8 +65,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
     ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND HAVE_RULES=no CC=${CMAKE_C_COMPILER} CXX=$CMAKE_CXX_COMPILER{} ${CMAKE_MAKE_PROGRAM}
-    INSTALL_COMMAND HAVE_RULES=no DESTDIR=${CMAKE_BINARY_DIR}/ PREFIX=Utils ${CMAKE_MAKE_PROGRAM} install
+    BUILD_COMMAND ${CPPCHECK_BUILD_ENVIRONMENT} ${CMAKE_MAKE_PROGRAM}
+    INSTALL_COMMAND ${CPPCHECK_BUILD_ENVIRONMENT} ${CMAKE_MAKE_PROGRAM} install
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
