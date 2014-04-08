@@ -37,8 +37,6 @@ set(${proj}_CMAKE_OPTIONS
   -DBOOST_INCLUDEDIR:PATH=${BOOST_INCLUDE_DIR}
   )
 
-message("BOOST_ROOT=${BOOST_ROOT} BOOST_INCLUDE_DIR=${BOOST_INCLUDE_DIR}")
-
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
 set(${proj}_GIT_TAG "97bf318b4e8df7a08455bbcddf31f66f5db944e4")

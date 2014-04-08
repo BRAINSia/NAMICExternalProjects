@@ -126,7 +126,6 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   if(NOT DEFINED git_protocol)
     set(git_protocol "git")
   endif()
-  message("EXTERNAL_PROJECT_OPTIONAL_ARGS=${EXTERNAL_PROJECT_OPTIONAL_ARGS}")
   if(USE_VTK_6)
     set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
     set(${proj}_GIT_TAG "3702626745922c5677a4562a00eb2d58dda17f52")
