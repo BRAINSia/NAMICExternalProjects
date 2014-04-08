@@ -41,7 +41,7 @@ message("BOOST_ROOT=${BOOST_ROOT} BOOST_INCLUDE_DIR=${BOOST_INCLUDE_DIR}")
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
-set(${proj}_GIT_TAG "60062f3f2eddd14838d02818423ba467ab0c33b1")
+set(${proj}_GIT_TAG "97bf318b4e8df7a08455bbcddf31f66f5db944e4")
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}

@@ -43,7 +43,7 @@ else()
 endif()
 
 set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/teem.git")
-set(${proj}_TAG "110fcf882ae0d3d394c6e52e9f89a2cf695ae475")
+set(${proj}_TAG "bcf5abb8edf862566aabd6b0fb8f8f78155c8d8f")
 
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
@@ -78,15 +78,15 @@ ExternalProject_Add(${proj}
   ${${proj}_DEPENDENCIES}
   )
 
-ExternalProject_Add_Step(${proj} fix_AIR_EXISTS
-    COMMAND ${CMAKE_COMMAND} -DAIR_FILE=${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/air/air.h
-    -P ${CMAKE_CURRENT_LIST_DIR}/TeemPatch.cmake
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/bane/bane.h
-    ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem/bane.h
-    DEPENDEES download
-    DEPENDERS configure
-    )
+# ExternalProject_Add_Step(${proj} fix_AIR_EXISTS
+#     COMMAND ${CMAKE_COMMAND} -DAIR_FILE=${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/air/air.h
+#     -P ${CMAKE_CURRENT_LIST_DIR}/TeemPatch.cmake
+#     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem
+#     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/bane/bane.h
+#     ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem/bane.h
+#     DEPENDEES download
+#     DEPENDERS configure
+#     )
 
 set(Teem_DIR ${CMAKE_BINARY_DIR}/teem-build)
 
