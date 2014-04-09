@@ -161,7 +161,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       INSTALL_COMMAND ""
     )
   ### --- End Project specific additions
-  set(${proj}_DIR ${proj}-build)
+  set(${proj}_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
 
   set(VTK_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
