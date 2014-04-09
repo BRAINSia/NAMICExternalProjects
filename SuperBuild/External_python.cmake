@@ -167,6 +167,21 @@ else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
 
+#
+# there's a problem with CMake not detecting the right PYTHON_INCLUDE_DIR, so fix
+# if need be
+if( NOT EXISTS "${PYTHON_INCLUDE_DIR}/Python.h")
+  find_file(_python_h "Python.h" PATHS ${PYTHON_INCLUDE_DIR}
+    NO_DEFAULT_PATH)
+  if(NOT _python_h)
+    message(FATAL_ERROR "Can't find python.h in ${PYTHON_INCLUDE_DIR}")
+  else()
+    get_filename_component(_PYTHON_INCLUDE_DIR "${_python_h}" DIRECTORY)
+    set(PYTHON_INCLUDE_DIR "${_PYTHON_INCLUDE_DIR}"
+      CACHE PATH "include directory for Python" FORCE)
+  endif()
+endif()
+
 mark_as_superbuild(
   VARS
     PYTHON_EXECUTABLE:FILEPATH
