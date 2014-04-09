@@ -6,9 +6,6 @@ include(Artichoke)
 option(${PRIMARY_PROJECT_NAME}_INSTALL_DEVELOPMENT "Install development support include and libraries for external packages." OFF)
 mark_as_advanced(${PRIMARY_PROJECT_NAME}_INSTALL_DEVELOPMENT)
 
-option(${PRIMARY_PROJECT_NAME}_USE_QT "Find and use Qt with VTK to build GUI Tools" OFF)
-mark_as_advanced(${PRIMARY_PROJECT_NAME}_USE_QT)
-
 set(ITK_VERSION_MAJOR 4 CACHE STRING "Choose the expected ITK major version to build, only version 4 allowed.")
 set_property(CACHE ITK_VERSION_MAJOR PROPERTY STRINGS "4")
 
@@ -29,6 +26,9 @@ option(USE_BRAINSSnapShotWriter           "Build BRAINSSnapShotWriter"          
 if( NOT USE_ANTs )
 option(USE_ANTs                           "Build ANTs"                           ON)
 endif()
+
+option(${PRIMARY_PROJECT_NAME}_USE_QT "Find and use Qt with VTK to build GUI Tools" ON)
+mark_as_advanced(${PRIMARY_PROJECT_NAME}_USE_QT)
 
 if(${PRIMARY_PROJECT_NAME}_USE_QT)
   if(NOT QT4_FOUND)
