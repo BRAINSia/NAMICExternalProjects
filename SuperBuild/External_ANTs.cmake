@@ -57,7 +57,7 @@ ExternalProject_Add(${proj}
   )
 
 set(${proj}_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj})
-set(${proj}_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(${proj}_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build/lib)
 
 mark_as_superbuild(
   VARS ${proj}_SOURCE_DIR:PATH   ${proj}_LIBRARY_DIR:PATH
