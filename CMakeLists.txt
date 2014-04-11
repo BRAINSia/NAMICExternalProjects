@@ -21,6 +21,12 @@ set(PRIMARY_PROJECT_NAME NAMICExternalProjects)
 option(${PRIMARY_PROJECT_NAME}_SUPERBUILD "Build ${PRIMARY_PROJECT_NAME} and the projects it depends on via SuperBuild.cmake." ON)
 mark_as_advanced(${PRIMARY_PROJECT_NAME}_SUPERBUILD)
 
+
+#-----------------------------------------------------------------------------
+# Common build features for both the superbuild and the main build
+#-----------------------------------------------------------------------------
+include(${CMAKE_CURRENT_SOURCE_DIR}/Common.cmake)
+
 #-----------------------------------------------------------------------------
 # Superbuild script
 #-----------------------------------------------------------------------------

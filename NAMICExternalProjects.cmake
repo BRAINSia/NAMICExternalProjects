@@ -1,14 +1,6 @@
-
-include(${CMAKE_CURRENT_LIST_DIR}/Common.cmake)
-
 #-----------------------------------------------------------------------------
-# Update CMake module path
-#------------------------------------------------------------------------------
-set(CMAKE_MODULE_PATH
-  ${${PROJECT_NAME}_SOURCE_DIR}/CMake
-  ${${PROJECT_NAME}_BINARY_DIR}/CMake
-  ${CMAKE_MODULE_PATH}
-  )
+enable_testing()
+include(CTest)
 
 #-----------------------------------------------------------------------------
 find_package(ITK REQUIRED)
@@ -22,10 +14,6 @@ find_package(SlicerExecutionModel REQUIRED GenerateCLP)
 include(${GenerateCLP_USE_FILE})
 include(${SlicerExecutionModel_USE_FILE})
 include(${SlicerExecutionModel_CMAKE_DIR}/SEMMacroBuildCLI.cmake)
-
-#-----------------------------------------------------------------------------
-enable_testing()
-include(CTest)
 
 #-----------------------------------------------------------------------
 # Setup locations to find externally maintained test data.
