@@ -81,21 +81,6 @@ if( USE_BRAINSFit ) ## This is to force configuration of python early.
 endif()
 
 #-----------------------------------------------------------------------------
-# Update CMake module path
-#------------------------------------------------------------------------------
-set(CMAKE_MODULE_PATH
-  ${${PROJECT_NAME}_SOURCE_DIR}/CMake
-  ${${PROJECT_NAME}_BINARY_DIR}/CMake
-  ${CMAKE_MODULE_PATH}
-  )
-
-#-----------------------------------------------------------------------------
-# Sanity checks
-#------------------------------------------------------------------------------
-include(PreventInSourceBuilds)
-include(PreventInBuildInstalls)
-
-#-----------------------------------------------------------------------------
 # Platform check
 #-----------------------------------------------------------------------------
 set(PLATFORM_CHECK true)
