@@ -44,7 +44,7 @@ if(${PRIMARY_PROJECT_NAME}_USE_QT)
   endif()
 endif()
 
-cmake_dependent_option(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT "Use python with QT" ON
+cmake_dependent_option(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT "Use python with QT" OFF
   "${PRIMARY_PROJECT_NAME}_USE_QT" OFF)
 
 if( USE_BRAINSFit ) ## This is to force configuration of python early.
