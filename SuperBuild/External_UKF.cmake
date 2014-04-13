@@ -43,7 +43,7 @@ set(${proj}_GIT_TAG "97bf318b4e8df7a08455bbcddf31f66f5db944e4")
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
-  SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
+  SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-build
   LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
   LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards

@@ -136,7 +136,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
+    SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
     BINARY_DIR ${proj}-build
     GIT_REPOSITORY "${${proj}_REPOSITORY}"
     GIT_TAG ${${proj}_GIT_TAG}

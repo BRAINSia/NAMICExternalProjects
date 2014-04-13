@@ -57,7 +57,7 @@ set(${proj}_CMAKE_OPTIONS
 
   ExternalProject_add(SimpleITK
     ${${proj}_EP_ARGS}
-    SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/SimpleITK
+    SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/SimpleITK
     BINARY_DIR SimpleITK-build
     GIT_REPOSITORY ${SimpleITK_REPOSITORY}
     GIT_TAG ${SimpleITK_GIT_TAG}

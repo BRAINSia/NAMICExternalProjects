@@ -48,7 +48,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   if(CMAKE_COMPILER_IS_CLANGXX)
     set(CLANG_ARG -DCMAKE_COMPILER_IS_CLANGXX:BOOL=ON)
   endif()
-  set(BOOST_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj})
+  set(BOOST_SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj})
   ExternalProject_Add(${proj}
     URL ${${proj}_URL}
     URL_MD5 ${${proj}_MD5}

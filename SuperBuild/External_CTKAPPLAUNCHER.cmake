@@ -39,7 +39,7 @@ if(${CMAKE_PROJECT_NAME}_USE_CTKAPPLAUNCHER)
       ${${proj}_EP_ARGS}
       URL http://packages.kitware.com/api/rest?method=midas.item.download&id=${item_id}&dummy=CTKAppLauncher-${launcher_version}-${CTKAPPLAUNCHER_OS}-${CTKAPPLAUNCHER_ARCHITECTURE}.tar.gz
       URL_MD5 ${md5}
-      SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
+      SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
       CONFIGURE_COMMAND ""
       BUILD_COMMAND ""
       INSTALL_COMMAND ""

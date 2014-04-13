@@ -8,7 +8,14 @@ include(PreventInBuildInstalls)
 include(SlicerMacroGetOperatingSystemArchitectureBitness)
 
 #-----------------------------------------------------------------------------
-# Git protocole option
+# Where should the superbuild source files be downloaded to?
+# By keeping this outside of the build tree, you can share one
+# set of external source trees for multiple build trees
+#-----------------------------------------------------------------------------
+set( SOURCE_DOWNLOAD_CACHE ${CMAKE_CURRENT_LIST_DIR}/ExternalSources )
+
+#-----------------------------------------------------------------------------
+# Git protocol option
 #-----------------------------------------------------------------------------
 option(${CMAKE_PROJECT_NAME}_USE_GIT_PROTOCOL "If behind a firewall turn this off to use http instead." ON)
 set(git_protocol "git")

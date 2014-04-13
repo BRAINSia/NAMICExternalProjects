@@ -27,7 +27,7 @@ ExternalProject_Add(${proj}
   SVN_REVISION ${${proj}_GIT_TAG}
   SVN_USERNAME slicerbot
   SVN_PASSWORD slicer
-  SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/${proj}
+  SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-build
   INSTALL_COMMAND ""
   LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards

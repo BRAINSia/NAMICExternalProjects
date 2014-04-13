@@ -51,7 +51,7 @@ ExternalProject_Add(${proj}
   GIT_TAG ${${proj}_TAG}
   URL_MD5 ${teem_MD5}
   DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}
-  SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem
+  SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/teem
   BINARY_DIR teem-build
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
@@ -79,11 +79,11 @@ ExternalProject_Add(${proj}
   )
 
 # ExternalProject_Add_Step(${proj} fix_AIR_EXISTS
-#     COMMAND ${CMAKE_COMMAND} -DAIR_FILE=${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/air/air.h
+#     COMMAND ${CMAKE_COMMAND} -DAIR_FILE=${SOURCE_DOWNLOAD_CACHE}/teem/src/air/air.h
 #     -P ${CMAKE_CURRENT_LIST_DIR}/TeemPatch.cmake
-#     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem
-#     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/src/bane/bane.h
-#     ${CMAKE_CURRENT_LIST_DIR}/ExternalSources/teem/include/teem/bane.h
+#     COMMAND ${CMAKE_COMMAND} -E make_directory ${SOURCE_DOWNLOAD_CACHE}/teem/include/teem
+#     COMMAND ${CMAKE_COMMAND} -E copy ${SOURCE_DOWNLOAD_CACHE}/teem/src/bane/bane.h
+#     ${SOURCE_DOWNLOAD_CACHE}/teem/include/teem/bane.h
 #     DEPENDEES download
 #     DEPENDERS configure
 #     )
