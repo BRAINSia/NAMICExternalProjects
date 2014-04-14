@@ -80,7 +80,7 @@ endif()
 #-----------------------------------------------------------------------------
 # Superbuild option(s)
 #-----------------------------------------------------------------------------
-option(BUILD_STYLE_UTILS "Build uncrustify, cppcheck, & KWStyle" ON)
+option(BUILD_STYLE_UTILS "Build uncrustify, cppcheck, & KWStyle" OFF)
 CMAKE_DEPENDENT_OPTION(
   USE_SYSTEM_Uncrustify "Use system Uncrustify program" OFF
   "BUILD_STYLE_UTILS" OFF
