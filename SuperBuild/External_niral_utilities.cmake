@@ -74,7 +74,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
 
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY "https://www.nitrc.org/svn/niral_utilities/trunk")
+  set(${proj}_REPOSITORY "http://www.nitrc.org/svn/niral_utilities/trunk")
   set(${proj}_SVN_REVISION -r "56")
   ExternalProject_Add(${proj}
     SVN_REPOSITORY ${${proj}_REPOSITORY}

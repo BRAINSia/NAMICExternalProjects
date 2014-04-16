@@ -47,7 +47,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
     )
 
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY https://www.nitrc.org/svn/dtireg/trunk)
+  set(${proj}_REPOSITORY http://www.nitrc.org/svn/dtireg/trunk)
   set(${proj}_REVISION -r "69") ## Fix SlicerExecutionModel find_package
 
   ExternalProject_Add(${proj}
