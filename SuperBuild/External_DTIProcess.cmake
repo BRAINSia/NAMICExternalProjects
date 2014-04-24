@@ -1,14 +1,14 @@
 set(proj        DTIProcess) #This local name
 
 # Set dependency list
-set(${proj}_DEPENDENCIES ITKv4 VTK SlicerExecutionModel Boost)
+set(${proj}_DEPENDENCIES ITKv4 VTK SlicerExecutionModel)
 
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 ### --- Project specific additions here
 set(${proj}_CMAKE_OPTIONS
-  -DBOOST_ROOT:PATH=${BOOST_ROOT}
-  -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
+#  -DBOOST_ROOT:PATH=${BOOST_ROOT}
+#  -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
   -DBUILD_dwiAtlas:BOOL=ON
   -DUSE_SYSTEM_ITK:BOOL=ON
   -DUSE_SYSTEM_VTK:BOOL=ON
@@ -21,7 +21,7 @@ set(${proj}_CMAKE_OPTIONS
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://www.nitrc.org/svn/dtiprocess/trunk")
-set(${proj}_SVN_REVISION -r "218")
+set(${proj}_SVN_REVISION -r "219")
 ExternalProject_Add(${proj}
   SVN_REPOSITORY ${${proj}_REPOSITORY}
   SVN_REVISION ${${proj}_GIT_TAG}
