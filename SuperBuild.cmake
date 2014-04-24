@@ -97,6 +97,8 @@ CMAKE_DEPENDENT_OPTION(
   )
 
 set(EXTERNAL_PROJECT_BUILD_TYPE "Release" CACHE STRING "Default build type for support libraries")
+set_property(CACHE EXTERNAL_PROJECT_BUILD_TYPE PROPERTY
+  STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
 option(USE_SYSTEM_zlib "build using the system version of zlib" OFF)
 option(USE_SYSTEM_ITK "Build using an externally defined version of ITK" OFF)
