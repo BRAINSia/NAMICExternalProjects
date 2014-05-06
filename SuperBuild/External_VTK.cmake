@@ -1,7 +1,7 @@
 
 set(proj VTK)
 
-option(USE_VTK_6 "Build using VTK version 6" OFF)
+option(USE_VTK_6 "Build using VTK version 6" ON)
 if(USE_VTK_6)
   set(${proj}_REQUIRED_VERSION "6.10")  #If a required version is necessary, then set this, else leave blank
 else()
@@ -119,7 +119,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   endif()
 
   # Slicer settings
-  # set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY 
+  # set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
   #   "github.com/Slicer/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
   # set(${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
   #   "c88dfedb277969e5f1f6c5349d8f7898610e75f4" CACHE STRING "VTK git tag to use" FORCE)
