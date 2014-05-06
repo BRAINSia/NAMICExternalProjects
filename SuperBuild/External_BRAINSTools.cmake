@@ -24,7 +24,6 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
     list(APPEND BRAINS_ANTS_PARAMS
       -DUSE_SYSTEM_ANTS:BOOL=ON
       -DANTs_SOURCE_DIR:PATH=${ANTs_SOURCE_DIR}
-      -DANTs_LIBRARY_DIR:PATH=${ANTs_LIBRARY_DIR}
       -DUSE_SYSTEM_Boost:BOOL=ON
       -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
       -DBoost_DIR:PATH=${BOOST_ROOT}
