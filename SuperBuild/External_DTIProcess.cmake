@@ -16,12 +16,14 @@ set(${proj}_CMAKE_OPTIONS
   -DITK_DIR:PATH=${ITK_DIR}
   -DDCMTK_DIR:PATH=${DCMTK_DIR}
   -DVTK_DIR:PATH=${VTK_DIR}
+  -DUSE_VTK_6:BOOL=${USE_VTK_6}
+  -DVTK_VERSION_MAJOR:STRING=${VTK_VERSION_MAJOR}
   -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
   )
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://www.nitrc.org/svn/dtiprocess/trunk")
-set(${proj}_SVN_REVISION -r "219")
+set(${proj}_SVN_REVISION -r "223")
 ExternalProject_Add(${proj}
   SVN_REPOSITORY ${${proj}_REPOSITORY}
   SVN_REVISION ${${proj}_GIT_TAG}

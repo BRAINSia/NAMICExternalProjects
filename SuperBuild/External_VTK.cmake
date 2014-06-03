@@ -4,8 +4,10 @@ set(proj VTK)
 option(USE_VTK_6 "Build using VTK version 6" ON)
 if(USE_VTK_6)
   set(${proj}_REQUIRED_VERSION "6.10")  #If a required version is necessary, then set this, else leave blank
+  set(VTK_VERSION_MAJOR 6)
 else()
   set(${proj}_REQUIRED_VERSION "5.10")  #If a required version is necessary, then set this, else leave blank
+  set(VTK_VERSION_MAJOR 5)
 endif()
 
 # Set dependency list
@@ -131,15 +133,12 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   if(USE_VTK_6)
     set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
     set(${proj}_GIT_TAG "3702626745922c5677a4562a00eb2d58dda17f52")
-  else()
-    set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/VTK.git)
-    set(${proj}_GIT_TAG "80b124ff13bbab363bece53e850ba50f139a9d93")
   endif()
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-    BINARY_DIR ${proj}-build
+    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build
     GIT_REPOSITORY "${${proj}_REPOSITORY}"
     GIT_TAG ${${proj}_GIT_TAG}
     ${CUSTOM_BUILD_COMMAND}
@@ -188,6 +187,6 @@ endif()
 mark_as_superbuild(VTK_SOURCE_DIR:PATH)
 
 mark_as_superbuild(
-  VARS VTK_DIR:PATH
+  VARS ${proj}_DIR:PATH VTK_VERSION_MAJOR:STRING
   LABELS "FIND_PACKAGE"
   )
