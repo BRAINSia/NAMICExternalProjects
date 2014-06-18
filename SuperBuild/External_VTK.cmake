@@ -64,7 +64,8 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       #-DDESIRED_QT_VERSION:STRING=4 # Unused
       -DVTK_USE_GUISUPPORT:BOOL=ON
       -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
-      -DVTK_USE_QT:BOOL=ON
+      -DVTK_USE_QT:BOOL=ON   ##VTK5
+      -DVTK_Group_Qt:BOOL=ON ##VTK6
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
       )
   else()
@@ -76,7 +77,8 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       #-DDESIRED_QT_VERSION:STRING=4 # Unused
       -DVTK_USE_GUISUPPORT:BOOL=ON
       -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
-      -DVTK_USE_QT:BOOL=ON
+      -DVTK_USE_QT:BOOL=ON    ## VTK5
+      -DVTK_Group_Qt:BOOL=ON  ## VTK6
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
       )
   endif()
@@ -131,8 +133,11 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
     set(git_protocol "git")
   endif()
   if(USE_VTK_6)
-    set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
-    set(${proj}_GIT_TAG "3702626745922c5677a4562a00eb2d58dda17f52")
+    #set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
+    set(${proj}_GIT_REPOSITORY "github.com/Slicer/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
+    set(${proj}_GIT_TAG "4d7abb2e0232fd8b16057a34104853c073cac4cb")
+  else()
+    message(FATAL "ERROR: Only supporting VTK6")
   endif()
 
   ExternalProject_Add(${proj}
