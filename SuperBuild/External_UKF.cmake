@@ -38,8 +38,9 @@ set(${proj}_CMAKE_OPTIONS
   )
 
 ### --- End Project specific additions
-set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
-set(${proj}_GIT_TAG "97bf318b4e8df7a08455bbcddf31f66f5db944e4")
+#set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
+set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
+set(${proj}_GIT_TAG "78602f2e6b16e034fde4f4be58bb20d2c232537a")
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}

@@ -88,7 +88,7 @@ ExternalProject_Add(${proj}
 #     DEPENDERS configure
 #     )
 
-set(Teem_DIR ${CMAKE_BINARY_DIR}/teem-build)
+set(Teem_DIR ${CMAKE_BINARY_DIR}/lib)
 
 mark_as_superbuild(
   VARS Teem_DIR:PATH
