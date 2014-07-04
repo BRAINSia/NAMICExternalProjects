@@ -1,6 +1,6 @@
 set(proj        BRAINSTools) #This local name
 
-set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel VTK DCMTK JPEG TIFF Boost teem ReferenceAtlas OpenCV)
+set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel VTK DCMTK JPEG TIFF Boost teem OpenCV)
 if(USE_ANTs)
   list(APPEND ${proj}_DEPENDENCIES ANTs)
 endif()
@@ -50,8 +50,6 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_SYSTEM_JPEG:BOOL=ON
       -DUSE_SYSTEM_OpenCV:BOOL=ON
       -DOpenCV_DIR:PATH=${OpenCV_DIR}
-      -DUSE_SYSTEM_ReferenceAtlas:BOOL=ON
-      -DReferenceAtlas_DIR:STRING=${ReferenceAtlas_DIR}
       -DATLAS_NAME:STRING=${ATLAS_NAME}
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
       -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY}

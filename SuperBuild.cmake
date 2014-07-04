@@ -132,7 +132,6 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   GDCM
   DoubleConvert
   NIPYPE
-  ReferenceAtlas
   MultiAtlas
   DTIReg
   DTIProcess
