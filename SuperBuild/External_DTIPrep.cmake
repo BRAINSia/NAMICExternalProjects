@@ -58,7 +58,7 @@ set(${proj}_CMAKE_OPTIONS
 set(${proj}_REPOSITORY https://www.nitrc.org/svn/dtiprep/trunk)
 ExternalProject_Add(${proj}
   SVN_REPOSITORY ${${proj}_REPOSITORY}
-  SVN_REVISION -r "300"
+  SVN_REVISION -r "301"
   SVN_USERNAME slicerbot
   SVN_PASSWORD slicer
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
