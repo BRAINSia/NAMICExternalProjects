@@ -14,7 +14,6 @@ if(${PRIMARY_PROJECT_NAME}_USE_QT) ## QT requires VTK support in ITK
     -DModule_ITKVtkGlue:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT}  ## If building with GUI, then need ITKVtkGlue
   )
 endif()
-message(STATUS "XXXXXXXXXXXX ${${PRIMARY_PROJECT_NAME}_USE_QT} ::  -DVTK_DIR:PATH=${VTK_DIR} ")
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
