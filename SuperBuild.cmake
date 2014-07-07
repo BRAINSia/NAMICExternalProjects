@@ -135,7 +135,7 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   GDCM
   DoubleConvert
   NIPYPE
-  MultiAtlas
+  #  This does not build currently  MultiAtlas
   DTIReg
   DTIProcess
   BRAINSTools
