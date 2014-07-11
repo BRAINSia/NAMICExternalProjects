@@ -127,9 +127,9 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   MRParameterMaps
   Eigen
   SlicerExecutionModel
-  ${ITK_EXTERNAL_NAME}
-  DCMTK
   VTK
+  DCMTK
+  ${ITK_EXTERNAL_NAME}
   OpenCV
   JPEG
   GDCM
