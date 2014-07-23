@@ -57,7 +57,7 @@ ExternalProject_Add(${proj}
   ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
   ${COMMON_EXTERNAL_PROJECT_ARGS}
   ${${proj}_CMAKE_OPTIONS}
-  ## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
+  INSTALL_COMMAND ""
   DEPENDS
   ${${proj}_DEPENDENCIES}
   )
