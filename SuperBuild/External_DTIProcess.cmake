@@ -1,7 +1,7 @@
 set(proj        DTIProcess) #This local name
 
 # Set dependency list
-set(${proj}_DEPENDENCIES ITKv4 VTK SlicerExecutionModel)
+set(${proj}_DEPENDENCIES ITKv4 VTK SlicerExecutionModel Boost)
 
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
@@ -9,6 +9,8 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
 set(${proj}_CMAKE_OPTIONS
 #  -DBOOST_ROOT:PATH=${BOOST_ROOT}
 #  -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
+  -DBOOST_ROOT:PATH=${BOOST_ROOT}
+  -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
   -DBUILD_dwiAtlas:BOOL=ON
   -DUSE_SYSTEM_ITK:BOOL=ON
   -DUSE_SYSTEM_VTK:BOOL=ON
@@ -19,6 +21,7 @@ set(${proj}_CMAKE_OPTIONS
   -DUSE_VTK_6:BOOL=${USE_VTK_6}
   -DVTK_VERSION_MAJOR:STRING=${VTK_VERSION_MAJOR}
   -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
+  -DDTIProcess_SUPERBUILD:BOOL=OFF
   )
 
 ### --- End Project specific additions
