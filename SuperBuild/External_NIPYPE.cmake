@@ -40,7 +40,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/nipy/nipype.git")
-  set(${proj}_GIT_TAG "7843c064619f94d276f7f776f767e82ca0fe79db")
+  set(${proj}_GIT_TAG "4963cee4d2b755a2e277f6a800e039d6ba860dd3")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
