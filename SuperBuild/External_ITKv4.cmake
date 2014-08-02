@@ -2,17 +2,13 @@
 set(proj ITKv4)
 set(ITK_EXTERNAL_NAME ${proj})
 # Set dependency list
-set(${proj}_DEPENDENCIES "zlib")
+set(${proj}_DEPENDENCIES "zlib" VTK)
 #if(${CMAKE_PROJECT_NAME}_BUILD_DICOM_SUPPORT)
   list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
 
 if(${PRIMARY_PROJECT_NAME}_USE_QT) ## QT requires VTK support in ITK
   list(APPEND ${proj}_DEPENDENCIES VTK)
-  set( ITK_VTK_OPTIONS
-    -DVTK_DIR:PATH=${CMAKE_CURRENT_BINARY_DIR}/VTK-build
-    -DModule_ITKVtkGlue:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT}  ## If building with GUI, then need ITKVtkGlue
-  )
 endif()
 
 # Include dependent projects if any
@@ -30,13 +26,20 @@ endif()
 
 if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
+  if(BRAINSTools_REQUIRES_VTK) ## QT requires VTK support in ITK
+    set( ITK_VTK_OPTIONS
+      -DVTK_DIR:PATH=${VTK_DIR}
+      -DModule_ITKVtkGlue:BOOL=ON  ## If building with GUI, then need ITKVtkGlue
+    )
+  endif()
+
   if(NOT DEFINED git_protocol)
       set(git_protocol "git")
   endif()
 
   #set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git )
-  set(${proj}_GIT_TAG c123bf502918db7acb7b9afe5ba3fc5cd362b47e )
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
+  set(${proj}_GIT_TAG ImproveMemoryUseOfMattesReimplement )
 #  message("COMMON_EXTERNAL_PROJECT_ARGS:
 #${COMMON_EXTERNAL_PROJECT_ARGS}")
   ExternalProject_Add(${proj}
@@ -69,6 +72,8 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
       -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
+      -DITK_USE_FFTWD:BOOL=ON
+      -DITK_USE_FFTWF:BOOL=ON
       -DVTK_DIR:PATH=${VTK_DIR}
     INSTALL_COMMAND ""
     DEPENDS

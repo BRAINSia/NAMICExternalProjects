@@ -1,6 +1,6 @@
 set(proj        ANTs) #This local name
 
-set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel VTK)
+set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel )
 
 if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
   list(APPEND ${proj}_DEPENDENCIES DCMTK)
@@ -34,7 +34,7 @@ endif()
 ### --- End Project specific additions
 #set(${proj}_REPOSITORY "https://github.com/BRAINSia/ANTs.git")
 set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-set(${proj}_GIT_TAG "32e6c9a3e807b0a059590929c4b58f3648047ed4")
+set(${proj}_GIT_TAG "5a6737f66c90f16498ee3b5a91ea22980423efd9") ## Update ANTS 20140802
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
