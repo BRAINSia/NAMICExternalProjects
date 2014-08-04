@@ -30,6 +30,7 @@ endif()
 #-----------------------------------------------------------------------------
 option(USE_BRAINSFit                      "Build BRAINSFit"                      ON)
 option(USE_BRAINSSnapShotWriter           "Build BRAINSSnapShotWriter"           ON)
+option(BRAINSTools_REQUIRES_VTK           "Force ITKVtkGlue on"                  ON)
 if( NOT USE_ANTs )
 option(USE_ANTs                           "Build ANTs"                           ON)
 endif()

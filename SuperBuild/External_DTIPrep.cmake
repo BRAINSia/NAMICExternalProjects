@@ -48,7 +48,7 @@ set(${proj}_CMAKE_OPTIONS
   -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}
   -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
   -DBRAINSCommonLib_DIR:PATH=${BRAINSCommonLib_DIR}
-  -D${proj}_USE_QT:BOOL=${LOCAL_PROJECT_NAME}_USE_QT
+  -D${proj}_USE_QT:BOOL=${PRIMARY_PROJECT_NAME}_USE_QT
   -DDTIPrepTools_SUPERBUILD:STRING=OFF
   -DBRAINSTools_SOURCE_DIR:PATH=${BRAINSTools_SOURCE_DIR}
   ${BRAINSCommonLibWithANTs_OPTIONS}
