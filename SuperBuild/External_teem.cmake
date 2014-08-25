@@ -55,6 +55,15 @@ ExternalProject_Add(${proj}
   BINARY_DIR teem-build
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
+  #
+  # TeemConfig.cmake isn't configured properly unless
+  # the LIBRARY_OUTPUT_PATH and EXECUTABLE_OUTPUT_PATH variables
+  # match where the libraries actually end up; in our case we
+  # pass in CMAKE_LIBRARY_OUTPUT_DIRECTORY, etc which changes the
+  # output paths without telling the Teem CMake system about it, so
+  # the TeemConfig.cmake file ends up being wrong.
+  -DLIBRARY_OUTPUT_PATH:PATH=${CMAKE_ARCHIVE_OUTPUT_PATH}
+  -DEXECUTABLE_OUTPUT_PATH:PATH=${CMAKE_RUNTIME_OUTPUT_PATH}
   ${COMMON_EXTERNAL_PROJECT_ARGS}
   -DBUILD_TESTING:BOOL=OFF
   -DBUILD_SHARED_LIBS:BOOL=OFF
