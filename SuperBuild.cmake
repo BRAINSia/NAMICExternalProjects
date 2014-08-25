@@ -33,7 +33,7 @@ find_package(Git REQUIRED)
 # I don't know who removed the Find_Package for QT, but it needs to be here
 # in order to build VTK if ${PRIMARY_PROJECT_NAME}_USE_QT is set.
 if(${PRIMARY_PROJECT_NAME}_USE_QT)
-  set(QT_DEPENDENT_PACKAGES DTIPrep)
+  set(QT_DEPENDENT_PACKAGES DTIPrep vv)
   find_package(Qt4 REQUIRED)
 else()
   set(QT_DEPENDENT_PACKAGES "")
