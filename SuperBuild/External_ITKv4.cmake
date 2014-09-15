@@ -37,9 +37,9 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       set(git_protocol "git")
   endif()
 
-  #set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
-  set(${proj}_GIT_TAG ImproveMemoryUseOfMattesReimplement )
+  set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
+  #set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
+  set(${proj}_GIT_TAG 6aa0d0143888bd7a72dfab1bcc9897b0159c0f28 ) # 2014-09-14 Include Mattes Fixes
 #  message("COMMON_EXTERNAL_PROJECT_ARGS:
 #${COMMON_EXTERNAL_PROJECT_ARGS}")
   ExternalProject_Add(${proj}
