@@ -137,7 +137,7 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   NIPYPE
   #  This does not build currently  MultiAtlas
   DTIReg
-  DTIProcess
+  # THIS DOES NOT WORK YET  DTIProcess
   BRAINSTools
   teem
   SlicerJointRicianAnisotropicLMMSEFilter
