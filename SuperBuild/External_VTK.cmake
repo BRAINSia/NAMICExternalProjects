@@ -128,8 +128,10 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
     set(git_protocol "git")
   endif()
   #set(${proj}_REPOSITORY ${git_protocol}://vtk.org/VTK.git)
-  set(${proj}_GIT_REPOSITORY "${git_protocol}://github.com/Slicer/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
-  set(${proj}_GIT_TAG "169b37b8ac3d49c368dce1cf02549f43f04d89b2")
+  # set(${proj}_GIT_REPOSITORY "${git_protocol}://github.com/Slicer/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
+  # set(${proj}_GIT_TAG "169b37b8ac3d49c368dce1cf02549f43f04d89b2")
+  set(${proj}_GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
+  set(${proj}_GIT_TAG "v6.1.0")
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
@@ -152,6 +154,8 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DVTK_LEGACY_REMOVE:BOOL=ON
       -DVTK_WRAP_TCL:BOOL=${VTK_WRAP_TCL}
       -DVTK_WRAP_PYTHON:BOOL=${VTK_WRAP_PYTHON}
+      -DModule_vtkIOXML:BOOL=ON
+      -DModule_vtkIOXMLParser:BOOL=ON
       ${VTK_PYTHON_ARGS}
       ${VTK_QT_ARGS}
       ${VTK_MAC_ARGS}
