@@ -48,7 +48,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY https://github.com/BRAINSia/vv.git)
-  set(${proj}_GIT_TAG "8db648a31e095cc2a4d291c23313938ce70c92ec")
+  set(${proj}_GIT_TAG "0856d75576b72ef41e17115f34fff59cf558c438")
 
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
