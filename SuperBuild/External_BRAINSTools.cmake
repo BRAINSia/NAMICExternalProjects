@@ -85,7 +85,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_BRAINSROIAuto:BOOL=ON
       -DUSE_BRAINSResample:BOOL=ON
       -DUSE_BRAINSSnapShotWriter:BOOL=ON
-      -DUSE_BRAINSSurfaceTools:BOOL=ON
+      -DUSE_BRAINSSurfaceTools:BOOL=OFF  ## HACK: KENT:  This needs to be off for the builds to succeed.
       -DUSE_BRAINSTransformConvert:BOOL=ON
       -DUSE_BRAINSPosteriorToContinuousClass:BOOL=ON
       -DUSE_BRAINSCreateLabelMapFromProbabilityMaps:BOOL=ON
@@ -100,7 +100,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "4acd152130bcae6a17f91f40cc70e1cc1be2abf8") #20140915 Update for sentinal files on helium.
+  set(${proj}_GIT_TAG "v20140926") #20140915 Update for sentinal files on helium.
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
