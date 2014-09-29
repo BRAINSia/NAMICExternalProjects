@@ -11,7 +11,7 @@ if(DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR})
 endif()
 
 # Set dependency list
-set(${proj}_DEPENDENCIES ITKv4 BatchMake)
+set(${proj}_DEPENDENCIES ITKv4 BatchMake SlicerExecutionModel)
 #if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
