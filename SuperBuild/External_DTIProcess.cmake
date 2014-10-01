@@ -22,11 +22,13 @@ set(${proj}_CMAKE_OPTIONS
   -DVTK_VERSION_MAJOR:STRING=${VTK_VERSION_MAJOR}
   -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
   -DDTIProcess_SUPERBUILD:BOOL=OFF
+  -DBUILD_PolyDataTransform:BOOL=OFF
+  -DBUILD_PolyDataMerge:BOOL=OFF
   )
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://www.nitrc.org/svn/dtiprocess/trunk")
-set(${proj}_SVN_REVISION -r "223")
+set(${proj}_SVN_REVISION -r "229")
 ExternalProject_Add(${proj}
   SVN_REPOSITORY ${${proj}_REPOSITORY}
   SVN_REVISION ${${proj}_GIT_TAG}

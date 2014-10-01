@@ -138,6 +138,7 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   #  This does not build currently  MultiAtlas
   DTIReg
   # THIS DOES NOT WORK YET  DTIProcess
+  DTIProcess
   BRAINSTools
   teem
   SlicerJointRicianAnisotropicLMMSEFilter
