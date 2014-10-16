@@ -47,14 +47,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
     )
 
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY https://www.nitrc.org/svn/dtireg/trunk)
-  set(${proj}_REVISION -r "77") ## Fix SlicerExecutionModel find_package
+  set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/DTI-Reg.git")
+  set(${proj}_GIT_TAG "2fe60e8e474db2690c65defb2f26c01a5ad844af")
 
   ExternalProject_Add(${proj}
-    SVN_REPOSITORY ${${proj}_REPOSITORY}
-    SVN_REVISION ${${proj}_REVISION}
-    SVN_USERNAME slicerbot
-    SVN_PASSWORD slicer
+    GIT_REPOSITORY ${${proj}_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
     BINARY_DIR ${proj}-build
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards

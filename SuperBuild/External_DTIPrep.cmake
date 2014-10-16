@@ -55,8 +55,8 @@ set(${proj}_CMAKE_OPTIONS
   )
 
 ### --- End Project specific additions
-set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/DTI-Reg.git")
-set(${proj}_GIT_TAG "2fe60e8e474db2690c65defb2f26c01a5ad844af")
+set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/DTIPrep.git")
+set(${proj}_GIT_TAG "6d9fdc556d5b20be7ab6bd141bf7a187ab7933a7")
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
