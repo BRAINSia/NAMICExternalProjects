@@ -27,13 +27,11 @@ set(${proj}_CMAKE_OPTIONS
   )
 
 ### --- End Project specific additions
-set(${proj}_REPOSITORY "https://www.nitrc.org/svn/dtiprocess/trunk")
-set(${proj}_SVN_REVISION -r "229")
+set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/DTIProcessToolkit.git")
+set(${proj}_GIT_TAG "bd769325ba85f42c6fe9400746077ae9d2a33d4f")
 ExternalProject_Add(${proj}
-  SVN_REPOSITORY ${${proj}_REPOSITORY}
-  SVN_REVISION ${${proj}_GIT_TAG}
-  SVN_USERNAME slicerbot
-  SVN_PASSWORD slicer
+  GIT_REPOSITORY ${${proj}_REPOSITORY}
+  GIT_TAG ${${proj}_GIT_TAG}
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-build
   INSTALL_COMMAND ""

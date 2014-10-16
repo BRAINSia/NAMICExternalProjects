@@ -74,13 +74,11 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
 
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY "https://www.nitrc.org/svn/niral_utilities/trunk")
-  set(${proj}_SVN_REVISION -r "56")
-  ExternalProject_Add(${proj}
-    SVN_REPOSITORY ${${proj}_REPOSITORY}
-    SVN_REVISION ${${proj}_SVN_REVISION}
-    SVN_USERNAME slicerbot
-    SVN_PASSWORD slicer
+set(${proj}_REPOSITORY "${git_protocol}://git@github.com:NIRALUser/niral_utilities.git")
+set(${proj}_GIT_TAG "dea3323b99be580b6fd2a7214ce60ddb9d7baec2")
+ExternalProject_Add(${proj}
+  GIT_REPOSITORY ${${proj}_REPOSITORY}
+  GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
     BINARY_DIR ${proj}-build
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
