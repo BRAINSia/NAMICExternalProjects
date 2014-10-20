@@ -37,8 +37,9 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       set(git_protocol "git")
   endif()
 
-  set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG 63f15123a7cd15703f248b0028eed77f0a680f5a ) # 2014-10-13
+  #set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
+  set(${proj}_GIT_TAG InverseMissingFixedParameters ) # 2014-10-17
 #  message("COMMON_EXTERNAL_PROJECT_ARGS:
 #${COMMON_EXTERNAL_PROJECT_ARGS}")
   ExternalProject_Add(${proj}
