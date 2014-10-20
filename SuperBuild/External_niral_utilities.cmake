@@ -6,24 +6,12 @@
 # endif()
 # set(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1)
 
-## External_${extProjName}.cmake files can be recurisvely included,
-## and cmake variables are global, so when including sub projects it
-## is important make the extProjName and proj variables
-## appear to stay constant in one of these files.
-## Store global variables before overwriting (then restore at end of this file.)
-ProjectDependancyPush(CACHED_extProjName ${extProjName})
-ProjectDependancyPush(CACHED_proj ${proj})
-
 # Make sure that the ExtProjName/IntProjName variables are unique globally
 # even if other External_${ExtProjName}.cmake files are sourced by
 # SlicerMacroCheckExternalProjectDependency
 set(extProjName niral_utilities) #The find_package known name
 set(proj        ${extProjName}) #This local name
 set(${extProjName}_REQUIRED_VERSION ITKv4 VTK SlicerExecutionModel)
-
-#if(${USE_SYSTEM_${extProjName}})
-#  unset(${extProjName}_DIR CACHE)
-#endif()
 
 # Sanity checks
 if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
@@ -37,7 +25,7 @@ set(${proj}_DEPENDENCIES ITKv4)
 #endif()
 
 # Include dependent projects if any
-SlicerMacroCheckExternalProjectDependency(${proj})
+ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" ) )
   #message(STATUS "${__indent}Adding project ${proj}")
@@ -53,16 +41,18 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
+    -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
     -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
     -DCOMPILE_CONVERTITKFORMATS:BOOL=ON
-    -DCOMPILE_CROPTOOLS:BOOL=OFF
+    -DCOMPILE_CORREVAL:BOOL=ON
+    -DCOMPILE_CROPTOOLS:BOOL=ON
     -DCOMPILE_CURVECOMPARE:BOOL=OFF
     -DCOMPILE_DTIAtlasBuilder:BOOL=OFF
-    -DCOMPILE_DWI_NIFTINRRDCONVERSION:BOOL=OFF
+    -DCOMPILE_DWI_NIFTINRRDCONVERSION:BOOL=ON
     -DCOMPILE_IMAGEMATH:BOOL=ON
-    -DCOMPILE_IMAGESTAT:BOOL=OFF
-    -DCOMPILE_POLYDATAMERGE:BOOL=OFF
-    -DCOMPILE_POLYDATATRANSFORM:BOOL=OFF
+    -DCOMPILE_IMAGESTAT:BOOL=ON
+    -DCOMPILE_POLYDATAMERGE:BOOL=ON
+    -DCOMPILE_POLYDATATRANSFORM:BOOL=ON
     -DCOMPILE_TRANSFORMDEFORMATIONFIELD:BOOL=OFF
     -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
     -DUSE_SYSTEM_ITK:BOOL=ON
@@ -74,8 +64,10 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
 
   ### --- End Project specific additions
-set(${proj}_REPOSITORY "${git_protocol}://git@github.com:NIRALUser/niral_utilities.git")
-set(${proj}_GIT_TAG "dea3323b99be580b6fd2a7214ce60ddb9d7baec2")
+#set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/niral_utilities.git")
+#set(${proj}_GIT_TAG "dea3323b99be580b6fd2a7214ce60ddb9d7baec2")
+set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/niral_utilities.git")
+set(${proj}_GIT_TAG "NAMICExternalProjectsFixes")
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
@@ -105,10 +97,7 @@ else()
   endif()
   # The project is provided using ${extProjName}_DIR, nevertheless since other
   # project may depend on ${extProjName}, let's add an 'empty' one
-  SlicerMacroEmptyExternalProject(${proj} "${${proj}_DEPENDENCIES}")
+  ExternalProject_Add_Empty(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
 list(APPEND ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARS ${extProjName}_DIR:PATH)
-
-ProjectDependancyPop(CACHED_extProjName extProjName)
-ProjectDependancyPop(CACHED_proj proj)

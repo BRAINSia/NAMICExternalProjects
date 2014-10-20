@@ -152,7 +152,7 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   #tract_querier
   #BatchMake
   #  -- This recursively builds DTIProcess, but does not pass the flags DTI_Tract_Stat
-  #niral_utilities
+  # niral_utilities
   #LogSymmetricDemons
   #python
   )
