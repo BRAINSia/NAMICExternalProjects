@@ -100,7 +100,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "5db264805b32da8aabcfa781b453d1aecd3ffc2c") # 20141020 Fixes to AutoWorkup
+  set(${proj}_GIT_TAG "e3f7db601a0ea58c26fd5553ca7f1afe0a1489bd") # 20141022 Fixes to AutoWorkup
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
