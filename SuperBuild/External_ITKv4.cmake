@@ -38,7 +38,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   #set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
   set(${proj}_GIT_TAG addDirectInitToSyN_3 ) # 2014-10-22 ## PointSetMetric for ANTs
 #  message("COMMON_EXTERNAL_PROJECT_ARGS:
 #${COMMON_EXTERNAL_PROJECT_ARGS}")
