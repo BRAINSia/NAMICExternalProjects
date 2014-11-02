@@ -100,7 +100,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "0ca1305574b1b3289d0f9b53ace9336981741358") # 20141101 Very close to working version of BAW
+  set(${proj}_GIT_TAG "d3f028c165f6002b7d9b80ecfe73fbf9eb808d82") # 20141102 Fix BABC T1 only
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
