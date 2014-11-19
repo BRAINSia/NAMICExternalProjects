@@ -85,7 +85,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_BRAINSROIAuto:BOOL=ON
       -DUSE_BRAINSResample:BOOL=ON
       -DUSE_BRAINSSnapShotWriter:BOOL=ON
-      -DUSE_BRAINSSurfaceTools:BOOL=OFF  ## HACK: KENT:  This needs to be off for the builds to succeed.
+      -DUSE_BRAINSSurfaceTools:BOOL=ON  ## HACK: KENT:  This needs to be off for the builds to succeed.
       -DUSE_BRAINSTransformConvert:BOOL=ON
       -DUSE_BRAINSPosteriorToContinuousClass:BOOL=ON
       -DUSE_BRAINSCreateLabelMapFromProbabilityMaps:BOOL=ON
@@ -100,7 +100,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "390720c4d47d9c1f4584f534303e0b43b774a3d8") # 20141107 ANTs warnings
+  set(${proj}_GIT_TAG "be995e0a28eed51c51d9af20288141d4a60edd78") # build BRAINSSurfaceTools
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
