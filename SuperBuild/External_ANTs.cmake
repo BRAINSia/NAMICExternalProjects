@@ -35,7 +35,7 @@ endif()
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://github.com/BRAINSia/ANTs.git")
 #set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-set(${proj}_GIT_TAG "cf409216b530f96c66ee5874acc946f87238cca9") ## Update ANTS 20141029 Change the state file
+set(${proj}_GIT_TAG "4b5624e12246213f7190aa43cbf748d222e866b4") ## Update ANTS 20141123 Change the state file
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
