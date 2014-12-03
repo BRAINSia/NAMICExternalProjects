@@ -53,7 +53,7 @@ set(${proj}_CMAKE_OPTIONS
   set(SimpleITK_INSTALL_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/SimpleITK_install_step.cmake)
 
   set(SimpleITK_REPOSITORY ${git_protocol}://itk.org/SimpleITK.git)
-  set(SimpleITK_GIT_TAG 7f1ee99aa7f1269f376e142abbdecfa3c35063f1) #20140913 Use new Mattes.
+  set(SimpleITK_GIT_TAG 51d401f03bd6c57922eb276d10264f29747a3449) #20141202
 
   ExternalProject_add(SimpleITK
     ${${proj}_EP_ARGS}
