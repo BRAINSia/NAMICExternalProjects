@@ -40,7 +40,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
   #set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG 319281f857d6e3ef556be7856944c49093069aca ) # 2014-11-26 ## SyN state for ANTs
+  set(${proj}_GIT_TAG 9a985596dbd4697f8fe53448ec23c6a738dc9a82 ) # 2015-01-13
 #  message("COMMON_EXTERNAL_PROJECT_ARGS:
 #${COMMON_EXTERNAL_PROJECT_ARGS}")
   ExternalProject_Add(${proj}
