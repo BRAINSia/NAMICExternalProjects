@@ -18,7 +18,7 @@ endif()
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
   GIT_REPOSITORY "${git_protocol}://batchmake.org/BatchMake.git"
-  GIT_TAG "7da88ae6027eb4eac363c09834a6e014306f3038"
+  GIT_TAG "17de793f92a1d20388a0d508a6456b09382da584"
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/BatchMake
   BINARY_DIR BatchMake-build
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
