@@ -42,7 +42,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
   #set(${proj}_REPOSITORY "${git_protocol}://github.com/nipy/nipype.git")
 
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/nipype.git")
-  set(${proj}_GIT_TAG "NewJointFusion20150211") #Joint fusion and ANTs updates.
+  #set(${proj}_GIT_TAG "NewJointFusion20150211") #Joint fusion and ANTs updates.
+  set(${proj}_GIT_TAG "NewANTS20150312") #Joint fusion and ANTs updates.
   ExternalProject_Add(${proj}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
