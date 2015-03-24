@@ -8,7 +8,7 @@ enable_language(C)
 enable_language(CXX)
 
 include(CMakeDependentOption)
-include(Artichoke)
+include(ExternalProjectDependency)
 
 option(${PRIMARY_PROJECT_NAME}_INSTALL_DEVELOPMENT "Install development support include and libraries for external packages." OFF)
 mark_as_advanced(${PRIMARY_PROJECT_NAME}_INSTALL_DEVELOPMENT)
