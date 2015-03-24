@@ -2,9 +2,11 @@ NAMICExternalProjects
 =====================
 A superbuild infrastructure to build all superbuild structures
 
-<align=middle>_Ash nazg durbatulûk, ash nazg gimbatul,
-    Ash nazg thrakatulûk agh burzum-ishi krimpatul._
-</align>
+    Ash nazg durbatulûk, 
+    ash nazg gimbatul,
+    Ash nazg thrakatulûk 
+    agh burzum-ishi krimpatul.
+                    - Sauron, the Abhorred
 
 This project acts as a template to model building all other SuperBuild projects around.
 * * *
