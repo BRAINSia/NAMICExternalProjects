@@ -23,7 +23,6 @@ ExternalProject_Add(${proj}
   BINARY_DIR BatchMake-build
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
-  ${COMMON_EXTERNAL_PROJECT_ARGS}
   -DBUILD_TESTING:BOOL=OFF
   -DBUILD_SHARED_LIBS:BOOL=OFF
   -DUSE_FLTK:BOOL=OFF

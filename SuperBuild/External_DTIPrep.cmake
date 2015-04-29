@@ -7,15 +7,6 @@ set(${proj}_DEPENDENCIES DCMTK ITKv4 SlicerExecutionModel VTK BRAINSTools ANTs)
 
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
-# Set CMake OSX variable to pass down the external project
-set(CMAKE_OSX_EXTERNAL_PROJECT_ARGS)
-if(APPLE)
-  list(APPEND CMAKE_OSX_EXTERNAL_PROJECT_ARGS
-    -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-    -DCMAKE_OSX_SYSROOT:STRING=${CMAKE_OSX_SYSROOT}
-    -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET})
-endif()
-
 set(BRAINSCommonLibWithANTs_OPTIONS
   -DUSE_ANTS:BOOL=${USE_ANTs}
   -DUSE_ANTs:BOOL=${USE_ANTs}
@@ -71,8 +62,6 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
-  ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-  ${COMMON_EXTERNAL_PROJECT_ARGS}
   ${${proj}_CMAKE_OPTIONS}
   ## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
   DEPENDS

@@ -63,9 +63,6 @@ set(${proj}_CMAKE_OPTIONS
     GIT_TAG ${SimpleITK_GIT_TAG}
     CMAKE_ARGS -Wno-dev --no-warn-unused-cli
     CMAKE_CACHE_ARGS
-    #
-    ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
-    ${COMMON_EXTERNAL_PROJECT_ARGS}
     ${${proj}_CMAKE_OPTIONS}
     INSTALL_COMMAND ${SimpleITK_INSTALL_COMMAND}
     #
