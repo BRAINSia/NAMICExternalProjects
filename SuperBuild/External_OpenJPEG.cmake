@@ -1,18 +1,3 @@
-# Make sure this file is included only once by creating globally unique varibles
-# based on the name of this included file.
-# get_filename_component(CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
-# if(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED)
-#   return()
-# endif()
-# set(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1)
-
-## External_${extProjName}.cmake files can be recurisvely included,
-## and cmake variables are global, so when including sub projects it
-## is important make the extProjName and proj variables
-## appear to stay constant in one of these files.
-## Store global variables before overwriting (then restore at end of this file.)
-superbuild_stack_push(CACHED_extProjName ${extProjName})
-superbuild_stack_push(CACHED_proj ${proj})
 
 # Make sure that the ExtProjName/IntProjName variables are unique globally
 # even if other External_${ExtProjName}.cmake files are sourced by
@@ -20,10 +5,6 @@ superbuild_stack_push(CACHED_proj ${proj})
 set(extProjName OpenJPEG) #The find_package known name
 set(proj        OpenJPEG) #This local name
 set(${extProjName}_REQUIRED_VERSION "")  #If a required version is necessary, then set this, else leave blank
-
-#if(${USE_SYSTEM_${extProjName}})
-#  unset(${extProjName}_DIR CACHE)
-#endif()
 
 # Sanity checks
 if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
@@ -82,7 +63,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       ${COMMON_EXTERNAL_PROJECT_ARGS}
       ${${proj}_CMAKE_OPTIONS}
     DEPENDS
-    ${${proj}_DEPENDENCIES}
+      ${${proj}_DEPENDENCIES}
   )
   set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/openjpeg-2.0)
   set(${extProjName}_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${proj}-install/include/openjpeg-2.0)
@@ -99,7 +80,14 @@ else()
   ExternalProject_Add_Empty(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
-list(APPEND ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARS ${extProjName}_DIR:PATH)
+mark_as_superbuild(
+  VARS
+    ${proj}_INCLUDE_DIR:PATH
+    ${proj}_LIB_DIR:PATH
+    ${proj}_LIBRARY:FILEPATH
+  LABELS "FIND_PACKAGE"
+  )
 
-superbuild_stack_pop(CACHED_extProjName extProjName)
-superbuild_stack_pop(CACHED_proj proj)
+ExternalProject_Message(${proj} "${proj}_INCLUDE_DIR:${${proj}_INCLUDE_DIR}")
+ExternalProject_Message(${proj} "${proj}_LIB_DIR:${${proj}_LIB_DIR}")
+ExternalProject_Message(${proj} "${proj}_LIBRARY:${${proj}_LIBRARY}")

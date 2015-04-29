@@ -40,7 +40,7 @@ set(${proj}_CMAKE_OPTIONS
 ### --- End Project specific additions
 #set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
 set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
-set(${proj}_GIT_TAG "53196d73e34afccd4e743323f5a3ac132d5c7450")
+set(${proj}_GIT_TAG "FixedUKFRefactoring")
 ExternalProject_Add(${proj}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
@@ -53,6 +53,12 @@ ExternalProject_Add(${proj}
   ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
+    -DRUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    -DLIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+    -DARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+    -DINSTALL_RUNTIME_DESTINATION:PATH=${CMAKE_INSTALL_RUNTIME_DESTINATION}
+    -DINSTALL_LIBRARY_DESTINATION:PATH=${CMAKE_INSTALL_LIBRARY_DESTINATION}
+    -DINSTALL_ARCHIVE_DESTINATION:PATH=${CMAKE_INSTALL_ARCHIVE_DESTINATION}
   CMAKE_CACHE_ARGS
   ${CMAKE_OSX_EXTERNAL_PROJECT_ARGS}
   ${COMMON_EXTERNAL_PROJECT_ARGS}

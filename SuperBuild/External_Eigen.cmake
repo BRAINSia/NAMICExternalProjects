@@ -1,29 +1,8 @@
-# Make sure this file is included only once by creating globally unique varibles
-# based on the name of this included file.
-# get_filename_component(CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
-# if(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED)
-#   return()
-# endif()
-# set(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1)
-
-## External_${extProjName}.cmake files can be recurisvely included,
-## and cmake variables are global, so when including sub projects it
-## is important make the extProjName and proj variables
-## appear to stay constant in one of these files.
-## Store global variables before overwriting (then restore at end of this file.)
-superbuild_stack_push(CACHED_extProjName ${extProjName})
-superbuild_stack_push(CACHED_proj ${proj})
-
-# Make sure that the ExtProjName/IntProjName variables are unique globally
 # even if other External_${ExtProjName}.cmake files are sourced by
 # ExternalProject_Include_Dependencies
 set(extProjName Eigen) #The find_package known name
 set(proj        Eigen) #This local name
 set(${extProjName}_REQUIRED_VERSION "")  #If a required version is necessary, then set this, else leave blank
-
-#if(${USE_SYSTEM_${extProjName}})
-#  unset(${extProjName}_DIR CACHE)
-#endif()
 
 # Sanity checks
 if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
@@ -32,9 +11,6 @@ endif()
 
 # Set dependency list
 set(${proj}_DEPENDENCIES "")
-#if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
-#  list(APPEND ${proj}_DEPENDENCIES DCMTK)
-#endif()
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
@@ -56,6 +32,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   set(${proj}_CMAKE_OPTIONS
       -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_INSTALL_DIR}
       -DEIGEN_BUILD_PKGCONFIG:BOOL=OFF
+      -DEIGEN_TEST_NOQT:BOOL=ON
     )
 
   ### --- End Project specific additions
@@ -63,6 +40,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   set(${proj}_GIT_TAG "032b16f4853237fb70f20d9028ee0ad5d543b0b2")
     #URL https://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
@@ -95,7 +73,10 @@ else()
   ExternalProject_Add_Empty(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
-list(APPEND ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARS ${extProjName}_DIR:PATH)
+mark_as_superbuild(
+  VARS
+    ${extProjName}_DIR:PATH
+    ${extProjName}_INCLUDE_DIR:PATH
+  LABELS "FIND_PACKAGE"
+  )
 
-superbuild_stack_pop(CACHED_extProjName extProjName)
-superbuild_stack_pop(CACHED_proj proj)

@@ -16,9 +16,6 @@ endif()
 
 # Set dependency list
 set(${proj}_DEPENDENCIES "")
-#if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
-#  list(APPEND ${proj}_DEPENDENCIES DCMTK)
-#endif()
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
@@ -45,6 +42,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
   set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/JPeg9A.git)
   set(${proj}_GIT_TAG BRAINSTools_CompilerCleanup)
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
@@ -82,4 +80,8 @@ else()
   ExternalProject_Add_Empty(${proj} "${${proj}_DEPENDENCIES}")
 endif()
 
-mark_as_superbuild( VARS ${proj}_DIR:PATH LABELS "FIND_PACKAGE" )
+mark_as_superbuild(
+  VARS
+    ${proj}_DIR:PATH
+  LABELS "FIND_PACKAGE"
+  )

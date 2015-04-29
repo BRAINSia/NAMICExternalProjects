@@ -1,5 +1,34 @@
 cmake_minimum_required(VERSION 2.8.9) #2.8.9 needed for ExternalProject Simplification
 cmake_policy(VERSION 2.8.9)
+if(POLICY CMP0048)
+  cmake_policy(SET CMP0048 OLD)
+endif()
+if(POLICY CMP0017)
+  cmake_policy(SET CMP0017 OLD)
+endif()
+foreach(p
+  CMP0054 # CMake 3.1
+  )
+  if(POLICY ${p})
+    cmake_policy(SET ${p} NEW)
+  endif()
+endforeach()
+
+#-----------------------------------------------------------------------------
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
+include(ExternalProject)
+include(ExternalProjectDependency)
+
+#-----------------------------------------------------------------------------
+if(APPLE)
+  # Note: By setting CMAKE_OSX_* variables before any enable_language() or project() calls,
+  #       we ensure that the bitness, and C++ standard library will be properly detected.
+  include(SlicerBlockSetCMakeOSXVariables)
+  mark_as_superbuild(
+    VARS CMAKE_OSX_ARCHITECTURES:STRING CMAKE_OSX_SYSROOT:PATH CMAKE_OSX_DEPLOYMENT_TARGET:STRING
+    ALL_PROJECTS
+    )
+endif()
 
 set(PRIMARY_PROJECT_NAME NAMICExternalProjects)
 ## NOTE THERE SHOULD BE NO PROJECT STATEMENT HERE!
@@ -21,6 +50,7 @@ set(PRIMARY_PROJECT_NAME NAMICExternalProjects)
 option(${PRIMARY_PROJECT_NAME}_SUPERBUILD "Build ${PRIMARY_PROJECT_NAME} and the projects it depends on via SuperBuild.cmake." ON)
 mark_as_advanced(${PRIMARY_PROJECT_NAME}_SUPERBUILD)
 
+#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 # Common build features for both the superbuild and the main build

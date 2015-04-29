@@ -13,7 +13,7 @@ endif()
 
 # Sanity checks
 if(DEFINED SimpleITK_DIR AND NOT EXISTS ${SimpleITK_DIR})
-  message(FATAL_ERROR "SimpleITK_DIR variable is defined but corresponds to non-existing directory")
+  message(FATAL_ERROR "SimpleITK_DIR variable is defined but corresponds to nonexistent directory")
 endif()
 
 if(NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
@@ -53,11 +53,11 @@ set(${proj}_CMAKE_OPTIONS
   set(SimpleITK_INSTALL_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/SimpleITK_install_step.cmake)
 
   set(SimpleITK_REPOSITORY ${git_protocol}://itk.org/SimpleITK.git)
-  set(SimpleITK_GIT_TAG 7aeb952d25c0142e66087edce89e708db2d59a1a) #20150125
+  set(SimpleITK_GIT_TAG 15d472dabb19096602c0c89a9cd616e99372ec85) #20150125
 
   ExternalProject_add(SimpleITK
     ${${proj}_EP_ARGS}
-    SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/SimpleITK
+    SOURCE_DIR SimpleITK
     BINARY_DIR SimpleITK-build
     GIT_REPOSITORY ${SimpleITK_REPOSITORY}
     GIT_TAG ${SimpleITK_GIT_TAG}
@@ -72,6 +72,20 @@ set(${proj}_CMAKE_OPTIONS
     DEPENDS ${${proj}_DEPENDENCIES}
     )
   set(SimpleITK_DIR ${CMAKE_BINARY_DIR}/SimpleITK-build)
+
+  set(_lib_subdir lib)
+  if(WIN32)
+    set(_lib_subdir bin)
+  endif()
+
+  #-----------------------------------------------------------------------------
+  # Launcher setting specific to build tree
+
+  set(${proj}_LIBRARY_PATHS_LAUNCHER_BUILD ${SimpleITK_DIR}/${_lib_subdir}/<CMAKE_CFG_INTDIR>)
+  mark_as_superbuild(
+    VARS ${proj}_LIBRARY_PATHS_LAUNCHER_BUILD
+    LABELS "LIBRARY_PATHS_LAUNCHER_BUILD"
+    )
 
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
