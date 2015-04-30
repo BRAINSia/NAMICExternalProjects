@@ -30,21 +30,6 @@ if(APPLE)
     )
 endif()
 
-#-----------------------------------------------------------------------------
-# Sanity checks
-#------------------------------------------------------------------------------
-if(WIN32)
-  set(${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH 40)
-  if(NOT ${PROJECT_NAME}_SUPERBUILD)
-    string(LENGTH ${Slicer_BINARY_INNER_SUBDIR} _inner_subdir_length)
-    math(EXPR ${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH "${${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH} + ${_inner_subdir_length}")
-  endif()
-  include(PreventDirWithTooManyChars)
-endif()
-include(PreventInSourceBuilds)
-include(PreventInBuildInstalls)
-include(PreventDirWithSpaces)
-mark_as_superbuild(${PROJECT_NAME}_SKIP_DIR_WITH_SPACES_CHECK:BOOL)
 
 
 set(PRIMARY_PROJECT_NAME NAMICExternalProjects)
@@ -79,6 +64,22 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/Common.cmake)
 #-----------------------------------------------------------------------------
 if(${PRIMARY_PROJECT_NAME}_SUPERBUILD)
   project(SuperBuild_${PRIMARY_PROJECT_NAME})  # <- NOTE: Project name for pre-requisites is different form main project
+  #-----------------------------------------------------------------------------
+  # Sanity checks
+  #------------------------------------------------------------------------------
+  if(WIN32)
+    set(${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH 40)
+    if(NOT ${PROJECT_NAME}_SUPERBUILD)
+      string(LENGTH ${Slicer_BINARY_INNER_SUBDIR} _inner_subdir_length)
+      math(EXPR ${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH "${${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH} + ${_inner_subdir_length}")
+    endif()
+    include(PreventDirWithTooManyChars)
+  endif()
+  include(PreventInSourceBuilds)
+  include(PreventInBuildInstalls)
+  include(PreventDirWithSpaces)
+  mark_as_superbuild(${PROJECT_NAME}_SKIP_DIR_WITH_SPACES_CHECK:BOOL)
+
   include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
   return()
 else()
