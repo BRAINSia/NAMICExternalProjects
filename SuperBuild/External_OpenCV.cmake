@@ -111,8 +111,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   #set(${proj}_REPOSITORY "${git_protocol}://github.com/Itseez/opencv")
   #set(${proj}_GIT_TAG "2.4.9") # USE THIS FOR UPDATED VERSION
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/opencv.git") # USE THIS FOR UPDATED VERSION
-  // set(${proj}_GIT_TAG "20150501_OpenCV") # USE THIS FOR UPDATED VERSION for GCC 4.4.7 on RHEL6
-  set(${proj}_GIT_TAG "20140630_Upstream") # USE THIS FOR UPDATED VERSION for GCC 4.4.7 on RHEL6
+  set(${proj}_GIT_TAG "20150501_OpenCV") # USE THIS FOR UPDATED VERSION for clang with c++11 support
+  #set(${proj}_GIT_TAG "20140630_Upstream") # USE THIS FOR UPDATED VERSION for GCC 4.4.7 on RHEL6
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
