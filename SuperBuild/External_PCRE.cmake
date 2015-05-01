@@ -1,4 +1,6 @@
 
+# Make sure this file is included only once
+
 set(proj PCRE)
 
 # Set dependency list
@@ -20,6 +22,9 @@ if(NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   #
   #  PCRE (Perl Compatible Regular Expressions)
   #
+
+  set(PCRE_TARGET_VERSION 8.36)
+  set(PCRE_DOWNLOAD_SOURCE_HASH "ff7b4bb14e355f04885cf18ff4125c98")
 
   # follow the standard EP_PREFIX locations
   set(pcre_binary_dir ${CMAKE_CURRENT_BINARY_DIR}/PCRE-prefix/src/PCRE-build)
@@ -50,10 +55,10 @@ ExternalProject_Execute(${proj} \"configure\" sh ${pcre_source_dir}/configure
 
   ExternalProject_add(PCRE
     ${${proj}_EP_ARGS}
-    URL http://downloads.sourceforge.net/project/pcre/pcre/8.12/pcre-8.12.tar.gz
-    URL_MD5 fa69e4c5d8971544acd71d1f10d59193
-    UPDATE_COMMAND "" # Disable update
+    URL http://midas3.kitware.com/midas/api/rest?method=midas.bitstream.download&checksum=${PCRE_DOWNLOAD_SOURCE_HASH}&name=pcre-${PCRE_TARGET_VERSION}.tar.gz
+    URL_MD5 "${PCRE_DOWNLOAD_SOURCE_HASH}"
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${_configure_script}
+    UPDATE_COMMAND "" # Disable update
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
