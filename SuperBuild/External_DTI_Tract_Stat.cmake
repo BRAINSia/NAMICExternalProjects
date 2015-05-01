@@ -59,6 +59,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "https://www.nitrc.org/svn/dti_tract_stat/trunk")
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     SVN_REPOSITORY ${${proj}_REPOSITORY}
     SVN_REVISION -r "137"
     SVN_USERNAME slicerbot

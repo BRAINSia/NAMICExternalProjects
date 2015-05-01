@@ -53,6 +53,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/LogSymmetricDemons.git)
   set(${proj}_GIT_TAG "8a79adf90d0a4d6f07175fd11242604af833900e")
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}

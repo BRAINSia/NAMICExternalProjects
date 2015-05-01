@@ -40,6 +40,7 @@ set(${proj}_CMAKE_OPTIONS
 set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
 set(${proj}_GIT_TAG "FixedUKFRefactoring")
 ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}

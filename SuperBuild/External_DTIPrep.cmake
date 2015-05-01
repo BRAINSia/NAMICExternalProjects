@@ -49,6 +49,7 @@ set(${proj}_CMAKE_OPTIONS
 set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/DTIPrep.git")
 set(${proj}_GIT_TAG "44f7302015bbecc1890c1cb975a95fae9da2f893")
 ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}

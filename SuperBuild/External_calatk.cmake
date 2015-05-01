@@ -58,6 +58,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   set(${proj}_REPOSITORY ${git_protocol}://www.github.com/BRAINSia/calatk.git)
   set(${proj}_GIT_TAG 784f6ee7e04a0a32344cf2ddce43faf8023cf88f)
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}

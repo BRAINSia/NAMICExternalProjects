@@ -49,6 +49,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY SVN_REPOSITORY http://svn.code.sf.net/p/qwt/code/branches/qwt-6.0)
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     SVN_REPOSITORY ${${proj}_REPOSITORY}
     SVN_REVISION -r "1850"
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}

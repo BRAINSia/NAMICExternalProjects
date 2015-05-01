@@ -29,6 +29,7 @@ endif()
 set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
 set(${proj}_GIT_TAG "2b1ba60a4d10b7dcd53caf2739c79b332e4e615b") ## Update ANTS 20150421
 ExternalProject_Add(${proj}
+  ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}

@@ -23,6 +23,7 @@ set(${proj}_CMAKE_OPTIONS
 set(${proj}_GIT_REPOSITORY "git://github.com/BRAINSia/JALMMSE.git")
 set(${proj}_GIT_TAG "master")
 ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}

@@ -38,6 +38,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   set(${proj}_REPOSITORY "http://openjpeg.googlecode.com/svn/trunk")
   set(${proj}_SVN_REVISION r2995) #2015-01-30 New Repository.
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     SVN_REPOSITORY ${${proj}_REPOSITORY}
     SVN_REVISION -r ${${proj}_SVN_REVISION}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}

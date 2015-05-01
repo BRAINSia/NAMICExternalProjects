@@ -44,6 +44,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
   set(${proj}_REPOSITORY "https://projects.coin-or.org/svn/Ipopt/trunk") # USE THIS FOR UPDATED VERSION
   set(${proj}_GIT_TAG "r2163")
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     SVN_REPOSITORY ${${proj}_REPOSITORY}
     SVN_REVISION -r ${${proj}_GIT_TAG}
     SVN_TRUST_CERT 1

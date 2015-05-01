@@ -19,6 +19,7 @@ if(NOT SWIG_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   if(WIN32)
     # swig.exe available as pre-built binary on Windows:
     ExternalProject_Add(Swig
+      ${${proj}_EP_ARGS}
       URL http://midas3.kitware.com/midas/api/rest?method=midas.bitstream.download&checksum=${SWIG_DOWNLOAD_WIN_HASH}&name=swigwin-${SWIG_TARGET_VERSION}.zip
       URL_MD5 ${SWIG_DOWNLOAD_WIN_HASH}
       SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}"

@@ -42,6 +42,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
   set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/double-conversion.git)
   set(${proj}_GIT_TAG 5ddd8066bea117b6dd0df19d1e8d19d2c1d609d8)
   ExternalProject_Add(${proj}
+    ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
