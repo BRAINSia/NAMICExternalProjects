@@ -33,8 +33,10 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       set(git_protocol "git")
   endif()
 
-  set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG 120b3420a9edc6488aa8f91bc8e657fb619fcabe ) # 2015-04-28 Fixed VTKGlue 
+  #set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
+  #set(${proj}_GIT_TAG 120b3420a9edc6488aa8f91bc8e657fb619fcabe ) # 2015-04-28 Fixed VTKGlue
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/ITK.git)
+  set(${proj}_GIT_TAG d23efe2eb93d26a609936fadae161badc4331c75 ) # 2015-04-27 change tolerance
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
   if(NOT ${CMAKE_PROJECT_NAME}ITKV3_COMPATIBILITY AND CMAKE_CL_64)
