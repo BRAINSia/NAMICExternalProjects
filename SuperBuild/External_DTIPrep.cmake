@@ -27,6 +27,10 @@ endif()
 
 ### --- Project specific additions here
 set(${proj}_CMAKE_OPTIONS
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
   -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
   -DKWSYS_USE_MD5:BOOL=ON # Required by SlicerExecutionModel
   -DUSE_SYSTEM_ITK:BOOL=ON

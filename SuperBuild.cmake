@@ -292,6 +292,14 @@ if(BUILD_STYLE_UTILS)
   list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES Cppcheck KWStyle ) #Uncrustify)
 endif()
 
+
+#-----------------------------------------------------------------------------
+# Enable and setup External project global properties
+#-----------------------------------------------------------------------------
+
+set(ep_common_c_flags "${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
+set(ep_common_cxx_flags "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
+
 ExternalProject_Include_Dependencies(${proj} DEPENDS_VAR ${PRIMARY_PROJECT_NAME}_DEPENDENCIES)
 
 #-----------------------------------------------------------------------------
@@ -320,6 +328,10 @@ ExternalProject_Add(${proj}
   CMAKE_ARGS
     --no-warn-unused-cli    # HACK Only expected variables should be passed down.
   CMAKE_CACHE_ARGS
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
     -D${PRIMARY_PROJECT_NAME}_SUPERBUILD:BOOL=OFF    #NOTE: VERY IMPORTANT reprocess top level CMakeList.txt
   INSTALL_COMMAND ""
   )

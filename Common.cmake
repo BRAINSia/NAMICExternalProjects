@@ -135,28 +135,9 @@ mark_as_superbuild(
   ALL_PROJECTS
   )
 
-#-------------------------------------------------------------------------
-# Augment compiler flags
-#-------------------------------------------------------------------------
-include(ITKSetStandardCompilerFlags)
-#------------------------------------------------------------------------
-# Check for clang -- c++11 necessary for boost
-#------------------------------------------------------------------------
-if("${CMAKE_CXX_COMPILER}${CMAKE_CXX_COMPILER_ARG1}" MATCHES ".*clang.*")
-  set(CMAKE_COMPILER_IS_CLANGXX ON CACHE BOOL "compiler is CLang")
-endif()
-
-set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${ITK_REQUIRED_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ITK_REQUIRED_CXX_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
-set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
-
-
 #-----------------------------------------------------------------------------
 # Add needed flag for gnu on linux like enviroments to build static common libs
 # suitable for linking with shared object libs.
-message(STATUS "AAAAAAA\n  CXX:${CMAKE_CXX_FLAGS}:\n  C:${CMAKE_C_FLAGS}:")
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
   if(NOT "${CMAKE_CXX_FLAGS}" MATCHES "-fPIC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
@@ -165,50 +146,23 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
   endif()
 endif()
-message(STATUS "BBBBBB\n  CXX:${CMAKE_CXX_FLAGS}:\n  C:${CMAKE_C_FLAGS}:")
-#
-# SimpleITK has large internal libraries, which take an extremely long
-# time to link on windows when they are static. Creating shared
-# SimpleITK internal libraries can reduce linking time. Also the size
-# of the debug libraries are monstrous. Using shared libraries for
-# debug, reduce disc requirements, and can improve linking
-# times. However, these shared libraries take longer to load than the
-# monolithic target from static libraries.
-#
-set( ${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT OFF)
-string(TOUPPER "${CMAKE_BUILD_TYPE}" _CMAKE_BUILD_TYPE)
-if(MSVC OR _CMAKE_BUILD_TYPE MATCHES "DEBUG")
-  set(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT ON)
-endif()
-CMAKE_DEPENDENT_OPTION(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED "Build SimpleITK with shared libraries. Reduces linking time, increases run-time load time." ${${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT} "${PRIMARY_PROJECT_NAME}_USE_SimpleITK" OFF )
-mark_as_superbuild(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED)
-
-# TODO: figure out what this Slicer rigamarole is actually supposed to be doing
-#-----------------------------------------------------------------------------
-# ${PRIMARY_PROJECT_NAME} install directories
-#-----------------------------------------------------------------------------
-set(${PRIMARY_PROJECT_NAME}_INSTALL_ROOT "./")
-set(${PRIMARY_PROJECT_NAME}_BUNDLE_LOCATION "${${PRIMARY_PROJECT_NAME}_MAIN_PROJECT_APPLICATION_NAME}.app/Contents")
-# NOTE: Make sure to update vtk${PRIMARY_PROJECT_NAME}ApplicationLogic::IsEmbeddedModule if
-#       the following variables are changed.
-set(${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRBASENAME "Extensions")
-set(${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRNAME "${${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRBASENAME}-${${PRIMARY_PROJECT_NAME}_WC_REVISION}")
-if(APPLE)
-  set(${PRIMARY_PROJECT_NAME}_INSTALL_ROOT "${${PRIMARY_PROJECT_NAME}_BUNDLE_LOCATION}/") # Set to create Bundle
+#-------------------------------------------------------------------------
+# Augment compiler flags
+#-------------------------------------------------------------------------
+include(ITKSetStandardCompilerFlags)
+#------------------------------------------------------------------------
+# Check for clang -- c++11 necessary for boost
+#------------------------------------------------------------------------
+if("${CMAKE_CXX_COMPILER}${CMAKE_CXX_COMPILER_ARG1}" MATCHES ".*clang.*")
+  set(CMAKE_COMPILER_IS_CLANGXX ON CACHE BOOL "compiler is Clang")
 endif()
 
-set(${PRIMARY_PROJECT_NAME}_INSTALL_BIN_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_BIN_DIR}")
-set(${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_LIB_DIR}")
-set(${PRIMARY_PROJECT_NAME}_INSTALL_INCLUDE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_INCLUDE_DIR}")
-set(${PRIMARY_PROJECT_NAME}_INSTALL_SHARE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_SHARE_DIR}")
-set(${PRIMARY_PROJECT_NAME}_INSTALL_ITKFACTORIES_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR}/ITKFactories")
-set(${PRIMARY_PROJECT_NAME}_INSTALL_QM_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_QM_DIR}")
+set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${ITK_REQUIRED_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ITK_REQUIRED_CXX_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
+set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
 
-if(${PRIMARY_PROJECT_NAME}_BUILD_CLI_SUPPORT)
-  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_BIN_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_BIN_DIR}")
-  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_LIB_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_LIB_DIR}")
-  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_SHARE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_SHARE_DIR}")
-endif()
 
 mark_as_superbuild(
   VARS
@@ -260,3 +214,48 @@ mark_as_superbuild(
     BUILDNAME:STRING
   ALL_PROJECTS
   )
+message(STATUS "BBBBBB\n  CXX:${CMAKE_CXX_FLAGS}:\n  C:${CMAKE_C_FLAGS}:")
+#
+# SimpleITK has large internal libraries, which take an extremely long
+# time to link on windows when they are static. Creating shared
+# SimpleITK internal libraries can reduce linking time. Also the size
+# of the debug libraries are monstrous. Using shared libraries for
+# debug, reduce disc requirements, and can improve linking
+# times. However, these shared libraries take longer to load than the
+# monolithic target from static libraries.
+#
+set( ${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT OFF)
+string(TOUPPER "${CMAKE_BUILD_TYPE}" _CMAKE_BUILD_TYPE)
+if(MSVC OR _CMAKE_BUILD_TYPE MATCHES "DEBUG")
+  set(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT ON)
+endif()
+CMAKE_DEPENDENT_OPTION(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED "Build SimpleITK with shared libraries. Reduces linking time, increases run-time load time." ${${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED_DEFAULT} "${PRIMARY_PROJECT_NAME}_USE_SimpleITK" OFF )
+mark_as_superbuild(${PRIMARY_PROJECT_NAME}_USE_SimpleITK_SHARED)
+
+# TODO: figure out what this Slicer rigamarole is actually supposed to be doing
+#-----------------------------------------------------------------------------
+# ${PRIMARY_PROJECT_NAME} install directories
+#-----------------------------------------------------------------------------
+set(${PRIMARY_PROJECT_NAME}_INSTALL_ROOT "./")
+set(${PRIMARY_PROJECT_NAME}_BUNDLE_LOCATION "${${PRIMARY_PROJECT_NAME}_MAIN_PROJECT_APPLICATION_NAME}.app/Contents")
+# NOTE: Make sure to update vtk${PRIMARY_PROJECT_NAME}ApplicationLogic::IsEmbeddedModule if
+#       the following variables are changed.
+set(${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRBASENAME "Extensions")
+set(${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRNAME "${${PRIMARY_PROJECT_NAME}_EXTENSIONS_DIRBASENAME}-${${PRIMARY_PROJECT_NAME}_WC_REVISION}")
+if(APPLE)
+  set(${PRIMARY_PROJECT_NAME}_INSTALL_ROOT "${${PRIMARY_PROJECT_NAME}_BUNDLE_LOCATION}/") # Set to create Bundle
+endif()
+
+set(${PRIMARY_PROJECT_NAME}_INSTALL_BIN_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_BIN_DIR}")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_LIB_DIR}")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_INCLUDE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_INCLUDE_DIR}")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_SHARE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_SHARE_DIR}")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_ITKFACTORIES_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_LIB_DIR}/ITKFactories")
+set(${PRIMARY_PROJECT_NAME}_INSTALL_QM_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_QM_DIR}")
+
+if(${PRIMARY_PROJECT_NAME}_BUILD_CLI_SUPPORT)
+  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_BIN_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_BIN_DIR}")
+  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_LIB_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_LIB_DIR}")
+  set(${PRIMARY_PROJECT_NAME}_INSTALL_CLIMODULES_SHARE_DIR "${${PRIMARY_PROJECT_NAME}_INSTALL_ROOT}${${PRIMARY_PROJECT_NAME}_CLIMODULES_SHARE_DIR}")
+endif()
+

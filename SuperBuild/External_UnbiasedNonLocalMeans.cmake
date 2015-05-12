@@ -33,6 +33,10 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
   -DUSE_SYSTEM_ITK:BOOL=ON
   -DUSE_SYSTEM_SLICER_EXECUTION_MODEL:BOOL=ON
   -DITK_DIR:PATH=${ITK_DIR}
@@ -43,7 +47,6 @@ ExternalProject_Add(${proj}
   -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
   -DSlicer_SOURCE_DIR:BOOL=ON ## THIS is a hack to prevent looking for slicer
   -DUnbiasedNonLocalMeansTractography_SuperBuild:BOOL=ON ## THIS should be the single flag
-  ${${proj}_CMAKE_OPTIONS}
   INSTALL_COMMAND ""
   DEPENDS ${${proj}_DEPENDENCIES}
   )
