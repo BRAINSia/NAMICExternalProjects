@@ -36,8 +36,6 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   set(${proj}_REPOSITORY ${git_protocol}://github.com/commontk/DCMTK.git)
   set(${proj}_GIT_TAG "c5144910c525000151d2d3f2e0066991b3d7e076") # 2015-05-12
 
-message(STATUS "CCCCCC\n  CXX:${CMAKE_CXX_FLAGS}:\n  C:${CMAKE_C_FLAGS}:")
-message(STATUS "CCCCCC\n :${${proj}_EP_ARGS}:")
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${DCMTK_REPOSITORY}
