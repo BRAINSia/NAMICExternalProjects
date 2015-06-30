@@ -17,7 +17,7 @@ set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel )
 ExternalProject_Include_Dependencies(${proj}  PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 set(${proj}_GIT_REPOSITORY "git://github.com/BRAINSia/UnbiasedNonLocalMeans.git")
-set(${proj}_GIT_TAG "master")
+set(${proj}_GIT_TAG d5dec2749b64bb6e9a103c5b1c4fb50ca47282fd)  # "master"
 
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}

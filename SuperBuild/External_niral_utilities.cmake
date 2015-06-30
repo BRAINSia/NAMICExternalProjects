@@ -62,7 +62,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 #set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/niral_utilities.git")
 #set(${proj}_GIT_TAG "dea3323b99be580b6fd2a7214ce60ddb9d7baec2")
 set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/niral_utilities.git")
-set(${proj}_GIT_TAG "NAMICExternalProjectsFixes")
+set(${proj}_GIT_TAG a542c082fdccd539218487b4fb394f28e9377973)  # "NAMICExternalProjectsFixes"
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
