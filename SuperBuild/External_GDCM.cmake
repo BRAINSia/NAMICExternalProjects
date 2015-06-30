@@ -52,7 +52,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "git://git.code.sf.net/p/gdcm/gdcm")
-  set(${proj}_GIT_TAG "81e551fc30ae2da9b9477319cee95d70a27ec9fe") #2015-05-12
+  set(${proj}_GIT_TAG "795b59135f7bab05f7ad841b2ebf30852bdefbbd") #2015-06-17
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}

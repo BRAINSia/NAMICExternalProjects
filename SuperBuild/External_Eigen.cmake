@@ -28,11 +28,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_INSTALL_DIR}
       -DEIGEN_BUILD_PKGCONFIG:BOOL=OFF
       -DEIGEN_TEST_NOQT:BOOL=ON
+      -DBUILD_TESTING:BOOL=ON
     )
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/eigen.git")
-  set(${proj}_GIT_TAG "032b16f4853237fb70f20d9028ee0ad5d543b0b2")
+  set(${proj}_GIT_TAG "c841867b51aeea0533835c0af93bac86a37d4a1f")
     #URL https://bitbucket.org/eigen/eigen/get/3.2.0.tar.gz
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
