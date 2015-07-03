@@ -82,6 +82,13 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DBUILD_opencv_video:BOOL=OFF
       -DBUILD_opencv_videostab:BOOL=OFF
       -DBUILD_opencv_world:BOOL=OFF
+
+      -DBUILD_opencv_superres:BOOL=OFF
+      -DBUILD_opencv_python2:BOOL=OFF
+      -DBUILD_opencv_videoio:BOOL=OFF
+      -DBUILD_opencv_java:BOOL=OFF
+      -DBUILD_opencv_imgcodec:BOOL=OFF
+
 ## Turn off GPU supports
       -DWITH_CUDA:BOOL=OFF
       -DWITH_CUFFT:BOOL=OFF
