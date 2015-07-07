@@ -28,7 +28,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     DESTDIR=${CMAKE_BINARY_DIR}/ PREFIX=Utils )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://github.com/danmar/cppcheck.git)
-  set(${proj}_GIT_TAG 108b035af29f8f74f22c2160b6d1ba692e05877d)
+  set(${proj}_GIT_TAG origin/master)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
