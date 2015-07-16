@@ -34,7 +34,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG 5538e605e730f054d40fee78c258fbaf959fbc92 ) # 2015-07-03 Fixed precision
+  set(${proj}_GIT_TAG a402899eccc342ff6c3e832e0dddfb3cdf2cf7bc ) # 2015-07-16 Fixed precision and MGHIO
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
   if(NOT ${CMAKE_PROJECT_NAME}ITKV3_COMPATIBILITY AND CMAKE_CL_64)
@@ -85,7 +85,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
       -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
-      -DModule_MGHIO:BOOL=ON        #To provide FreeSurfer Compatibility
+      -DModule_MGHIO:BOOL=ON        #To provide FreeSurfer Compatibility Required!
       -DITK_USE_FFTWD:BOOL=ON
       -DITK_USE_FFTWF:BOOL=ON
       ${ITK_VTK_OPTIONS}
