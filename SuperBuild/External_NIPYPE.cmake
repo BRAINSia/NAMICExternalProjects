@@ -36,7 +36,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
   ### --- End Project specific additions
   #set(${proj}_REPOSITORY "${git_protocol}://github.com/nipy/nipype.git")
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/nipype.git")
-  set(${proj}_GIT_TAG 027f9408821d48d4e4eb9eaf4267403b3ac3dbad)  # "NewANTS20150810")
+  set(${proj}_GIT_TAG c31a5a819137cbef15f55f7d0a77a65d6a37a88f)  # Updated MALF
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
