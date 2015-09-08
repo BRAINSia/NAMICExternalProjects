@@ -15,7 +15,7 @@ set(${proj}_CMAKE_OPTIONS
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
   -DBOOST_ROOT:PATH=${BOOST_ROOT}
   -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
-  -DBUILD_dwiAtlas:BOOL=ON
+  -DBUILD_dwiAtlas:BOOL=OFF    # REQUIRES ITKv3 compatibility
   -DUSE_SYSTEM_ITK:BOOL=ON
   -DUSE_SYSTEM_VTK:BOOL=ON
   -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
@@ -32,7 +32,7 @@ set(${proj}_CMAKE_OPTIONS
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/DTIProcessToolkit.git")
-set(${proj}_GIT_TAG "f1c954179bb71c945453f71c8c157b1d577501f2")
+set(${proj}_GIT_TAG "8cd9ff04131fd2c7c7baaa64de6eee57b19d4e36")
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
