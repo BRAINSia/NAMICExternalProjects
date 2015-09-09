@@ -96,7 +96,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "c154d56ae4d33d6f892cddcd9867a1160eba6871") # 2015-09-06 BRAINSCut updates
+  set(${proj}_GIT_TAG "b06bd9c93d908d3d0e5584e141435410774f8e23") # 2015-09-08 Fixed BABC
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
