@@ -7,14 +7,15 @@ endif()
 
 # Sanity checks
 if(DEFINED Swig_DIR AND NOT EXISTS ${Swig_DIR})
-  message(FATAL_ERROR "Swig_DIR variable is defined but corresponds to nonexistent directory")
+  message(FATAL_ERROR "Swig_DIR variable is defined but corresponds to non-existing directory")
 endif()
 
 if(NOT SWIG_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
-  set(SWIG_TARGET_VERSION 3.0.5)
-  set(SWIG_DOWNLOAD_SOURCE_HASH "dcb9638324461b9baba8e044fe59031d")
-  set(SWIG_DOWNLOAD_WIN_HASH "fd2e050f29e2a00b2348f5f7d3476490")
+  set(SWIG_TARGET_VERSION 3.0.7)
+  set(SWIG_DOWNLOAD_SOURCE_HASH "7fff46c84b8c630ede5b0f0827e3d90a")
+  set(SWIG_DOWNLOAD_WIN_HASH "d8b5a9ce49c819cc1bfc1e797b85ba7a")
+
 
   if(WIN32)
     # swig.exe available as pre-built binary on Windows:
@@ -22,15 +23,15 @@ if(NOT SWIG_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       ${${proj}_EP_ARGS}
       URL http://midas3.kitware.com/midas/api/rest?method=midas.bitstream.download&checksum=${SWIG_DOWNLOAD_WIN_HASH}&name=swigwin-${SWIG_TARGET_VERSION}.zip
       URL_MD5 ${SWIG_DOWNLOAD_WIN_HASH}
-      SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}"
+      SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}
       CONFIGURE_COMMAND ""
       BUILD_COMMAND ""
       INSTALL_COMMAND ""
       UPDATE_COMMAND ""
       )
 
-    set(SWIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}") # path specified as source in ep
-    set(SWIG_EXECUTABLE "${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}/swig.exe")
+    set(SWIG_DIR ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}) # path specified as source in ep
+    set(SWIG_EXECUTABLE ${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}/swig.exe)
     set(Swig_DEPEND Swig)
 
   else()
