@@ -34,7 +34,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG af1a72fc24ad8e58be0e9af71d791043dcdbca1a ) # 2015-09-14 Transform tolerance fixes
+  set(${proj}_GIT_TAG cf9a869a18d3b6a9ba605c52ff945ef717d7edbd ) # 2015-09-14 Transform tolerance fixes
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
   if(NOT ${CMAKE_PROJECT_NAME}ITKV3_COMPATIBILITY AND CMAKE_CL_64)
@@ -42,16 +42,6 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     # where long is only 32-bits (msvc)
     set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
       -DITK_USE_64BITS_IDS:BOOL=ON
-      )
-  endif()
-
-  if(${CMAKE_PROJECT_NAME}USE_PYTHONQT)
-    # XXX Ensure python executable used for ITKModuleHeaderTest
-    #     is the same as Slicer.
-    #     This will keep the sanity check implemented in SlicerConfig.cmake
-    #     quiet.
-    list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
-      -DPYTHON_EXECUTABLE:PATH=${PYTHON_EXECUTABLE}
       )
   endif()
 
@@ -71,6 +61,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DITK_LEGACY_REMOVE:BOOL=ON
       -DITKV3_COMPATIBILITY:BOOL=OFF
       -DITK_BUILD_DEFAULT_MODULES:BOOL=ON
+      -DModule_AnisotropicDiffusionLBR:BOOL=ON
       -DModule_ITKReview:BOOL=ON
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DITK_INSTALL_NO_DEVELOPMENT:BOOL=ON
