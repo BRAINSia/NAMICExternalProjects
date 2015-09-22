@@ -96,7 +96,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "70a5e1cbb471df650f9c45e3b1a25c75ef3ecdaa") # 2015-09-15 Futurize python for python 3.4
+  set(${proj}_GIT_TAG "ef546ee636d61f853eb55f8b37ab2432bf16925f") # 2015-09-15 Futurize python for python 3.4
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
