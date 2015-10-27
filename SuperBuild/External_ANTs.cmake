@@ -30,7 +30,7 @@ if(${PRIMARY_PROJECT_NAME}_USE_QT)
 endif()
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-set(${proj}_GIT_TAG 46a3b2319e3d624ea7c9da54cd8adc6d90e2cac2)  # Fix merging linear transforms per stage
+set(${proj}_GIT_TAG 26f579c3be6ba0b7c38b382b781142e2a1572d50)  # 2015-10-27
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
