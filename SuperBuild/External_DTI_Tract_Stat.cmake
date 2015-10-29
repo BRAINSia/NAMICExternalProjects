@@ -37,6 +37,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+    -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
     -DQWT_INCLUDE_DIR:PATH=${QWT_INCLUDE_DIR}
     -DQWT_LIBRARY:PATH=${QWT_LIBRARY}
     -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}

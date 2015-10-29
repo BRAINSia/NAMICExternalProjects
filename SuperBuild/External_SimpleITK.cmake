@@ -26,6 +26,7 @@ set(${proj}_CMAKE_OPTIONS
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
     -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
     # SimpleITK does not work with shared libs turned on
     -DBUILD_SHARED_LIBS:BOOL=OFF
