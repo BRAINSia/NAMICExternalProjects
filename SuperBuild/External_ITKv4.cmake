@@ -34,7 +34,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG 79f7ba4735f0ed25280b717a595cfafa13fd7d16 ) # 2015-10-29 reverted 
+  set(${proj}_GIT_TAG 9e298b3071d8a834ce50e697fca9d6bfce79beea ) # 2015-10-30 reverted
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
   if(NOT ${CMAKE_PROJECT_NAME}ITKV3_COMPATIBILITY AND CMAKE_CL_64)

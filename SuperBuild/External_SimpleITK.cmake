@@ -54,11 +54,11 @@ set(${proj}_CMAKE_OPTIONS
   set(SimpleITK_INSTALL_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/SimpleITK_install_step.cmake)
 
   set(SimpleITK_REPOSITORY ${git_protocol}://itk.org/SimpleITK.git)
-  set(SimpleITK_GIT_TAG 5fa1e9c53939595047e28dfc93579c485d2c6945) #20150511
+  set(SimpleITK_GIT_TAG 463172a4d69be57a21cdedbde32312e52060467d) #20151030
 
   ExternalProject_add(SimpleITK
     ${${proj}_EP_ARGS}
-    SOURCE_DIR SimpleITK
+    SOURCE_DIR SimpleITK/SuperBuild
     BINARY_DIR SimpleITK-build
     GIT_REPOSITORY ${SimpleITK_REPOSITORY}
     GIT_TAG ${SimpleITK_GIT_TAG}
