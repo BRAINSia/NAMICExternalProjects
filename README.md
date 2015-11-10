@@ -36,4 +36,14 @@ __NAMICExternalProjects/__
 * __CMake/__
 
     A directory of support files.
-
+    
+### Build Instruction
+1. Install Anaconda Python Environment: https://www.continuum.io/downloads
+2. Install SimpleITK Against above Anaconda Python Environment: http://www.itk.org/Wiki/SimpleITK/GettingStarted
+3. Install NiPype against above Anaconda Python Environment: http://nipy.org/nipype/users/install.html
+4. Build Namic against all above:
+  1. git clone https://github.com/BRAINSia/NAMICExternalProjects.git
+  2. mkdir your\_build\_dir\_name
+  3. cd your\_build\_dir\_name
+  4. ccmake ../NAMICExternalProjects
+  5. make
