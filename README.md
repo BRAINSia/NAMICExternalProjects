@@ -39,19 +39,23 @@ __NAMICExternalProjects/__
     
 ### Build Instruction
 1. Install Anaconda Python Environment: https://www.continuum.io/downloads
+
    ```bash
    $ ${conda_dir}/conda create --name namicAnacondaEnv python
    ```
 2. Install SimpleITK Against above Anaconda Python Environment: http://www.itk.org/Wiki/SimpleITK/GettingStarted
+
    ```bash
    $ ${conda_dir}/conda install -c https://conda.binstar.org/simpleitk SimpleITK
    ```
 3. Install NiPype against above Anaconda Python Environment: http://nipy.org/nipype/users/install.html
+
    ```bash
    $ ${conda_dir}/conda install pip
    $ ${conda_dir}/pip install nipype
    ```
 4. Build Namic against all above:
+
   ```bash
   $ git clone https://github.com/BRAINSia/NAMICExternalProjects.git
   $ mkdir ${build_dir_name}
