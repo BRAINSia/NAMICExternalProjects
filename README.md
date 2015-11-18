@@ -56,6 +56,9 @@ __NAMICExternalProjects/__
    $ ${conda_dir}/conda install pip
    $ ${conda_dir}/pip install nipype
    ```
+   > 
+   > See https://www.continuum.io/blog/developer/mkl-optimizations-anaconda for blas/lapack if not installed. 
+   > 
 4. Build Namic against all above:
 
   ```bash
