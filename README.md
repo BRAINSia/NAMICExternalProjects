@@ -57,7 +57,7 @@ __NAMICExternalProjects/__
    ```bash
    $ pip install nipype
    ```
-   > 
+   > ### BLAS/LAPACK
    > See https://www.continuum.io/blog/developer/mkl-optimizations-anaconda for blas/lapack if not installed. 
    >    ```bash
    >    $ pip install mkl
