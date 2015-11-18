@@ -44,21 +44,24 @@ __NAMICExternalProjects/__
    
    ```bash
    $ ${conda_dir}/conda create --name namicAnacondaEnv python=2.7
+   export ${conda_dir}:PATH # Add conda build on your PATH. 
    ```
+  
 2. Install SimpleITK Against above Anaconda Python Environment: http://www.itk.org/Wiki/SimpleITK/GettingStarted
 
    ```bash
-   $ ${conda_dir}/conda install -c https://conda.binstar.org/simpleitk SimpleITK
+   $ conda install -c https://conda.binstar.org/simpleitk SimpleITK
    ```
 3. Install NiPype against above Anaconda Python Environment: http://nipy.org/nipype/users/install.html
 
    ```bash
-   $ ${conda_dir}/conda install pip
-   $ ${conda_dir}/pip install nipype
+   $ pip install nipype
    ```
    > 
    > See https://www.continuum.io/blog/developer/mkl-optimizations-anaconda for blas/lapack if not installed. 
-   > 
+   >    ```bash
+   >    $ pip install mkl
+   >    ```
 4. Build Namic against all above:
 
   ```bash
