@@ -39,7 +39,9 @@ __NAMICExternalProjects/__
     
 ### Build Instruction
 1. Install Anaconda Python Environment: https://www.continuum.io/downloads
-(Nipype/BRAINS Auto Workup dependes on python 2.7v)
+    
+   (Nipype/BRAINS Auto Workup dependes on python 2.7v)
+   
    ```bash
    $ ${conda_dir}/conda create --name namicAnacondaEnv python=2.7
    ```
