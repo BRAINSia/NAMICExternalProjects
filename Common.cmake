@@ -48,7 +48,7 @@ endif()
 cmake_dependent_option(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT "Use python with QT" OFF
   "${PRIMARY_PROJECT_NAME}_USE_QT" OFF)
 
-if( USE_BRAINSFit ) ## This is to force configuration of python early.
+if( ${PRIMARY_PROJECT_NAME}_USE_PYTHONQT ) ## This is to force configuration of python early.
   ## NIPYPE is not stable under python 2.6, so require 2.7 when using autoworkup
   ## Enthought Canopy or anaconda are convenient ways to install python 2.7 on linux
   ## or the other option is the free version of Anaconda from https://store.continuum.io/
@@ -214,7 +214,6 @@ mark_as_superbuild(
     BUILDNAME:STRING
   ALL_PROJECTS
   )
-message(STATUS "BBBBBB\n  CXX:${CMAKE_CXX_FLAGS}:\n  C:${CMAKE_C_FLAGS}:")
 #
 # SimpleITK has large internal libraries, which take an extremely long
 # time to link on windows when they are static. Creating shared
