@@ -67,6 +67,7 @@ __NAMICExternalProjects/__
    > See http://stackoverflow.com/questions/24353267/build-wheel-for-a-package-like-scipy-lacking-dependency-declaration
    >    > 
    >    > Failed building wheel for scipy
+   > 
    > ```bash
    > $ pip wheel numpy
    > $ pip install nipype
