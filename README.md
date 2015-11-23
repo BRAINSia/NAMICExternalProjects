@@ -63,9 +63,9 @@ __NAMICExternalProjects/__
    >    $ pip install mkl
    >    ```
    
-   > ### Scipy Issue:
+   > ### Scipy Issue for Linux:
    > See http://stackoverflow.com/questions/24353267/build-wheel-for-a-package-like-scipy-lacking-dependency-declaration
-   >    > ----------------------------------------
+   >    > 
    >    > Failed building wheel for scipy
    > ```bash
    > $ pip wheel numpy
@@ -82,8 +82,12 @@ __NAMICExternalProjects/__
   $ ccmake ../NAMICExternalProjects
   $ make
   ```
-5. Additional Package for BRAINS Auto Workup:
+5. Additional Package Installation for BRAINS Auto Workup:
 
   ```
   $pip install docopt
+  $pip install pydas
+  $pip install joblib
+  $pip install dipy
+  $pip install future
   ```
