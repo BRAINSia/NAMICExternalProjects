@@ -82,3 +82,8 @@ __NAMICExternalProjects/__
   $ ccmake ../NAMICExternalProjects
   $ make
   ```
+5. Additional Package for BRAINS Auto Workup:
+
+  ```
+  $pip install docopt
+  ```
