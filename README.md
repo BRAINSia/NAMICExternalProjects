@@ -91,4 +91,5 @@ __NAMICExternalProjects/__
   $pip install joblib
   $pip install dipy
   $pip install future
+  $pip install ipython
   ```
