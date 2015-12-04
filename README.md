@@ -45,6 +45,7 @@ __NAMICExternalProjects/__
    ```bash
    $ ${conda_dir}/conda create --name namicAnacondaEnv python=2.7
    export ${conda_dir}:PATH # Add conda build on your PATH. 
+   source activate namicAnacondaEnv
    ```
   
 2. Install SimpleITK Against above Anaconda Python Environment: http://www.itk.org/Wiki/SimpleITK/GettingStarted
