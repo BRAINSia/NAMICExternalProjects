@@ -57,13 +57,15 @@ __NAMICExternalProjects/__
    ```bash
    $ pip install nipype
    ```
-   > ### BLAS/LAPACK for OSX
+   ### Please check out following if you encounter any issues at this stage.
+   
+   > #### BLAS/LAPACK for OSX:
    > See https://www.continuum.io/blog/developer/mkl-optimizations-anaconda for blas/lapack if not installed. 
    >    ```bash
    >    $ pip install mkl
    >    ```
    
-   > ### Scipy Issue for Linux:
+   > #### Scipy Issue for Linux:
    > See http://stackoverflow.com/questions/24353267/build-wheel-for-a-package-like-scipy-lacking-dependency-declaration
    >    > 
    >    > Failed building wheel for scipy
