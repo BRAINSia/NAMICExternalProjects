@@ -66,7 +66,7 @@ __NAMICExternalProjects/__
    > $ pip install mkl
    > ```
    
-   > #### Scipy Issue for Linux:
+   > #### Scipy Issue for Mac/Linux:
    >    >
    >    > Failed building wheel for scipy
    >
@@ -77,6 +77,10 @@ __NAMICExternalProjects/__
    > ```
    >
    > If that does not work try:
+   >
+   > #### Scipy Issue for Linux:
+   >    >
+   >    > Failed building wheel for scipy
    >
    > See http://stackoverflow.com/questions/24353267/build-wheel-for-a-package-like-scipy-lacking-dependency-declaration
    > 
