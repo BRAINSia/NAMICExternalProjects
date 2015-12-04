@@ -110,3 +110,8 @@ __NAMICExternalProjects/__
   $pip install ipython
   $pip install simplejson
   ```
+6. Deactivate Anaconda environment when finished:
+
+  ```
+  $ source deactivate
+  ```
