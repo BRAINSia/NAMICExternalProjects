@@ -67,9 +67,17 @@ __NAMICExternalProjects/__
    >    ```
    
    > #### Scipy Issue for Linux:
-   > See http://stackoverflow.com/questions/24353267/build-wheel-for-a-package-like-scipy-lacking-dependency-declaration
-   >    > 
+   >    >
    >    > Failed building wheel for scipy
+   >
+   > ```bash
+   > $ conda install numpy 
+   > $ conda install scipy
+   > $ pip install nipype
+   > ```
+   >
+   > If that does not work try:
+   > See http://stackoverflow.com/questions/24353267/build-wheel-for-a-package-like-scipy-lacking-dependency-declaration
    > 
    > ```bash
    > $ pip wheel numpy
