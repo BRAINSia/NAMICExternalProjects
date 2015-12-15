@@ -40,7 +40,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
   #set(${proj}_GIT_TAG f9c98baa0a968451f4f8c78a74249c41e61d1966)  # Release 11.0
 
   # When using BRAINSia/nipype.git
-  #set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/nipype.git")
+  set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/nipype.git")
   set(${proj}_GIT_TAG antsDenoise20151215)  # Release 11.0
 
   ExternalProject_Add(${proj}
