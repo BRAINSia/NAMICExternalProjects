@@ -64,7 +64,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/Common.cmake)
 #-----------------------------------------------------------------------------
 if(${PRIMARY_PROJECT_NAME}_SUPERBUILD)
   project(SuperBuild_${PRIMARY_PROJECT_NAME})  # <- NOTE: Project name for pre-requisites is different form main project
-  set(CMAKE_CXX_STANDARD 98) # Supported values are ``98``, ``11`` and ``14``.
+  if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 98) # Supported values are ``98``, ``11`` and ``14``.
+  endif()
   #-----------------------------------------------------------------------------
   # Sanity checks
   #------------------------------------------------------------------------------
@@ -85,7 +87,9 @@ if(${PRIMARY_PROJECT_NAME}_SUPERBUILD)
   return()
 else()
   project(${PRIMARY_PROJECT_NAME})             # <- NOTE: Here is the main project name setting
-  set(CMAKE_CXX_STANDARD 98) # Supported values are ``98``, ``11`` and ``14``.
+  if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 98) # Supported values are ``98``, ``11`` and ``14``.
+  endif()
   include("${CMAKE_CURRENT_SOURCE_DIR}/${PRIMARY_PROJECT_NAME}.cmake")
   return()
 endif()
