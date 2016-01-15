@@ -24,6 +24,11 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
       )
   endif()
+
+  if(${CMAKE_CXX_STANDARD} EQUAL 98  OR NOT TBB_ROOT)
+     message(FATAL_ERROR "When running cmake the first time, you must specify -DCMAKE_CXX_STANDARD:STRING=11 -DTBB_ROOT=(PATH to system TBB)")
+  endif()
+
   ### --- Project specific additions here
   # message("VTK_DIR: ${VTK_DIR}")
   # message("ITK_DIR: ${ITK_DIR}")
@@ -92,12 +97,14 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_ConvertBetweenFileFormats:BOOL=ON
       -DUSE_ImageCalculator:BOOL=ON
       -DUSE_AutoWorkup:BOOL=OFF
+      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+      -DTBB_ROOT:PATH=${TBB_ROOT}
       ${BRAINS_ANTS_PARAMS}
     )
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "aba962329aec2b4f191a2fe3e51d6594e5f8929a") # 2015-12-15
+  set(${proj}_GIT_TAG "93a7a27aceba15e7b9a273113f82c3d8dbed3227") # 20160115 -- First TBB required
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
