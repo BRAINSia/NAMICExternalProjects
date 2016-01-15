@@ -26,7 +26,8 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   endif()
 
   if(${CMAKE_CXX_STANDARD} EQUAL 98  OR NOT TBB_ROOT)
-     message(FATAL_ERROR "When running cmake the first time, you must specify -DCMAKE_CXX_STANDARD:STRING=11 -DTBB_ROOT=(PATH to system TBB)")
+     message(FATAL_ERROR "When running cmake the first time, you must specify:
+        cmake -DCMAKE_CXX_STANDARD:STRING=11 -DTBB_ROOT:PATH=(PATH to system TBB)")
   endif()
 
   ### --- Project specific additions here
@@ -104,7 +105,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "93a7a27aceba15e7b9a273113f82c3d8dbed3227") # 20160115 -- First TBB required
+  set(${proj}_GIT_TAG "536ae7c59d8ef167e73986a502b7e98ad3b7ec64") # 20160115 -- First TBB required
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
