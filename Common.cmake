@@ -35,7 +35,7 @@ if( NOT USE_ANTs )
 option(USE_ANTs                           "Build ANTs"                           ON)
 endif()
 
-option(${PRIMARY_PROJECT_NAME}_USE_QT "Find and use Qt with VTK to build GUI Tools" ON)
+option(${PRIMARY_PROJECT_NAME}_USE_QT "Find and use Qt with VTK to build GUI Tools" OFF)
 mark_as_advanced(${PRIMARY_PROJECT_NAME}_USE_QT)
 
 if(${PRIMARY_PROJECT_NAME}_USE_QT)
@@ -45,8 +45,7 @@ if(${PRIMARY_PROJECT_NAME}_USE_QT)
   endif()
 endif()
 
-cmake_dependent_option(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT "Use python with QT" OFF
-  "${PRIMARY_PROJECT_NAME}_USE_QT" OFF)
+cmake_dependent_option(${PRIMARY_PROJECT_NAME}_USE_PYTHONQT "Use python with QT" OFF "${PRIMARY_PROJECT_NAME}_USE_QT" OFF)
 
 if( ${PRIMARY_PROJECT_NAME}_USE_PYTHONQT ) ## This is to force configuration of python early.
   ## NIPYPE is not stable under python 2.6, so require 2.7 when using autoworkup
