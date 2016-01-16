@@ -30,8 +30,8 @@ endif()
 #-----------------------------------------------------------------------------
 option(USE_BRAINSFit                      "Build BRAINSFit"                      ON)
 option(USE_BRAINSSnapShotWriter           "Build BRAINSSnapShotWriter"           ON)
-if( NOT USE_ANTs )
-option(USE_ANTs                           "Build ANTs"                           ON)
+if( NOT USE_ANTS )
+option(USE_ANTS                           "Build ANTs"                           ON)
 endif()
 
 option(${PRIMARY_PROJECT_NAME}_USE_QT "Find and use Qt with VTK to build GUI Tools" OFF)
