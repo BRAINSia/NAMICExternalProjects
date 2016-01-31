@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 2.8.9) #2.8.9 needed for ExternalProject Simplification
-cmake_policy(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR) # 3.1.0 NEEDED for CMAKE_CXX_STANDARD suppor
+
+cmake_policy(VERSION 3.1.0)
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 OLD)
 endif()
