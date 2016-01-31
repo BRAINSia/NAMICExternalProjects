@@ -2,16 +2,12 @@
 set(proj ITKv4)
 set(ITK_EXTERNAL_NAME ${proj})
 
-set(_require_vtk ${ITK_REQUIRES_VTK})
-if(${PRIMARY_PROJECT_NAME}_USE_QT ) ## If building with GUI, then need ITKVtkGlue
-  set(_require_vtk TRUE)
-endif()
-
 # Set dependency list
 set(${proj}_DEPENDENCIES "zlib")
-if(_require_vtk)
+#if(IS_DIRECTORY ${VTK_DIR}) ## USE VTK if it is found, VTK is sometimes needed even without GUI
+  set(_require_vtk TRUE)
   list(APPEND ${proj}_DEPENDENCIES VTK)
-endif()
+#endif()
 #if(${CMAKE_PROJECT_NAME}_BUILD_DICOM_SUPPORT)
   list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
