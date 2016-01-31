@@ -1,8 +1,8 @@
 
 set(proj VTK)
 
-set(${proj}_REQUIRED_VERSION "6.10")  #If a required version is necessary, then set this, else leave blank
-set(VTK_VERSION_MAJOR 6)
+set(${proj}_REQUIRED_VERSION "7.10")  #If a required version is necessary, then set this, else leave blank
+set(VTK_VERSION_MAJOR 7)
 
 # Set dependency list
 set(${proj}_DEPENDENCIES "zlib")
