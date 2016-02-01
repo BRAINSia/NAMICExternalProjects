@@ -31,8 +31,6 @@ if(APPLE)
     )
 endif()
 
-
-
 set(PRIMARY_PROJECT_NAME NAMICExternalProjects)
 ## NOTE THERE SHOULD BE NO PROJECT STATEMENT HERE!
 ## This file acts as a simple switch to initiate
@@ -96,4 +94,3 @@ else()
 endif()
 
 message(FATAL_ERROR "You should never reach this point !")
-

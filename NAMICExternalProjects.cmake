@@ -26,6 +26,6 @@ include(${SlicerExecutionModel_CMAKE_DIR}/SEMMacroBuildCLI.cmake)
 #-----------------------------------------------------------------------
 include(${PROJECT_NAME}ExternalData)
 
-add_subdirectory(src)
+#add_subdirectory(src)
 
 ExternalData_Add_Target( ${PROJECT_NAME}FetchData )  # Name of data management target

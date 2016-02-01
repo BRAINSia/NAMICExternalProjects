@@ -348,3 +348,5 @@ ExternalProject_Add_Step(${proj} forcebuild
   DEPENDEES build
   ALWAYS 1
   )
+
+add_subdirectory(src)
