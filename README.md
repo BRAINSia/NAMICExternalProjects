@@ -90,12 +90,17 @@ __NAMICExternalProjects/__
    > ```
    
 4. TBB Build: https://www.threadingbuildingblocks.org/download
-    Download source code
-    cd into "tbb44_20151115oss"
-    type make
-    mv macos_intel64_clang_cc4.2.1_os10.10.4_release/ ../lib
-    cmake -DCMAKE_CXX_STANDARD:STRING=11 -DTBB_ROOT:PATH=/Shared/sinapse/scratch/eunyokim/src/tbb44_20151115oss  ../NAMICExternalProjects  -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9
     
+   > Download source code
+    
+   ```bash
+    $ cd "tbb44_20151115oss"
+    $ make
+    $ mv macos_intel64_clang_cc4.2.1_os10.10.4_release/ ../lib
+    
+    $ cd Namic_build_Dir
+    $ cmake -DCMAKE_CXX_STANDARD:STRING=11 -DTBB_ROOT:PATH=/Shared/sinapse/scratch/eunyokim/src/tbb44_20151115oss  ../NAMICExternalProjects  -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9
+    ```
 5. Build Namic against all above:
 
   ```bash
