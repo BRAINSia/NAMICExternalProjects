@@ -89,8 +89,14 @@ __NAMICExternalProjects/__
    > $ pip install nipype
    > ```
    
-   
-4. Build Namic against all above:
+4. TBB Build: https://www.threadingbuildingblocks.org/download
+    Download source code
+    cd into "tbb44_20151115oss"
+    type make
+    mv macos_intel64_clang_cc4.2.1_os10.10.4_release/ ../lib
+    cmake -DCMAKE_CXX_STANDARD:STRING=11 -DTBB_ROOT:PATH=/Shared/sinapse/scratch/eunyokim/src/tbb44_20151115oss  ../NAMICExternalProjects  -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9
+    
+5. Build Namic against all above:
 
   ```bash
   $ git clone https://github.com/BRAINSia/NAMICExternalProjects.git
@@ -99,7 +105,7 @@ __NAMICExternalProjects/__
   $ ccmake ../NAMICExternalProjects
   $ make
   ```
-5. Additional Package Installation for BRAINS Auto Workup:
+6. Additional Package Installation for BRAINS Auto Workup:
 
   ```
   $pip install docopt
@@ -110,7 +116,7 @@ __NAMICExternalProjects/__
   $pip install ipython
   $pip install simplejson
   ```
-6. Deactivate Anaconda environment when finished:
+7. Deactivate Anaconda environment when finished:
 
   ```
   $ source deactivate
