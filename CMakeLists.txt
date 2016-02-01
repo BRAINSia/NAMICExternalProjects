@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR) # 3.1.0 NEEDED for CMAKE_CXX_STANDARD suppor
+cmake_minimum_required(VERSION 3.2.0 FATAL_ERROR) # 3.1.0 NEEDED for CMAKE_CXX_STANDARD suppor
 
-cmake_policy(VERSION 3.1.0)
+cmake_policy(VERSION 3.2.0)
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 OLD)
 endif()
