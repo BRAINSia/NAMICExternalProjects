@@ -8,6 +8,12 @@ set(ALL_PROGS_LIST
   )
 
 add_executable(TestProgram TestProgram.cxx)
+
+## Only test for compatible compilers
+if (CMAKE_C_COMPILER_ID MATCHES GNU  OR
+    CMAKE_C_COMPILER_ID MATCHES AppleClang  OR
+    CMAKE_C_COMPILER_ID MATCHES Clang)
+
 if( NOT ( CMAKE_CXX_STANDARD EQUAL 98 ) )
   get_property(known_features GLOBAL PROPERTY CMAKE_CXX_KNOWN_FEATURES)
   set(BABC_CXX11_Required_Features
@@ -27,6 +33,7 @@ if( NOT ( CMAKE_CXX_STANDARD EQUAL 98 ) )
       message(FATAL_ERROR "MISSING REQUIRED COMPILER FEATURE: ${reqFeat}")
     endif()
   endforeach()
+endif()
 endif()
 
 #if(BUILD_TESTING AND NOT Slicer_BUILD_${PROJECT_NAME})
