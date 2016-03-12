@@ -31,7 +31,7 @@ if(${PRIMARY_PROJECT_NAME}_USE_QT)
 endif()
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-set(${proj}_GIT_TAG 9d030a579ec8693debf78c968cdf350b7ecc6d7d) # 20160215 Fix DenoiseImage
+set(${proj}_GIT_TAG 28fcca4c214626cee25276ebf98db638805aa848) # 20160311 Fixed CenterROIIntializer
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
