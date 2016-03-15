@@ -41,7 +41,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG b958ffe5117a147ebd993ef772b6490f878e0859 ) # 20160216 - KdTree memory optimization for performance
+  set(${proj}_GIT_TAG 5e64f6a178fc90f4e29536dd9e62fd71d28b510b ) # 20160314
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
   if(NOT ${CMAKE_PROJECT_NAME}ITKV3_COMPATIBILITY AND CMAKE_CL_64)
