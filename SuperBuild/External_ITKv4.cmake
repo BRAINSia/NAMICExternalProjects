@@ -5,9 +5,10 @@ set(ITK_EXTERNAL_NAME ${proj})
 # Set dependency list
 set(${proj}_DEPENDENCIES "zlib")
 #if(IS_DIRECTORY ${VTK_DIR}) ## USE VTK if it is found, VTK is sometimes needed even without GUI
-  set(_require_vtk TRUE)
-  list(APPEND ${proj}_DEPENDENCIES VTK)
+#  set(_require_vtk TRUE)
+#  list(APPEND ${proj}_DEPENDENCIES VTK)
 #endif()
+set(_require_vtk FALSE)
 #if(${CMAKE_PROJECT_NAME}_BUILD_DICOM_SUPPORT)
   list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
@@ -32,6 +33,11 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   if(_require_vtk)
     list(APPEND ITK_VTK_OPTIONS
       -DModule_ITKVtkGlue:BOOL=ON
+      -DVTK_DIR:PATH=${VTK_DIR}
+      )
+  else()
+    list(APPEND ITK_VTK_OPTIONS
+      -DModule_ITKVtkGlue:BOOL=OFF
       -DVTK_DIR:PATH=${VTK_DIR}
       )
   endif()

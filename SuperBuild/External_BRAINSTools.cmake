@@ -1,6 +1,7 @@
 set(proj        BRAINSTools) #This local name
 
-set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel VTK DCMTK JPEG TIFF Boost teem OpenCV)
+#set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel VTK DCMTK JPEG TIFF Boost teem OpenCV)
+set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel DCMTK JPEG TIFF Boost teem OpenCV)
 if(USE_ANTS)
   list(APPEND ${proj}_DEPENDENCIES ANTs)
 endif()
@@ -64,8 +65,8 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DBRAINSTools_SUPERBUILD:BOOL=OFF
       -DUSE_SYSTEM_ITK:BOOL=ON
       -DITK_DIR:PATH=${ITK_DIR}
-      -DUSE_SYSTEM_VTK:BOOL=ON
-      -DVTK_DIR:PATH=${VTK_DIR}
+      #-DUSE_SYSTEM_VTK:BOOL=ON
+      #-DVTK_DIR:PATH=${VTK_DIR}
       -DUSE_SYSTEM_Teem:BOOL=ON
       -DTeem_DIR:PATH=${Teem_DIR}
       -D${proj}_USE_QT:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT}

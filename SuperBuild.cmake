@@ -72,7 +72,7 @@ find_package(Git REQUIRED)
 # in order to build VTK if ${PRIMARY_PROJECT_NAME}_USE_QT is set.
 if(${PRIMARY_PROJECT_NAME}_USE_QT)
   CMAKE_DEPENDENT_OPTION(
-    BUILD_DTIPrep "BUILD_DTIPrep option" OFF "${PRIMARY_PROJECT_NAME}_USE_QT" ON
+    BUILD_DTIPrep "BUILD_DTIPrep option" OFF "${PRIMARY_PROJECT_NAME}_USE_QT" OFF
   )
   set(QT_DEPENDENT_PACKAGES ) # vv package can also be built but was causing problems
   if(BUILD_DTIPrep)  # Do not build DTIPrep until it behave better. Hans 2015-01-30
@@ -258,7 +258,6 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   OpenCV
   Eigen
   SlicerExecutionModel
-  VTK
   DCMTK
   ${ITK_EXTERNAL_NAME}
   JPEG
@@ -266,13 +265,10 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   DoubleConvert
   NIPYPE
   #  This does not build currently  MultiAtlas
-  DTIReg
-  # THIS DOES NOT WORK YET  DTIProcess
-  DTIProcess
+  #VTK DTIReg DTIProcess UKF
   BRAINSTools
   teem
   SlicerJointRicianAnisotropicLMMSEFilter
-  UKF
   UnbiasedNonLocalMeans
   ANTs
   ${QT_DEPENDENT_PACKAGES}

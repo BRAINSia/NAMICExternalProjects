@@ -4,7 +4,7 @@ set(proj teem)
 # Set dependency list
 set(${proj}_DEPENDENCIES zlib)
 if(NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_teem)
-  list(APPEND ${proj}_DEPENDENCIES VTK)
+  list(APPEND ${proj}_DEPENDENCIES)
 endif()
 
 # Include dependent projects if any
