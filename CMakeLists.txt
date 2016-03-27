@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 3.2.0 FATAL_ERROR) # 3.1.0 NEEDED for CMAKE_CXX_S
 
 cmake_policy(VERSION 3.2.0)
 if(POLICY CMP0048)
-  cmake_policy(SET CMP0048 OLD)
+  cmake_policy(SET CMP0048 OLD) #OLD project() behavior for setting VERSION variable
 endif()
 if(POLICY CMP0017)
-  cmake_policy(SET CMP0017 OLD)
+  cmake_policy(SET CMP0017 OLD) #Prefer files from the CMake module directory when including from there
 endif()
 foreach(p
-  CMP0054 # CMake 3.1
+  CMP0054 # CMake 3.1 Only interpret ``if()`` arguments as variables or keywords when unquoted.
+  CMP0042 # ``MACOSX_RPATH`` is enabled by default.
+  CMP0025 # AppleClang vs. regular Clang
   )
   if(POLICY ${p})
     cmake_policy(SET ${p} NEW)
@@ -19,12 +21,11 @@ endforeach()
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include(ExternalProject)
 include(ExternalProjectDependency)
-
 #-----------------------------------------------------------------------------
 if(APPLE)
   # Note: By setting CMAKE_OSX_* variables before any enable_language() or project() calls,
   #       we ensure that the bitness, and C++ standard library will be properly detected.
-  include(SlicerBlockSetCMakeOSXVariables)
+  include(BlockSetCMakeOSXVariables)
   mark_as_superbuild(
     VARS CMAKE_OSX_ARCHITECTURES:STRING CMAKE_OSX_SYSROOT:PATH CMAKE_OSX_DEPLOYMENT_TARGET:STRING
     ALL_PROJECTS
