@@ -1,8 +1,12 @@
 set(proj        BRAINSTools) #This local name
 
-set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel VTK DCMTK JPEG TIFF Boost teem OpenCV)
+set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel DCMTK JPEG TIFF teem OpenCV)
+# Boost
 if(USE_ANTS)
   list(APPEND ${proj}_DEPENDENCIES ANTs)
+endif()
+if(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
+  list(APPEND ${proj}_DEPENDENCIES VTK )
 endif()
 
 # Set dependency list

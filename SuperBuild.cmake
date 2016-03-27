@@ -258,21 +258,15 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   OpenCV
   Eigen
   SlicerExecutionModel
-  VTK
   DCMTK
   ${ITK_EXTERNAL_NAME}
   JPEG
   GDCM
   DoubleConvert
   NIPYPE
-  #  This does not build currently  MultiAtlas
-  DTIReg
-  # THIS DOES NOT WORK YET  DTIProcess
-  DTIProcess
   BRAINSTools
   teem
   SlicerJointRicianAnisotropicLMMSEFilter
-  UKF
   UnbiasedNonLocalMeans
   ANTs
   ${QT_DEPENDENT_PACKAGES}
@@ -286,6 +280,16 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   #LogSymmetricDemons
   #python
   )
+if(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
+  list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES
+  VTK
+  #  This does not build currently  MultiAtlas
+  DTIReg
+  # THIS DOES NOT WORK YET  DTIProcess
+  DTIProcess
+  UKF
+)
+endif()
 
 # Use Anaconda version list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES SimpleITK)
 # Use Anaconda version list(APPEND SimpleITK_DEPENDENCIES PCRE Swig)
