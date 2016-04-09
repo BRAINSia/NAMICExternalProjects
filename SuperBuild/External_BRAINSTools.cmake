@@ -109,7 +109,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "a237e07790c28328d592dc59e10e26adf7b70f36") # 20160408 BCD updates
+  set(${proj}_GIT_TAG "12082e069ea279e94e9630cdd95d004e080c61f0") # 20160408 BCD updates + ANTs Fixes
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
