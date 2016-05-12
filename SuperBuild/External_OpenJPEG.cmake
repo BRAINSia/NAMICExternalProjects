@@ -40,12 +40,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
 
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY "http://openjpeg.googlecode.com/svn/trunk")
-  set(${proj}_SVN_REVISION r2995) #2015-01-30 New Repository.
+  set(${proj}_REPOSITORY "${git_protocol}://github.com/uclouvain/openjpeg.git")
+  set(${proj}_GIT_TAG "8030b4d6df267126d79c3b8b608a7619d5329b60") # release 2.1.0
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    SVN_REPOSITORY ${${proj}_REPOSITORY}
-    SVN_REVISION -r ${${proj}_SVN_REVISION}
+    GIT_REPOSITORY ${${proj}_REPOSITORY}
+    GIT_TAG ${${proj}_GIT_TAG}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
     BINARY_DIR ${proj}-build
     LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
