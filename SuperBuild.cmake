@@ -83,6 +83,12 @@ else()
   set(QT_DEPENDENT_PACKAGES "")
 endif()
 
+if(NOT ${PRIMARY_PROJECT_NAME}_USE_QT)
+  message("NOTE: Following toolkit is dependent to Qt:
+          - DTIPrep
+          You need to set ${PRIMARY_PROJECT_NAME}_USE_QT to ON to build above application.")
+endif()
+
 #-----------------------------------------------------------------------------
 # Enable and setup External project global properties
 #-----------------------------------------------------------------------------
@@ -289,6 +295,14 @@ if(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
   DTIProcess
   UKF
 )
+endif()
+
+if(NOT ${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
+  message("NOTE: Following toolkits are dependent to VTK:
+           - DTIReg
+           - DTIProcess
+           - UKF
+           You need to set ${PRIMARY_PROJECT_NAME}_REQUIRES_VTK to ON to build above applications.")
 endif()
 
 # Use Anaconda version list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES SimpleITK)
