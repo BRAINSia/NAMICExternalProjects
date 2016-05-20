@@ -32,6 +32,11 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DDCMTK_WITH_WRAP:BOOL=OFF   # CTK does not build on Mac with this option turned ON due to library dependencies missing
       )
   endif()
+  if(NOT ( ${CMAKE_CXX_STANDARD} LESS 11 ) )
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
+      -DDCMTK_USE_CXX11_STL:BOOL=ON
+    )
+  endif()
 
   # DCMTK-3.6.1_20160216 + patch to avoid unneeded recompilation
   set(${proj}_REPOSITORY ${git_protocol}://github.com/commontk/DCMTK)
