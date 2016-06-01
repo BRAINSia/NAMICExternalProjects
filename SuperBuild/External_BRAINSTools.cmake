@@ -109,7 +109,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "5bccb17692f4fdc5a040c24075373f2f5d62805e") # 20160524 Write json info to disk
+  set(${proj}_GIT_TAG "b5e27412868ec9834814318fac3b04e3de95b451") # 20160531 Improve masking and registration and fixing
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
