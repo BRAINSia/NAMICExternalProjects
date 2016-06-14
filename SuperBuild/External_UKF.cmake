@@ -43,7 +43,7 @@ set(${proj}_CMAKE_OPTIONS
 ### --- End Project specific additions
 #set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
 set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
-set(${proj}_GIT_TAG "360d4a419eb267437860cda27e785f227c4cc4f7") # Fixed writing infor to vtp files (i.e. FA)
+set(${proj}_GIT_TAG "f6d548055a229f48abdddc8d930749397cf1cba6") # Fixed writing infor to vtp files (i.e. FA)
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
