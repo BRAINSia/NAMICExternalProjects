@@ -18,6 +18,18 @@ foreach(p
 endforeach()
 
 #-----------------------------------------------------------------------------
+# Check for common error case,  can not build with anaconda on path
+string(REPLACE ":" ";" LOCAL_PATH "$ENV{PATH}")
+foreach(mypath in ${LOCAL_PATH})
+  string(REGEX MATCH "anaconda" ANACONDA_PATH ${mypath})
+  if( "${ANACONDA_PATH}" MATCHES "anaconda")
+    message(FATAL_ERROR "ERROR: Can not build when anaconda is on the path: ${mypath}, due to library incompatibilieis")
+  endif()
+endforeach()
+
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 include(ExternalProject)
 include(ExternalProjectDependency)
