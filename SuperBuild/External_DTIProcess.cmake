@@ -33,7 +33,7 @@ set(${proj}_CMAKE_OPTIONS
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/DTIProcessToolkit.git")
-set(${proj}_GIT_TAG "58ddd8113c9f679e9381b1d98c0db39549513de9")
+set(${proj}_GIT_TAG "da9056cf3113ffa86fdc16d9132da254afc28fad")
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}

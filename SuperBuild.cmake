@@ -147,6 +147,7 @@ mark_as_superbuild(
   ALL_PROJECTS
 )
 
+
 option(BUILD_CALATK "build the calatk project" ON)
 set(CALATK_DEP)
 if(${BUILD_CALATK})
@@ -313,6 +314,11 @@ if(BUILD_STYLE_UTILS)
   list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES Cppcheck KWStyle ) #Uncrustify)
 endif()
 
+mark_as_superbuild(
+  VARS
+    tbb_DIR:PATH
+  ALL_PROJECTS
+)
 
 #-----------------------------------------------------------------------------
 # Enable and setup External project global properties
@@ -354,6 +360,7 @@ ExternalProject_Add(${proj}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
     -D${PRIMARY_PROJECT_NAME}_SUPERBUILD:BOOL=OFF    #NOTE: VERY IMPORTANT reprocess top level CMakeList.txt
+    -Dtbb_DIR:PATH=${tbb_DIR}
   INSTALL_COMMAND ""
   )
 

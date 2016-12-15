@@ -9,6 +9,10 @@ if(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
   list(APPEND ${proj}_DEPENDENCIES VTK )
 endif()
 
+if(USE_tbb) ## Needed for BRAINSABC
+  list(APPEND ${proj}_DEPENDENCIES tbb)
+endif()
+
 # Set dependency list
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
@@ -29,9 +33,9 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       )
   endif()
 
-  if(${CMAKE_CXX_STANDARD} EQUAL 98  OR NOT TBB_ROOT)
+  if(${CMAKE_CXX_STANDARD} EQUAL 98 )
      message(FATAL_ERROR "When running cmake the first time, you must specify:
-        cmake -DCMAKE_CXX_STANDARD:STRING=11 -DTBB_ROOT:PATH=(PATH to system TBB)")
+        cmake -DCMAKE_CXX_STANDARD:STRING=11 ")
   endif()
 
   ### --- Project specific additions here
@@ -78,6 +82,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
       -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
+      -DUSE_AutoWorkup:BOOL=ON #USE_BRAINSABC requires USE_Autoworkup
       -DUSE_BRAINSABC:BOOL=ON
       -DUSE_BRAINSConstellationDetector:BOOL=ON
       -DUSE_BRAINSContinuousClass:BOOL=ON
@@ -101,15 +106,14 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_ICCDEF:BOOL=OFF
       -DUSE_ConvertBetweenFileFormats:BOOL=ON
       -DUSE_ImageCalculator:BOOL=ON
-      -DUSE_AutoWorkup:BOOL=OFF
       -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-      -DTBB_ROOT:PATH=${TBB_ROOT}
+      -Dtbb_DIR:PATH=${tbb_DIR}
       ${BRAINS_ANTS_PARAMS}
     )
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "fe408f49fd757691190a0282ab71a14d4bafa83a") # 20160824
+  set(${proj}_GIT_TAG "8353e3f6957ac4f9e42c716128dac35827cbaa99") # 20161215
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}

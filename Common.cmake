@@ -40,6 +40,8 @@ if(${ITK_VERSION_MAJOR} VERSION_LESS ${expected_ITK_VERSION_MAJOR})
                       "  ${ITK_CONFIG}, version: ${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}.${ITK_VERSION_PATCH}\n")
 endif()
 
+set(USE_tbb ON)
+
 
 #-----------------------------------------------------------------------------
 # Set a default build type if none was specified
