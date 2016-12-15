@@ -277,21 +277,19 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   UnbiasedNonLocalMeans
   ANTs
   ${QT_DEPENDENT_PACKAGES}
+
 ## These packages are not yet needed, but will evenutally be needed.
   #qhull
   #${CALATK_DEP}
   #tract_querier
-  #BatchMake
-  #  -- This recursively builds DTIProcess, but does not pass the flags DTI_Tract_Stat
-  # niral_utilities
   #LogSymmetricDemons
-  #python
   )
 if(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
   list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   VTK
   #  This does not build currently  MultiAtlas
-  DTIReg
+  # NOT CURRENTLY USED DTIReg
+  #   BatchMake  Needed by DTIReg
   # THIS DOES NOT WORK YET  DTIProcess
   DTIProcess
   UKF
