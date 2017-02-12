@@ -40,7 +40,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG f3de8cf2626cc64cc948307b39e80c7a8a29b8be ) # 20161215 sform and qform updates
+  set(${proj}_GIT_TAG 4adc7ddc636f9f5651555c2a3d20f1d4b662df7e ) # 20170211
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
   if(NOT ${CMAKE_PROJECT_NAME}ITKV3_COMPATIBILITY AND CMAKE_CL_64)
