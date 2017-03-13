@@ -86,6 +86,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DModule_MGHIO:BOOL=ON        #To provide FreeSurfer Compatibility Required!
       -DITK_USE_FFTWD:BOOL=ON
       -DITK_USE_FFTWF:BOOL=ON
+      -DITK_USE_GOLD_LINKER:BOOL=OFF ## RHEL7 fails to build GDCM with gold linker
       ${ITK_VTK_OPTIONS}
     INSTALL_COMMAND ""
     DEPENDS
