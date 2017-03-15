@@ -23,10 +23,8 @@ set(${proj}_CMAKE_OPTIONS
   -DBUILD_TESTING:BOOL=OFF
   )
 ### --- End Project specific additions
-#set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/tbb.git)
-#set(${proj}_GIT_TAG AddCMakeToOfficialTBBRepository)  # BRAINSTools_CompilerCleanup
-set(${proj}_REPOSITORY ${git_protocol}://github.com/wjakob/tbb.git)
-set(${proj}_GIT_TAG 4f867c82e7e009d9e48ca0c1ba597b90333e4a4e)  #
+set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/tbb.git)
+set(${proj}_GIT_TAG AddCMakeToOfficialTBBRepository)  # BRAINSTools_CompilerCleanup
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
