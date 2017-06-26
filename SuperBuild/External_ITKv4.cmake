@@ -40,7 +40,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(${proj}_REPOSITORY ${git_protocol}://itk.org/ITK.git)
-  set(${proj}_GIT_TAG a568c36baedd12f4696e053bc4d1fbaf5a1bf47c ) # 20170623
+  set(${proj}_GIT_TAG 892447058fc2f2392100ae6ef6290a152fbc8476 ) # 20170626 Fixed N4 fft to be in double precision
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
   if(NOT ${CMAKE_PROJECT_NAME}ITKV3_COMPATIBILITY AND CMAKE_CL_64)
