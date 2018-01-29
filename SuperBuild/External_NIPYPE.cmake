@@ -38,6 +38,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
   set(${proj}_REPOSITORY "${git_protocol}://github.com/nipy/nipype.git")
   #set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/nipype.git")
   set(${proj}_GIT_TAG dd1ed4f0d5735c69c1743f29875acf09d23a62e0)  #20170315 Fix doctest
+  set(${proj}_GIT_TAG dd2fb79fd9d75823b022907c987f3649e7360a56)  #20180129 The latest NIPYPE
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
