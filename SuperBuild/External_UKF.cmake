@@ -1,7 +1,7 @@
 set(proj        UKF) #This local name
 
 # Set dependency list
-set(${proj}_DEPENDENCIES VTK teem Boost SlicerExecutionModel)
+set(${proj}_DEPENDENCIES VTK teem Eigen Boost SlicerExecutionModel)
 
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
@@ -27,6 +27,7 @@ set(${proj}_CMAKE_OPTIONS
   -DBUILD_TESTING:BOOL=OFF
   -DUKF_SUPERBUILD:BOOL=OFF
   -DEigen_INCLUDE_DIR:PATH=${Eigen_INCLUDE_DIR}
+  -DEP_Eigen_INCLUDE_DIR:PATH=${Eigen_INCLUDE_DIR}
   -DTeem_DIR:PATH=${Teem_DIR}
   -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
   -DSlicer_SOURCE_DIR:BOOL=ON ## THIS is a hack to prevent looking for slicer
@@ -43,7 +44,7 @@ set(${proj}_CMAKE_OPTIONS
 ### --- End Project specific additions
 #set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
 set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
-set(${proj}_GIT_TAG "999f14d68df59512b2c8f01e4a485eee9008b75b") # Fixed writing infor to vtp files (i.e. FA)
+set(${proj}_GIT_TAG "3d5f5780567a5aec42d3bd0cea366cf577298872") # 20180414
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}

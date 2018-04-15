@@ -2,7 +2,7 @@
 set(proj SimpleITK)
 
 # Set dependency list
-set(${proj}_DEPENDENCIES ITKv4 Swig python VTK)
+set(${proj}_DEPENDENCIES ITKv5 Swig python VTK)
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)

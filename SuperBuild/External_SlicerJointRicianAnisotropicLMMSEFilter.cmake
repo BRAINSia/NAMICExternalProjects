@@ -1,7 +1,7 @@
 set(proj        SlicerJointRicianAnisotropicLMMSEFilter) #This local name
 
 # Set dependency list
-set(${proj}_DEPENDENCIES teem ITKv4 SlicerExecutionModel)
+set(${proj}_DEPENDENCIES teem ITKv5 SlicerExecutionModel)
 
 # ExternalProject_Include_Dependencies
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)

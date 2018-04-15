@@ -12,12 +12,12 @@ superbuild_stack_push(CACHED_proj ${proj})
 set(extProjName UnbiasedNonLocalMeans)
 set(proj UnbiasedNonLocalMeans)
 
-set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel )
+set(${proj}_DEPENDENCIES ITKv5 SlicerExecutionModel )
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj}  PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 set(${proj}_GIT_REPOSITORY "git://github.com/BRAINSia/UnbiasedNonLocalMeans.git")
-set(${proj}_GIT_TAG d5dec2749b64bb6e9a103c5b1c4fb50ca47282fd)  # "master"
+set(${proj}_GIT_TAG 80ae4451473bb8bec7b91682a1bbcbf92d5146ab)  # 20180414
 
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}

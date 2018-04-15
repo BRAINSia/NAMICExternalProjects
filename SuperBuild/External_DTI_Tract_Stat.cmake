@@ -20,7 +20,7 @@ mark_as_superbuild(
 endif()
 
 # Set dependency list
-set(${proj}_DEPENDENCIES QWT ITKv4 VTK SlicerExecutionModel)
+set(${proj}_DEPENDENCIES QWT ITKv5 VTK SlicerExecutionModel)
 #if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()

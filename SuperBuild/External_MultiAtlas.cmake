@@ -6,7 +6,7 @@ if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
 endif()
 
 # Set dependency list
-set(${proj}_DEPENDENCIES SlicerExecutionModel ITKv4)
+set(${proj}_DEPENDENCIES SlicerExecutionModel ITKv5)
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 ### --- Project specific additions here

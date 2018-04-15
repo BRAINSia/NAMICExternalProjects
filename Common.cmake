@@ -1,15 +1,82 @@
 #-----------------------------------------------------------------------------
-# Update CMake module path
-#------------------------------------------------------------------------------
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/CMake)
+include(ExternalProject)
+include(ExternalProjectDependency) #<-- Must be after project() calls
+include(ExternalProjectGenerateProjectDescription)
+#-----------------------------------------------------------------------------
+# Set a default build type if none was specified
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  mark_as_advanced(CMAKE_BUILD_TYPE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithDebInfo")
+
+  mark_as_superbuild(VARS CMAKE_BUILD_TYPE ALL_PROJECTS)
+endif()
 
 #-----------------------------------------------------------------------------
-enable_language(C)
-enable_language(CXX)
+if(APPLE)
+#-----------------------------------------------------------------------------
+# Platform check
+#-----------------------------------------------------------------------------
+  # See CMake/Modules/Platform/Darwin.cmake)
+  #   6.x == Mac OSX 10.2 (Jaguar)
+  #   7.x == Mac OSX 10.3 (Panther)
+  #   8.x == Mac OSX 10.4 (Tiger)
+  #   9.x == Mac OSX 10.5 (Leopard)
+  #  10.x == Mac OSX 10.6 (Snow Leopard)
+  #  11.x == Mac OSX 10.7 (Lion)
+  #  12.x == Mac OSX 10.8 (Mountain Lion)
+  if (DARWIN_MAJOR_VERSION LESS "13")
+    message(FATAL_ERROR "Only Mac OSX >= 10.9 are supported !")
+  endif()
 
-include(ExternalProjectDependency)
+  ## RPATH-RPATH-RPATH
+  ## https://cmake.org/Wiki/CMake_RPATH_handling
+  ## Always full RPATH
+  # In many cases you will want to make sure that the required libraries are
+  # always found independent from LD_LIBRARY_PATH and the install location. Then
+  # you can use these settings:
+
+  # use, i.e. don't skip the full RPATH for the build tree
+  set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+
+  # when building, don't use the install RPATH already
+  # (but later on when installing)
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+
+  # add the automatically determined parts of the RPATH
+  # which point to directories outside the build tree to the install RPATH
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+  # the RPATH to be used when installing, but only if it's not a system directory
+  list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+  if("${isSystemDir}" STREQUAL "-1")
+     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  endif("${isSystemDir}" STREQUAL "-1")
+  ## RPATH-RPATH-RPATH
+
+  # Note: By setting CMAKE_OSX_* variables before any enable_language() or project() calls,
+  #       we ensure that the bitness, and C++ standard library will be properly detected.
+  include(BlockSetCMakeOSXVariables)
+  mark_as_superbuild(
+    VARS CMAKE_OSX_ARCHITECTURES:STRING CMAKE_OSX_SYSROOT:PATH CMAKE_OSX_DEPLOYMENT_TARGET:STRING
+    ALL_PROJECTS
+    )
+endif()
+
+#-----------------------------------------------------------------------------
+# Sanity checks
+#------------------------------------------------------------------------------
+include(PreventInSourceBuilds)
+include(PreventInBuildInstalls)
+include(itkCheckSourceTree)
 
 include(CMakeDependentOption)
+include(CMakeParseArguments)
 
 option(${PRIMARY_PROJECT_NAME}_INSTALL_DEVELOPMENT "Install development support include and libraries for external packages." OFF)
 mark_as_advanced(${PRIMARY_PROJECT_NAME}_INSTALL_DEVELOPMENT)
@@ -20,6 +87,8 @@ if(Slicer_BUILD_BRAINSTOOLS)
 else()
   option(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK "Determine if tools depending on VTK need to be built." OFF)
 endif()
+# Enable this option to avoid unnecessary re-compilation associated with command line module
+set(GENERATECLP_USE_MD5 ON)
 mark_as_advanced(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
 
 option(${LOCAL_PROJECT_NAME}_INSTALL_DEVELOPMENT "Install development support include and libraries for external packages." OFF)
@@ -27,9 +96,9 @@ mark_as_advanced(${LOCAL_PROJECT_NAME}_INSTALL_DEVELOPMENT)
 
 
 set(USE_ITKv4 ON)
-set(ITK_VERSION_MAJOR 4 CACHE STRING "Choose the expected ITK major version to build BRAINS only version 4 allowed.")
+set(ITK_VERSION_MAJOR 5 CACHE STRING "Choose the expected ITK major version to build BRAINS only version 4 allowed.")
 # Set the possible values of ITK major version for cmake-gui
-set_property(CACHE ITK_VERSION_MAJOR PROPERTY STRINGS "4")
+set_property(CACHE ITK_VERSION_MAJOR PROPERTY STRINGS "5")
 set(expected_ITK_VERSION_MAJOR ${ITK_VERSION_MAJOR})
 if(${ITK_VERSION_MAJOR} VERSION_LESS ${expected_ITK_VERSION_MAJOR})
   # Note: Since ITKv3 doesn't include a ITKConfigVersion.cmake file, let's check the version
@@ -43,15 +112,6 @@ endif()
 set(USE_tbb ON)
 
 
-#-----------------------------------------------------------------------------
-# Set a default build type if none was specified
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to 'Release' as none was specified.")
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-  set(CTEST_CONFIGURATION_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of test." FORCE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
 
 #-----------------------------------------------------------------------------
 # Build option(s)

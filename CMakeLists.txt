@@ -1,17 +1,31 @@
-cmake_minimum_required(VERSION 3.2.0 FATAL_ERROR) # 3.1.0 NEEDED for CMAKE_CXX_STANDARD suppor
+cmake_minimum_required(VERSION 3.9.5 FATAL_ERROR)
 
-cmake_policy(VERSION 3.2.0)
-if(POLICY CMP0048)
-  cmake_policy(SET CMP0048 OLD) #OLD project() behavior for setting VERSION variable
+#-----------------------------------------------------------------------------
+# Enable C++11
+#-----------------------------------------------------------------------------
+#####
+##  Set the default target properties for ITK
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11) # Supported values are ``11``, ``14``, and ``17``.
 endif()
-if(POLICY CMP0017)
-  cmake_policy(SET CMP0017 OLD) #Prefer files from the CMake module directory when including from there
+if(NOT CMAKE_CXX_STANDARD_REQUIRED)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
+if(NOT CMAKE_CXX_EXTENSIONS)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
+set(VALID_CXX_STANDARDS "11" "14" "17")
+if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
+   MESSAGE(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}  for NAMICExternalProjects version 5 and greater.")
+endif()
+
 foreach(p
-  CMP0054 # CMake 3.1 Only interpret ``if()`` arguments as variables or keywords when unquoted.
-  CMP0042 # ``MACOSX_RPATH`` is enabled by default.
-  CMP0025 # AppleClang vs. regular Clang
-  )
+    ## Only policies introduced after the cmake_minimum_required
+    ## version need to explicitly be set to NEW.
+    CMP0070 #3.10.0 Define ``file(GENERATE)`` behavior for relative paths.
+    CMP0071 #3.10.0 Let ``AUTOMOC`` and ``AUTOUIC`` process ``GENERATED`` files.
+    CMP0067
+    )
   if(POLICY ${p})
     cmake_policy(SET ${p} NEW)
   endif()
@@ -26,46 +40,51 @@ foreach(mypath in ${LOCAL_PATH})
     message(FATAL_ERROR "ERROR: Can not build when anaconda is on the path: ${mypath}, due to library incompatibilieis")
   endif()
 endforeach()
-
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
-include(ExternalProject)
-include(ExternalProjectDependency)
-#-----------------------------------------------------------------------------
-if(APPLE)
-  # Note: By setting CMAKE_OSX_* variables before any enable_language() or project() calls,
-  #       we ensure that the bitness, and C++ standard library will be properly detected.
-  include(BlockSetCMakeOSXVariables)
-  mark_as_superbuild(
-    VARS CMAKE_OSX_ARCHITECTURES:STRING CMAKE_OSX_SYSROOT:PATH CMAKE_OSX_DEPLOYMENT_TARGET:STRING
-    ALL_PROJECTS
-    )
-endif()
+# Update CMake module path
+#------------------------------------------------------------------------------
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/CMake)
 
-set(PRIMARY_PROJECT_NAME NAMICExternalProjects)
+set(LOCAL_PROJECT_NAME NAMICExternalProjects)
+set(PRIMARY_PROJECT_NAME ${LOCAL_PROJECT_NAME})
 ## NOTE THERE SHOULD BE NO PROJECT STATEMENT HERE!
 ## This file acts as a simple switch to initiate
 ## two completely independant CMake build environments.
 
 #-----------------------------------------------------------------------------
 # Superbuild Option - Enabled by default
-#                   Phase I:  ${PRIMARY_PROJECT_NAME}_SUPERBUILD is set to ON, and the
+#                   Phase I:  ${LOCAL_PROJECT_NAME}_SUPERBUILD is set to ON, and the
 #                             supporting packages defined in "SuperBuild.cmake"
 #                             are built.  The last package in "SuperBuild.cmake"
 #                             to be built is a recursive call to this
-#                             file with ${PRIMARY_PROJECT_NAME}_SUPERBUILD explicitly
+#                             file with ${LOCAL_PROJECT_NAME}_SUPERBUILD explicitly
 #                             set to "OFF" to initiate Phase II
 #
-#                   Phase II: Build the ${PRIMARY_PROJECT_NAME}, referencing the support
+#                   Phase II: Build the ${LOCAL_PROJECT_NAME}, referencing the support
 #                             packages built in Phase I.
 #-----------------------------------------------------------------------------
-option(${PRIMARY_PROJECT_NAME}_SUPERBUILD "Build ${PRIMARY_PROJECT_NAME} and the projects it depends on via SuperBuild.cmake." ON)
-mark_as_advanced(${PRIMARY_PROJECT_NAME}_SUPERBUILD)
+option(${LOCAL_PROJECT_NAME}_SUPERBUILD "Build ${LOCAL_PROJECT_NAME} and the projects it depends on via SuperBuild.cmake." ON)
+mark_as_advanced(${LOCAL_PROJECT_NAME}_SUPERBUILD)
 
-#-----------------------------------------------------------------------------
-
+if(${LOCAL_PROJECT_NAME}_SUPERBUILD)
+  set(PROJECT_NAME SuperBuild_${LOCAL_PROJECT_NAME} )
+  project(${PROJECT_NAME} LANGUAGES C CXX)
+else()
+  set(PROJECT_NAME ${LOCAL_PROJECT_NAME} )
+  project(${PROJECT_NAME} LANGUAGES  C CXX
+    DESCRIPTION "NAMICExternalProjects see github at BRAINSia"
+    VERSION 4.7.1
+  )
+  #-----------------------------------------------------------------------------
+  # Version strings need to be set outside of project so that
+  # we can get version information from Version.cmake (which rquires
+  # that the project() command was already run.
+  #-----------------------------------------------------------------------------
+  # Version information
+  include(Version.cmake)
+endif()
 #-----------------------------------------------------------------------------
 # Common build features for both the superbuild and the main build
 #-----------------------------------------------------------------------------
@@ -74,50 +93,16 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/Common.cmake)
 #-----------------------------------------------------------------------------
 # Superbuild script
 #-----------------------------------------------------------------------------
-if(${PRIMARY_PROJECT_NAME}_SUPERBUILD)
-  project(SuperBuild_${PRIMARY_PROJECT_NAME})  # <- NOTE: Project name for pre-requisites is different form main project
-  ## For compatibility with Slicer
-  if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 98) # Supported values are ``98``, ``11`` and ``14``.
-  endif()
-  ## Now set boolean to determine if a modern C++ is being used
-  if( CMAKE_CXX_STANDARD LESS 11 OR CMAKE_CXX_STANDARD GREATER 80)
-    set(USING_MODERN_CXX OFF)
-  else()
-    set(USING_MODERN_CXX ON)
-  endif()
-  #-----------------------------------------------------------------------------
-  # Sanity checks
-  #------------------------------------------------------------------------------
-  if(WIN32)
-    set(${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH 40)
-    if(NOT ${PROJECT_NAME}_SUPERBUILD)
-      string(LENGTH ${Slicer_BINARY_INNER_SUBDIR} _inner_subdir_length)
-      math(EXPR ${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH "${${PROJECT_NAME}_ROOT_DIR_MAX_LENGTH} + ${_inner_subdir_length}")
-    endif()
-    include(PreventDirWithTooManyChars)
-  endif()
-  include(PreventInSourceBuilds)
-  include(PreventInBuildInstalls)
-  include(PreventDirWithSpaces)
-  mark_as_superbuild(${PROJECT_NAME}_SKIP_DIR_WITH_SPACES_CHECK:BOOL)
-
+if(${LOCAL_PROJECT_NAME}_SUPERBUILD)
   include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake")
   return()
 else()
-  project(${PRIMARY_PROJECT_NAME})             # <- NOTE: Here is the main project name setting
-  ## For compatibility with Slicer
-  if(NOT CMAKE_CXX_STANDARD)
-   set(CMAKE_CXX_STANDARD 98) # Supported values are ``98``, ``11`` and ``14``.
-  endif()
-  ## Now set boolean to determine if a modern C++ is being used
-  if( CMAKE_CXX_STANDARD LESS 11 OR CMAKE_CXX_STANDARD GREATER 80)
-    set(USING_MODERN_CXX OFF)
-  else()
-    set(USING_MODERN_CXX ON)
-  endif()
-  include("${CMAKE_CURRENT_SOURCE_DIR}/${PRIMARY_PROJECT_NAME}.cmake")
+#-----------------------------------------------------------------------------
+  include("${CMAKE_CURRENT_SOURCE_DIR}/${LOCAL_PROJECT_NAME}.cmake")
   return()
 endif()
 
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+  message(STATUS "Exporting compiler flags") #silence cmake warnings when building jason db of compile options
+endif()
 message(FATAL_ERROR "You should never reach this point !")

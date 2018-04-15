@@ -11,7 +11,7 @@
 # SlicerMacroCheckExternalProjectDependency
 set(extProjName niral_utilities) #The find_package known name
 set(proj        ${extProjName}) #This local name
-set(${extProjName}_REQUIRED_VERSION ITKv4 VTK SlicerExecutionModel)
+set(${extProjName}_REQUIRED_VERSION ITKv5 VTK SlicerExecutionModel)
 
 # Sanity checks
 if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
@@ -19,7 +19,7 @@ if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
 endif()
 
 # Set dependency list
-set(${proj}_DEPENDENCIES ITKv4)
+set(${proj}_DEPENDENCIES ITKv5)
 #if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()

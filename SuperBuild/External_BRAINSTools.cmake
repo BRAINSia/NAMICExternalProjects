@@ -1,6 +1,6 @@
 set(proj        BRAINSTools) #This local name
 
-set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel DCMTK JPEG TIFF teem OpenCV)
+set(${proj}_DEPENDENCIES ITKv5 SlicerExecutionModel DCMTK JPEG TIFF teem OpenCV)
 # Boost
 if(USE_ANTS)
   list(APPEND ${proj}_DEPENDENCIES ANTs)
@@ -107,13 +107,13 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_ConvertBetweenFileFormats:BOOL=ON
       -DUSE_ImageCalculator:BOOL=ON
       -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-      -Dtbb_DIR:PATH=${tbb_DIR}
+      -DTBB_DIR:PATH=${TBB_DIR}
       ${BRAINS_ANTS_PARAMS}
     )
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "c192ee8ce604bba1effa1e0894859aa0ee566265") # 20170319
+  set(${proj}_GIT_TAG "3a19bc80ddc0d54e075cc1d55c0e1ba95b28b7d4") # 20180414
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}

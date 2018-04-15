@@ -3,7 +3,7 @@ set(proj DTIPrep) #The find_package known name
 
 
 # Set dependency list
-set(${proj}_DEPENDENCIES DCMTK ITKv4 SlicerExecutionModel VTK BRAINSTools ANTs)
+set(${proj}_DEPENDENCIES DCMTK ITKv5 SlicerExecutionModel VTK BRAINSTools ANTs)
 
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 

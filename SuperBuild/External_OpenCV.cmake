@@ -46,6 +46,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
       -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+      -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
+      -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
       -DBUILD_EXAMPLES:BOOL=OFF
       -DBUILD_TESTING:BOOL=OFF
       -DBUILD_NEW_PYTHON_SUPPORT:BOOL=OFF
@@ -58,12 +60,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DWITH_TIFF:BOOL=OFF
       -DWITH_PNG:BOOL=OFF
 ## The following might cause build issues, here for testing
-      -DENABLE_SSE:BOOL=ON
-      -DENABLE_SSE2:BOOL=ON
-      -DENABLE_SSE3:BOOL=ON
-      -DENABLE_SSE41:BOOL=ON
-      -DENABLE_SSE42:BOOL=ON
-      -DENABLE_SSSE3:BOOL=ON
+#-- OUTDATED      -DENABLE_SSE:BOOL=ON
+#-- OUTDATED      -DENABLE_SSE2:BOOL=ON
+#-- OUTDATED      -DENABLE_SSE3:BOOL=ON
+#-- OUTDATED      -DENABLE_SSE41:BOOL=ON
+#-- OUTDATED      -DENABLE_SSE42:BOOL=ON
+#-- OUTDATED      -DENABLE_SSSE3:BOOL=ON
 ## The follwing tries to get rid of OPENCV build issue
       -DBUILD_opencv_calib3d:BOOL=OFF
       -DBUILD_opencv_contrib:BOOL=OFF
@@ -113,8 +115,6 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DBUILD_PACKAGE:BOOL=OFF
       -DBUILD_WITH_DEBUG_INFO:BOOL=OFF
 
-
-
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-install
     )
@@ -123,7 +123,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   #set(${proj}_REPOSITORY "${git_protocol}://github.com/Itseez/opencv")
   #set(${proj}_GIT_TAG "2.4.9") # USE THIS FOR UPDATED VERSION
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/opencv.git") # USE THIS FOR UPDATED VERSION
-  set(${proj}_GIT_TAG 1cd3c6f36467d59028bb8e2d7bd0a92e519db044)  # "20160127
+  set(${proj}_GIT_TAG 71f42810808b78c1b85682058694db6e9bccaea5)  # "20160127
   #set(${proj}_GIT_TAG "20140630_Upstream") # USE THIS FOR UPDATED VERSION for GCC 4.4.7 on RHEL6
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}

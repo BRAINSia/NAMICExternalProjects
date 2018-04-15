@@ -257,7 +257,7 @@ string(REPLACE ";" "^" ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARNAMES "${${CMAKE_P
 #------------------------------------------------------------------------------
 # ${PRIMARY_PROJECT_NAME} dependency list
 #------------------------------------------------------------------------------
-set(ITK_EXTERNAL_NAME ITKv${ITK_VERSION_MAJOR})
+set(ITK_EXTERNAL_NAME ITKv5)
 
 ## for i in SuperBuild/*; do  echo $i |sed 's/.*External_\([a-zA-Z]*\).*/\1/g'|fgrep -v cmake|fgrep -v Template; done|sort -u
 set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
@@ -314,7 +314,7 @@ endif()
 
 mark_as_superbuild(
   VARS
-    tbb_DIR:PATH
+    TBB_DIR:PATH
   ALL_PROJECTS
 )
 
@@ -358,7 +358,7 @@ ExternalProject_Add(${proj}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
     -D${PRIMARY_PROJECT_NAME}_SUPERBUILD:BOOL=OFF    #NOTE: VERY IMPORTANT reprocess top level CMakeList.txt
-    -Dtbb_DIR:PATH=${tbb_DIR}
+    -DTBB_DIR:PATH=${TBB_DIR}
   INSTALL_COMMAND ""
   )
 

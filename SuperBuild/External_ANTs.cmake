@@ -1,6 +1,6 @@
 set(proj        ANTs) #This local name
 
-set(${proj}_DEPENDENCIES ITKv4 SlicerExecutionModel )
+set(${proj}_DEPENDENCIES ITKv5 SlicerExecutionModel )
 
 if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
   list(APPEND ${proj}_DEPENDENCIES DCMTK)
@@ -16,6 +16,8 @@ set(${proj}_CMAKE_OPTIONS
   -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
   -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
   -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+  -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
+  -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
   -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
   -DUSE_SYSTEM_ITK:BOOL=ON
   -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
@@ -26,6 +28,7 @@ set(${proj}_CMAKE_OPTIONS
   -DBUILD_TESTING:BOOL=OFF
   -DANTS_SUPERBUILD:BOOL=OFF
   -DBUILD_ALL_ANTS_APPS:BOOL=ON #Perhaps turn this to OFF
+  -DANTS_BUILD_WITH_CCACHE:BOOL=OFF # This does not work well
   #  -DANTS_BUILD_DenoiseImage=ON
   #  -DANTS_BUILD_antsRegistration=ON
   #  -DANTS_BUILD_antsJointFusion=ON
@@ -35,7 +38,7 @@ if(${PRIMARY_PROJECT_NAME}_USE_QT)
 endif()
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-set(${proj}_GIT_TAG e170c7c4695643c0f0e08e619778ef45b6b4632c) # 20170623
+set(${proj}_GIT_TAG 576df61c9db1a49ffa854161f486e542421f6265) # 20180328
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}

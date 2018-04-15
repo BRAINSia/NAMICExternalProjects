@@ -1,7 +1,7 @@
 set(proj        DTIProcess) #This local name
 
 # Set dependency list
-set(${proj}_DEPENDENCIES ITKv4 VTK SlicerExecutionModel Boost)
+set(${proj}_DEPENDENCIES ITKv5 VTK SlicerExecutionModel Boost)
 
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
@@ -33,7 +33,7 @@ set(${proj}_CMAKE_OPTIONS
 
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "${git_protocol}://github.com/NIRALUser/DTIProcessToolkit.git")
-set(${proj}_GIT_TAG "da9056cf3113ffa86fdc16d9132da254afc28fad")
+set(${proj}_GIT_TAG "c7c34a5838bdc433966f9ca503dd8298e0f44a7c")
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
