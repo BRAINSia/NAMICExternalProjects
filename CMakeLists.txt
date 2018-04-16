@@ -75,7 +75,7 @@ else()
   set(PROJECT_NAME ${LOCAL_PROJECT_NAME} )
   project(${PROJECT_NAME} LANGUAGES  C CXX
     DESCRIPTION "NAMICExternalProjects see github at BRAINSia"
-    VERSION 4.7.1
+    VERSION 5.0.0
   )
   #-----------------------------------------------------------------------------
   # Version strings need to be set outside of project so that
@@ -83,7 +83,7 @@ else()
   # that the project() command was already run.
   #-----------------------------------------------------------------------------
   # Version information
-  include(Version.cmake)
+  #include(Version.cmake)
 endif()
 #-----------------------------------------------------------------------------
 # Common build features for both the superbuild and the main build
