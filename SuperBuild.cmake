@@ -1,28 +1,3 @@
-################################################################################
-#
-#  Program: NAMIC External Projects
-#
-#  Copyright (c) Kitware Inc.
-#
-#  See COPYRIGHT.txt
-#  or http://www.slicer.org/copyright/copyright.txt for details.
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-#
-#  This file was originally developed for the Slicer project by
-#   Dave Partyka and Jean-Christophe Fillion-Robin, Kitware Inc.
-#  and was partially funded by NIH grant 3P41RR013218-12S1
-#
-################################################################################
-
-#-----------------------------------------------------------------------------
-enable_language(C)
-enable_language(CXX)
-
 #-----------------------------------------------------------------------------
 include(SlicerMacroGetOperatingSystemArchitectureBitness)
 
@@ -31,12 +6,21 @@ include(SlicerMacroGetOperatingSystemArchitectureBitness)
 # By keeping this outside of the build tree, you can share one
 # set of external source trees for multiple build trees
 #-----------------------------------------------------------------------------
-set( SOURCE_DOWNLOAD_CACHE ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH
-    "The path for downloading external source directories" )
-mark_as_advanced( SOURCE_DOWNLOAD_CACHE )
+# set( SOURCE_DOWNLOAD_CACHE ${CMAKE_CURRENT_LIST_DIR}/ExternalSources )
+set( SOURCE_DOWNLOAD_CACHE ${CMAKE_CURRENT_BINARY_DIR} ) #<-- Note same as default
 
 #-----------------------------------------------------------------------------
-# Git protocol option
+# CTestCustom
+#-----------------------------------------------------------------------------
+if(BUILD_TESTING AND NOT BRAINSTools_DISABLE_TESTING)
+  configure_file(
+    CMake/CTestCustom.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
+    @ONLY)
+endif()
+
+#-----------------------------------------------------------------------------
+# Git protocole option
 #-----------------------------------------------------------------------------
 option(${CMAKE_PROJECT_NAME}_USE_GIT_PROTOCOL "If behind a firewall turn this off to use http instead." ON)
 set(git_protocol "git")
@@ -62,37 +46,16 @@ if(NOT ${CMAKE_PROJECT_NAME}_USE_GIT_PROTOCOL)
     endif()
   endfunction()
 endif()
-
-CMAKE_DEPENDENT_OPTION(${CMAKE_PROJECT_NAME}_USE_CTKAPPLAUNCHER "CTKAppLauncher used with python" ON
-  "NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_python" OFF)
-
 find_package(Git REQUIRED)
 
-# I don't know who removed the Find_Package for QT, but it needs to be here
-# in order to build VTK if ${PRIMARY_PROJECT_NAME}_USE_QT is set.
-if(${PRIMARY_PROJECT_NAME}_USE_QT)
-  CMAKE_DEPENDENT_OPTION(
-    BUILD_DTIPrep "BUILD_DTIPrep option" OFF "${PRIMARY_PROJECT_NAME}_USE_QT" ON
-  )
-  set(QT_DEPENDENT_PACKAGES ) # vv package can also be built but was causing problems
-  if(BUILD_DTIPrep)  # Do not build DTIPrep until it behave better. Hans 2015-01-30
-    set(QT_DEPENDENT_PACKAGES DTIPrep ) # vv package can also be built but was causing problems
-  endif()
-  find_package(Qt4 REQUIRED)
-else()
-  set(QT_DEPENDENT_PACKAGES "")
-endif()
+cmake_dependent_option(${CMAKE_PROJECT_NAME}_USE_CTKAPPLAUNCHER "CTKAppLauncher used with python" ON
+  "NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_python" OFF)
 
-if(NOT ${PRIMARY_PROJECT_NAME}_USE_QT)
+if(NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT)
   message("NOTE: Following toolkit is dependent to Qt:
           - DTIPrep
-          You need to set ${PRIMARY_PROJECT_NAME}_USE_QT to ON to build above application.")
+          You need to set ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT to ON to build above application.")
 endif()
-
-#-----------------------------------------------------------------------------
-# Enable and setup External project global properties
-#-----------------------------------------------------------------------------
-include(ExternalProject)
 
 # Compute -G arg for configuring external projects with the same CMake generator:
 if(CMAKE_EXTRA_GENERATOR)
@@ -102,57 +65,94 @@ else()
 endif()
 
 
-# With CMake 2.8.9 or later, the UPDATE_COMMAND is required for updates to occur.
-# For earlier versions, we nullify the update state to prevent updates and
-# undesirable rebuild.
-option(FORCE_EXTERNAL_BUILDS "Force rebuilding of external project (if they are updated)" ON)
-if(CMAKE_VERSION VERSION_LESS 2.8.9 OR NOT FORCE_EXTERNAL_BUILDS)
-  set(cmakeversion_external_update UPDATE_COMMAND)
-  set(cmakeversion_external_update_value "" )
-else()
-  set(cmakeversion_external_update LOG_UPDATE )
-  set(cmakeversion_external_update_value 1)
-endif()
+set(cmakeversion_external_update LOG_UPDATE )
+set(cmakeversion_external_update_value 1)
 
 #-----------------------------------------------------------------------------
 # Superbuild option(s)
 #-----------------------------------------------------------------------------
 option(BUILD_STYLE_UTILS "Build uncrustify, cppcheck, & KWStyle" OFF)
-CMAKE_DEPENDENT_OPTION(
+cmake_dependent_option(
   USE_SYSTEM_Uncrustify "Use system Uncrustify program" OFF
   "BUILD_STYLE_UTILS" OFF
   )
-CMAKE_DEPENDENT_OPTION(
+cmake_dependent_option(
   USE_SYSTEM_KWStyle "Use system KWStyle program" OFF
   "BUILD_STYLE_UTILS" OFF
   )
-CMAKE_DEPENDENT_OPTION(
+cmake_dependent_option(
   USE_SYSTEM_Cppcheck "Use system Cppcheck program" OFF
   "BUILD_STYLE_UTILS" OFF
   )
 
 set(EXTERNAL_PROJECT_BUILD_TYPE "Release" CACHE STRING "Default build type for support libraries")
-set_property(CACHE EXTERNAL_PROJECT_BUILD_TYPE PROPERTY
-  STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 
 option(USE_SYSTEM_ITK "Build using an externally defined version of ITK" OFF)
 option(USE_SYSTEM_SlicerExecutionModel "Build using an externally defined version of SlicerExecutionModel"  OFF)
 option(USE_SYSTEM_VTK "Build using an externally defined version of VTK" OFF)
 option(USE_SYSTEM_zlib "build using the system version of zlib" OFF)
 option(USE_SYSTEM_DCMTK "Build using an externally defined version of DCMTK" OFF)
-option(${PROJECT_NAME}_BUILD_DICOM_SUPPORT "Build Dicom Support" ON)
-mark_as_superbuild(
-  VARS
-    ${PROJECT_NAME}_BUILD_DICOM_SUPPORT:BOOL
-  ALL_PROJECTS
-)
+option(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT "Build Dicom Support" ON)
 
+#------------------------------------------------------------------------------
+# ${LOCAL_PROJECT_NAME} dependency list
+#------------------------------------------------------------------------------
+
+list(APPEND ${LOCAL_PROJECT_NAME}_DEPENDENCIES DCMTK)
+list(APPEND ${LOCAL_PROJECT_NAME}_DEPENDENCIES ITKv5)
+list(APPEND ${LOCAL_PROJECT_NAME}_DEPENDENCIES SlicerExecutionModel)
+list(APPEND ${LOCAL_PROJECT_NAME}_DEPENDENCIES teem)
+#list(APPEND ${LOCAL_PROJECT_NAME}_DEPENDENCIES Boost)
+#list(APPEND ${LOCAL_PROJECT_NAME}_DEPENDENCIES TBB)
+
+if(BUILD_STYLE_UTILS)
+  list(APPEND ${LOCAL_PROJECT_NAME}_DEPENDENCIES Cppcheck KWStyle Uncrustify)
+endif()
 
 option(BUILD_CALATK "build the calatk project" ON)
 set(CALATK_DEP)
 if(${BUILD_CALATK})
   set(CALATK_DEP calatk)
 endif()
+
+
+#-----------------------------------------------------------------------------
+# Common external projects CMake variables
+#-----------------------------------------------------------------------------
+set(CMAKE_INCLUDE_DIRECTORIES_BEFORE OFF CACHE BOOL "Set default to prepend include directories.")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Write compile_commands.json")
+
+
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT)
+  mark_as_superbuild(
+    VARS
+      ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT:BOOL
+      QT_QMAKE_EXECUTABLE:PATH
+      QT_MOC_EXECUTABLE:PATH
+      QT_UIC_EXECUTABLE:PATH
+    ALL_PROJECTS
+    )
+endif()
+
+set(extProjName ${LOCAL_PROJECT_NAME})
+set(proj        ${LOCAL_PROJECT_NAME})
+
+#-----------------------------------------------------------------------------
+# Enable and setup External project global properties
+#-----------------------------------------------------------------------------
+
+set(ep_common_c_flags "${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
+set(ep_common_cxx_flags "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
+
+set(${LOCAL_PROJECT_NAME}_CLI_RUNTIME_DESTINATION  bin)
+set(${LOCAL_PROJECT_NAME}_CLI_LIBRARY_DESTINATION  lib)
+set(${LOCAL_PROJECT_NAME}_CLI_ARCHIVE_DESTINATION  lib)
+set(${LOCAL_PROJECT_NAME}_CLI_INSTALL_RUNTIME_DESTINATION  bin)
+set(${LOCAL_PROJECT_NAME}_CLI_INSTALL_LIBRARY_DESTINATION  lib)
+set(${LOCAL_PROJECT_NAME}_CLI_INSTALL_ARCHIVE_DESTINATION  lib)
+
+set(${LOCAL_PROJECT_NAME}_INSTALL_LIB_DIR ${${LOCAL_PROJECT_NAME}_CLI_LIBRARY_DESTINATION} )
 
 #------------------------------------------------------------------------------
 set(SlicerExecutionModel_INSTALL_BIN_DIR bin)
@@ -183,84 +183,36 @@ mark_as_superbuild(
     SlicerExecutionModel_INSTALL_NO_DEVELOPMENT
   PROJECTS SlicerExecutionModel
   )
-
-#-----------------------------------------------------------------------------
-# Common external projects CMake variables
-#-----------------------------------------------------------------------------
-set(CMAKE_INCLUDE_DIRECTORIES_BEFORE OFF CACHE BOOL "Set default to prepend include directories.")
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "Write compile_commands.json")
-
-
-if(${PRIMARY_PROJECT_NAME}_USE_QT)
-  mark_as_superbuild(
-    VARS
-      ${PRIMARY_PROJECT_NAME}_USE_QT:BOOL
-      QT_QMAKE_EXECUTABLE:PATH
-      QT_MOC_EXECUTABLE:PATH
-      QT_UIC_EXECUTABLE:PATH
-    ALL_PROJECTS
-    )
-endif()
-mark_as_superbuild(${PRIMARY_PROJECT_NAME}_USE_QT)
-
-set(extProjName ${PRIMARY_PROJECT_NAME})
-set(proj        ${PRIMARY_PROJECT_NAME})
-
-
-#-----------------------------------------------------------------------------
-# Set CMake OSX variable to pass down the external projects
-#-----------------------------------------------------------------------------
-if(APPLE)
-  mark_as_superbuild(
-    VARS
-      CMAKE_OSX_ARCHITECTURES:STRING
-      CMAKE_OSX_SYSROOT:PATH
-      CMAKE_OSX_DEPLOYMENT_TARGET:STRING
-    ALL_PROJECTS
-    )
-endif()
-
-set(${PRIMARY_PROJECT_NAME}_CLI_RUNTIME_DESTINATION  bin)
-set(${PRIMARY_PROJECT_NAME}_CLI_LIBRARY_DESTINATION  lib)
-set(${PRIMARY_PROJECT_NAME}_CLI_ARCHIVE_DESTINATION  lib)
-set(${PRIMARY_PROJECT_NAME}_CLI_INSTALL_RUNTIME_DESTINATION  bin)
-set(${PRIMARY_PROJECT_NAME}_CLI_INSTALL_LIBRARY_DESTINATION  lib)
-set(${PRIMARY_PROJECT_NAME}_CLI_INSTALL_ARCHIVE_DESTINATION  lib)
 #-----------------------------------------------------------------------------
 # Add external project CMake args
 #-----------------------------------------------------------------------------
-
 mark_as_superbuild(
   VARS
     BUILD_EXAMPLES:BOOL
     BUILD_TESTING:BOOL
-    ITK_VERSION_MAJOR:STRING
-    ITK_DIR:PATH
+    BUILD_SHARED_LIBS:BOOL
 
-    ${PRIMARY_PROJECT_NAME}_CLI_LIBRARY_OUTPUT_DIRECTORY:PATH
-    ${PRIMARY_PROJECT_NAME}_CLI_ARCHIVE_OUTPUT_DIRECTORY:PATH
-    ${PRIMARY_PROJECT_NAME}_CLI_RUNTIME_OUTPUT_DIRECTORY:PATH
-    ${PRIMARY_PROJECT_NAME}_CLI_INSTALL_LIBRARY_DESTINATION:PATH
-    ${PRIMARY_PROJECT_NAME}_CLI_INSTALL_ARCHIVE_DESTINATION:PATH
-    ${PRIMARY_PROJECT_NAME}_CLI_INSTALL_RUNTIME_DESTINATION:PATH
+    MAKECOMMAND:STRING
 
     INSTALL_RUNTIME_DESTINATION:STRING
     INSTALL_LIBRARY_DESTINATION:STRING
     INSTALL_ARCHIVE_DESTINATION:STRING
+
+    SITE:STRING
+    BUILDNAME:STRING
   ALL_PROJECTS
-)
+  )
 
 
 string(REPLACE ";" "^" ${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARNAMES "${${CMAKE_PROJECT_NAME}_SUPERBUILD_EP_VARNAMES}")
 
 #------------------------------------------------------------------------------
-# ${PRIMARY_PROJECT_NAME} dependency list
+# ${SUPERBUILD_TOPLEVEL_PROJECT} dependency list
 #------------------------------------------------------------------------------
 set(ITK_EXTERNAL_NAME ITKv5)
 
 ## for i in SuperBuild/*; do  echo $i |sed 's/.*External_\([a-zA-Z]*\).*/\1/g'|fgrep -v cmake|fgrep -v Template; done|sort -u
-set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
   MRParameterMaps
   OpenCV
   Eigen
@@ -284,8 +236,8 @@ set(${PRIMARY_PROJECT_NAME}_DEPENDENCIES
   #tract_querier
   #LogSymmetricDemons
   )
-if(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
-  list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
+  list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
   VTK
   #  This does not build currently  MultiAtlas
   # NOT CURRENTLY USED DTIReg
@@ -296,20 +248,20 @@ if(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
 )
 endif()
 
-if(NOT ${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
+if(NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   message("NOTE: Following toolkits are dependent to VTK:
            - DTIReg
            - DTIProcess
            - UKF
-           You need to set ${PRIMARY_PROJECT_NAME}_REQUIRES_VTK to ON to build above applications.")
+           You need to set ${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK to ON to build above applications.")
 endif()
 
-# Use Anaconda version list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES SimpleITK)
+# Use Anaconda version list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES SimpleITK)
 # Use Anaconda version list(APPEND SimpleITK_DEPENDENCIES PCRE Swig)
-list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES NIPYPE)
+list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES NIPYPE)
 
 if(BUILD_STYLE_UTILS)
-  list(APPEND ${PRIMARY_PROJECT_NAME}_DEPENDENCIES Cppcheck KWStyle ) #Uncrustify)
+  list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES Cppcheck KWStyle ) #Uncrustify)
 endif()
 
 mark_as_superbuild(
@@ -325,51 +277,205 @@ mark_as_superbuild(
 set(ep_common_c_flags "${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
 set(ep_common_cxx_flags "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
 
-ExternalProject_Include_Dependencies(${proj} DEPENDS_VAR ${PRIMARY_PROJECT_NAME}_DEPENDENCIES)
-
-#-----------------------------------------------------------------------------
-# CTestCustom
-#-----------------------------------------------------------------------------
-if(BUILD_TESTING AND NOT ${PRIMARY_PROJECT_NAME}_BUILD_SLICER_EXTENSION)
-  configure_file(
-    CMake/CTestCustom.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
-    @ONLY)
+mark_as_superbuild(
+  VARS
+    CMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH
+    CMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH
+    CMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH
+    CMAKE_BUNDLE_OUTPUT_DIRECTORY:PATH
+    CMAKE_INSTALL_RUNTIME_DESTINATION:PATH
+    CMAKE_INSTALL_LIBRARY_DESTINATION:PATH
+    CMAKE_INSTALL_ARCHIVE_DESTINATION:PATH
+    CMAKE_BUNDLE_OUTPUT_DESTINATION:PATH
+  ALL_PROJECTS
+  )
+mark_as_superbuild(
+  VARS
+    MAKECOMMAND:STRING
+    CMAKE_SKIP_RPATH:BOOL
+    BUILD_SHARED_LIBS:BOOL
+    CMAKE_MODULE_PATH:PATH
+    CMAKE_BUILD_TYPE:STRING
+    # BUILD_SHARED_LIBS:BOOL
+    CMAKE_INCLUDE_DIRECTORIES_BEFORE:BOOL
+    CMAKE_CXX_COMPILER:PATH
+    CMAKE_CXX_FLAGS:STRING
+    CMAKE_CXX_FLAGS_DEBUG:STRING
+    CMAKE_CXX_FLAGS_MINSIZEREL:STRING
+    CMAKE_CXX_FLAGS_RELEASE:STRING
+    CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING
+    CMAKE_C_COMPILER:PATH
+    CMAKE_C_FLAGS:STRING
+    CMAKE_C_FLAGS_DEBUG:STRING
+    CMAKE_C_FLAGS_MINSIZEREL:STRING
+    CMAKE_C_FLAGS_RELEASE:STRING
+    CMAKE_C_FLAGS_RELWITHDEBINFO:STRING
+    CMAKE_EXE_LINKER_FLAGS:STRING
+    CMAKE_EXE_LINKER_FLAGS_DEBUG:STRING
+    CMAKE_EXE_LINKER_FLAGS_MINSIZEREL:STRING
+    CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING
+    CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING
+    CMAKE_MODULE_LINKER_FLAGS:STRING
+    CMAKE_MODULE_LINKER_FLAGS_DEBUG:STRING
+    CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL:STRING
+    CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING
+    CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING
+    CMAKE_SHARED_LINKER_FLAGS:STRING
+    CMAKE_SHARED_LINKER_FLAGS_DEBUG:STRING
+    CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL:STRING
+    CMAKE_SHARED_LINKER_FLAGS_RELEASE:STRING
+    CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO:STRING
+    CMAKE_GENERATOR:STRING
+    CMAKE_EXTRA_GENERATOR:STRING
+    CMAKE_EXPORT_COMPILE_COMMANDS:BOOL
+    CMAKE_INSTALL_PREFIX:PATH
+    CTEST_NEW_FORMAT:BOOL
+    MEMORYCHECK_COMMAND_OPTIONS:STRING
+    MEMORYCHECK_COMMAND:PATH
+    CMAKE_SHARED_LINKER_FLAGS:STRING
+    CMAKE_EXE_LINKER_FLAGS:STRING
+    CMAKE_MODULE_LINKER_FLAGS:STRING
+    SITE:STRING
+    BUILDNAME:STRING
+  ALL_PROJECTS
+  )
+#
+# SimpleITK has large internal libraries, which take an extremely long
+# time to link on windows when they are static. Creating shared
+# SimpleITK internal libraries can reduce linking time. Also the size
+# of the debug libraries are monstrous. Using shared libraries for
+# debug, reduce disc requirements, and can improve linking
+# times. However, these shared libraries take longer to load than the
+# monolithic target from static libraries.
+#
+set( ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED_DEFAULT OFF)
+string(TOUPPER "${CMAKE_BUILD_TYPE}" _CMAKE_BUILD_TYPE)
+if(MSVC OR _CMAKE_BUILD_TYPE MATCHES "DEBUG")
+  set(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED_DEFAULT ON)
 endif()
+CMAKE_DEPENDENT_OPTION(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED "Build SimpleITK with shared libraries. Reduces linking time, increases run-time load time." ${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED_DEFAULT} "${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK" OFF )
+mark_as_superbuild(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED)
+
+# TODO: figure out what this Slicer rigamarole is actually supposed to be doing
+#-----------------------------------------------------------------------------
+# ${SUPERBUILD_TOPLEVEL_PROJECT} install directories
+#-----------------------------------------------------------------------------
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT "./")
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_BUNDLE_LOCATION "${${SUPERBUILD_TOPLEVEL_PROJECT}_MAIN_PROJECT_APPLICATION_NAME}.app/Contents")
+# NOTE: Make sure to update vtk${SUPERBUILD_TOPLEVEL_PROJECT}ApplicationLogic::IsEmbeddedModule if
+#       the following variables are changed.
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_EXTENSIONS_DIRBASENAME "Extensions")
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_EXTENSIONS_DIRNAME "${${SUPERBUILD_TOPLEVEL_PROJECT}_EXTENSIONS_DIRBASENAME}-${${SUPERBUILD_TOPLEVEL_PROJECT}_WC_REVISION}")
+if(APPLE)
+  set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT "${${SUPERBUILD_TOPLEVEL_PROJECT}_BUNDLE_LOCATION}/") # Set to create Bundle
+endif()
+
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_BIN_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT}${${SUPERBUILD_TOPLEVEL_PROJECT}_BIN_DIR}")
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_LIB_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT}${${SUPERBUILD_TOPLEVEL_PROJECT}_LIB_DIR}")
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_INCLUDE_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT}${${SUPERBUILD_TOPLEVEL_PROJECT}_INCLUDE_DIR}")
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_SHARE_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT}${${SUPERBUILD_TOPLEVEL_PROJECT}_SHARE_DIR}")
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ITKFACTORIES_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_LIB_DIR}/ITKFactories")
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_QM_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT}${${SUPERBUILD_TOPLEVEL_PROJECT}_QM_DIR}")
+
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_CLI_SUPPORT)
+  set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_CLIMODULES_BIN_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT}${${SUPERBUILD_TOPLEVEL_PROJECT}_CLIMODULES_BIN_DIR}")
+  set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_CLIMODULES_LIB_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT}${${SUPERBUILD_TOPLEVEL_PROJECT}_CLIMODULES_LIB_DIR}")
+  set(${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_CLIMODULES_SHARE_DIR "${${SUPERBUILD_TOPLEVEL_PROJECT}_INSTALL_ROOT}${${SUPERBUILD_TOPLEVEL_PROJECT}_CLIMODULES_SHARE_DIR}")
+endif()
+
+
+#------------------------------------------------------------------------------
+# Calling this macro last will ensure all prior calls to 'mark_as_superbuild' are
+# considered when updating the variable '${LOCAL_PROJECT_NAME}_EP_ARGS' passed to the main project
+# below.
+ExternalProject_Include_Dependencies( ${LOCAL_PROJECT_NAME}
+   PROJECT_VAR proj
+   DEPENDS_VAR ${LOCAL_PROJECT_NAME}_DEPENDENCIES
+)
 
 
 #------------------------------------------------------------------------------
 # Configure and build ${PROJECT_NAME}
 #------------------------------------------------------------------------------
-set(proj ${PRIMARY_PROJECT_NAME})
-ExternalProject_Add(${proj}
-  ${${proj}_EP_ARGS}
-  DEPENDS ${${PRIMARY_PROJECT_NAME}_DEPENDENCIES}
+ExternalProject_Add(${LOCAL_PROJECT_NAME}
+  DEPENDS ${${LOCAL_PROJECT_NAME}_DEPENDENCIES}
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
-  BINARY_DIR ${PRIMARY_PROJECT_NAME}-build
+  BINARY_DIR ${LOCAL_PROJECT_NAME}-build
   DOWNLOAD_COMMAND ""
   UPDATE_COMMAND ""
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     --no-warn-unused-cli    # HACK Only expected variables should be passed down.
+  ${${LOCAL_PROJECT_NAME}_EP_ARGS} # All superbuild options should be passed by mark_as_superbuild
   CMAKE_CACHE_ARGS
+    -D${LOCAL_PROJECT_NAME}_SUPERBUILD:BOOL=OFF #<-- Critical override
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-    -D${PRIMARY_PROJECT_NAME}_SUPERBUILD:BOOL=OFF    #NOTE: VERY IMPORTANT reprocess top level CMakeList.txt
-    -DTBB_DIR:PATH=${TBB_DIR}
+      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+      -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
+      -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
+      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+      -DCMAKE_INCLUDE_DIRECTORIES_BEFORE:BOOL=OFF
+
+#--  The following are probably do not need to be propagated
+#--    CMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH
+#--    CMAKE_BUNDLE_OUTPUT_DIRECTORY:PATH
+#--    CMAKE_BUILD_TYPE:STRING
+#--    CMAKE_CXX_FLAGS_DEBUG:STRING
+#--    CMAKE_CXX_FLAGS_MINSIZEREL:STRING
+#--    CMAKE_CXX_FLAGS_RELEASE:STRING
+#--    CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING
+#--    CMAKE_C_FLAGS_DEBUG:STRING
+#--    CMAKE_C_FLAGS_MINSIZEREL:STRING
+#--    CMAKE_C_FLAGS_RELEASE:STRING
+#--    CMAKE_C_FLAGS_RELWITHDEBINFO:STRING
+#--    CMAKE_EXE_LINKER_FLAGS:STRING
+#--    CMAKE_EXE_LINKER_FLAGS_DEBUG:STRING
+#--    CMAKE_EXE_LINKER_FLAGS_MINSIZEREL:STRING
+#--    CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING
+#--    CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING
+#--    CMAKE_EXTRA_GENERATOR:STRING
+#--    CMAKE_GENERATOR:STRING
+#--    CMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH
+#--    CMAKE_MODULE_LINKER_FLAGS:STRING
+#--    CMAKE_MODULE_LINKER_FLAGS_DEBUG:STRING
+#--    CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL:STRING
+#--    CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING
+#--    CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING
+#--    CMAKE_MODULE_PATH:PATH
+#--    CMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH
+#--    CMAKE_SHARED_LINKER_FLAGS:STRING
+#--    CMAKE_SHARED_LINKER_FLAGS_DEBUG:STRING
+#--    CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL:STRING
+#--    CMAKE_SHARED_LINKER_FLAGS_RELEASE:STRING
+#--    CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO:STRING
+#--    CMAKE_SKIP_RPATH:BOOL
+#--    CTEST_NEW_FORMAT:BOOL
+#--    MEMORYCHECK_COMMAND:PATH
+#--    MEMORYCHECK_COMMAND_OPTIONS:STRING
+
   INSTALL_COMMAND ""
   )
 
 # This custom external project step forces the build and later
 # steps to run whenever a top level build is done...
-ExternalProject_Add_Step(${proj} forcebuild
-  COMMAND ${CMAKE_COMMAND} -E remove
-    ${CMAKE_CURRENT_BINARY_DIR}/${proj}-prefix/src/${proj}-stamp/${proj}-build
-  COMMENT "Forcing build step for '${proj}'"
+#
+# BUILD_ALWAYS flag is available in CMake 3.1 that allows force build
+# of external projects without this workaround. Remove this workaround
+# and use the CMake flag instead, when BRAINSTools's required minimum CMake
+# version will be at least 3.1.
+#
+if(CMAKE_CONFIGURATION_TYPES)
+  set(BUILD_STAMP_FILE "${CMAKE_CURRENT_BINARY_DIR}/${LOCAL_PROJECT_NAME}-prefix/src/${LOCAL_PROJECT_NAME}-stamp/${CMAKE_CFG_INTDIR}/${LOCAL_PROJECT_NAME}-build")
+else()
+  set(BUILD_STAMP_FILE "${CMAKE_CURRENT_BINARY_DIR}/${LOCAL_PROJECT_NAME}-prefix/src/${LOCAL_PROJECT_NAME}-stamp/${LOCAL_PROJECT_NAME}-build")
+endif()
+ExternalProject_Add_Step(${LOCAL_PROJECT_NAME} forcebuild
+  COMMAND ${CMAKE_COMMAND} -E remove ${BUILD_STAMP_FILE}
+  COMMENT "Forcing build step for '${LOCAL_PROJECT_NAME}'"
   DEPENDEES build
   ALWAYS 1
   )
-
 add_subdirectory(src)

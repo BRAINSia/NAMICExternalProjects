@@ -39,8 +39,8 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
       #-DDESIRED_QT_VERSION:STRING=4 # Unused
       -DVTK_USE_GUISUPPORT:BOOL=ON
-      -DVTK_USE_QVTK_QTOPENGL:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT}
-      -DVTK_Group_Qt:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT} ##VTK6
+      -DVTK_USE_QVTK_QTOPENGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
+      -DVTK_Group_Qt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT} ##VTK6
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
       -DVTK_REQUIRED_OBJCXX_FLAGS:STRING="" # Should not be needed, but is always causing problems on mac
                                             # This is to prevent the garbage collection errors from creeping back in
@@ -51,15 +51,15 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DVTK_USE_COCOA:BOOL=ON # Default to Cocoa, VTK/CMakeLists.txt will enable Carbon and disable cocoa if needed
       -DVTK_USE_X:BOOL=OFF
       -DVTK_USE_GUISUPPORT:BOOL=ON
-      -DVTK_USE_QVTK_QTOPENGL:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT}
-      -DVTK_Group_Qt:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT}  ## VTK6
+      -DVTK_USE_QVTK_QTOPENGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
+      -DVTK_Group_Qt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}  ## VTK6
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
       )
   endif()
 
   list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      -DModule_vtkGUISupportQt:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT}
-      -DModule_vtkGUISupportQtOpenGL:BOOL=${${PRIMARY_PROJECT_NAME}_USE_QT})
+      -DModule_vtkGUISupportQt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
+      -DModule_vtkGUISupportQtOpenGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT})
 
   if(VTK_WRAP_TCL)
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
@@ -101,7 +101,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   endif()
   set(vtk_git_protocol "https")
   set(${proj}_GIT_REPOSITORY "${vtk_git_protocol}://gitlab.kitware.com/vtk/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
-  set(${proj}_GIT_TAG "61216dca2e7e7cc724b6ab12457fd9891b167bf0")  # VTK 20180102
+  set(${proj}_GIT_TAG "80814113457ecec301a92edee556e51c7722a974")  # VTK 20180422
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
@@ -166,6 +166,7 @@ endif()
 mark_as_superbuild(VARS VTK_SOURCE_DIR:PATH ALL_PROJECTS)
 
 mark_as_superbuild(
-  VARS ${proj}_DIR:PATH VTK_VERSION_MAJOR:STRING
+  VARS VTK_DIR:PATH
+       VTK_VERSION_MAJOR:STRING
   LABELS "FIND_PACKAGE"
   )

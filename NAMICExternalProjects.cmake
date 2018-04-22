@@ -1,12 +1,3 @@
-#-----------------------------------------------------------------------------
-# Sanity checks
-#------------------------------------------------------------------------------
-include(PreventInSourceBuilds)
-include(PreventInBuildInstalls)
-
-#-----------------------------------------------------------------------------
-enable_testing()
-include(CTest)
 
 #-----------------------------------------------------------------------------
 find_package(ITK REQUIRED)
@@ -25,7 +16,5 @@ include(${SlicerExecutionModel_CMAKE_DIR}/SEMMacroBuildCLI.cmake)
 # Setup locations to find externally maintained test data.
 #-----------------------------------------------------------------------
 include(${PROJECT_NAME}ExternalData)
-
-#add_subdirectory(src)
 
 ExternalData_Add_Target( ${PROJECT_NAME}FetchData )  # Name of data management target
