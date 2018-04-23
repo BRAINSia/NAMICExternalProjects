@@ -55,7 +55,8 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
-    "${git_protocol}://github.com/commontk/dcmtk"
+    #"${git_protocol}://github.com/commontk/dcmtk"
+    "${git_protocol}://github.com/DCMTK/dcmtk.git"
     QUIET
     )
 
@@ -65,7 +66,7 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     # * DCMTK_ENABLE_CXX11 support on Linux
     # * Set CMP0067 to ensure try_compile work as expected
     # * Fix template parameter in dcmiod/iodimage
-    "54004ba20077c626ff4e3042b1d4a5b36eda5e0e" # v3.6.3_20180205
+    "401ff5d86be6597d51f77e278c22bed5e7d6fbb3" # 20180422 github
     QUIET
     )
 
@@ -93,6 +94,7 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DDCMTK_WITH_TIFF:BOOL=OFF  # see CTK github issue #25
       -DDCMTK_WITH_XML:BOOL=OFF  # see CTK github issue #25
       -DDCMTK_WITH_ICONV:BOOL=OFF  # see CTK github issue #178
+      -DDCMTK_ENABLE_CHARSET_CONVERSION:STRING=<disabled> #  problem compiling on unix overcome
       -DDCMTK_OVERWRITE_WIN32_COMPILER_FLAGS:BOOL=OFF
       -DDCMTK_ENABLE_BUILTIN_DICTIONARY:BOOL=ON
       -DDCMTK_ENABLE_PRIVATE_TAGS:BOOL=ON
