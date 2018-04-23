@@ -97,7 +97,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_BRAINSROIAuto:BOOL=ON
       -DUSE_BRAINSResample:BOOL=ON
       -DUSE_BRAINSSnapShotWriter:BOOL=ON
-      -DUSE_BRAINSSurfaceTools:BOOL=ON  ## HACK: KENT:  This needs to be off for the builds to succeed.
+      -DUSE_BRAINSSurfaceTools:BOOL=OFF  ## HACK: KENT:  This needs to be off for the builds to succeed.
       -DUSE_BRAINSTransformConvert:BOOL=ON
       -DUSE_BRAINSPosteriorToContinuousClass:BOOL=ON
       -DUSE_BRAINSCreateLabelMapFromProbabilityMaps:BOOL=ON
