@@ -46,7 +46,7 @@ endforeach()
 #------------------------------------------------------------------------------
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/CMake)
 #-----------------------------------------------------------------------------
-set(LOCAL_PROJECT_NAME NAMICExernalProjects) # <-- the primary product endpoint (Often matches the superbuild name)
+set(LOCAL_PROJECT_NAME NAMICExternalProjects) # <-- the primary product endpoint (Often matches the superbuild name)
 set(SUPERBUILD_TOPLEVEL_PROJECT ${LOCAL_PROJECT_NAME})
 set(EXTERNAL_PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild)
 include(ExternalProject)
