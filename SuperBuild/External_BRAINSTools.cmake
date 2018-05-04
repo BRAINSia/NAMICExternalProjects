@@ -113,7 +113,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "4256cbc8434677302456663edbd0412e060e4dcd") # 2080418 (BAW worked!)
+  set(${proj}_GIT_TAG "90ee5a6a75408161ab47bb50f021da1787e99ec1") # 2080504 (BRAINS build fix for currupted hash.)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
