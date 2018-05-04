@@ -35,41 +35,6 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   set(BUILD_SHARED_LIBS OFF)
   set(VTK_WRAP_PYTHON OFF)
 
-  if(NOT APPLE)
-    list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      #-DDESIRED_QT_VERSION:STRING=4 # Unused
-      -DVTK_USE_GUISUPPORT:BOOL=ON
-      -DVTK_USE_QVTK_QTOPENGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
-      -DVTK_Group_Qt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT} ##VTK6
-      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-      -DVTK_REQUIRED_OBJCXX_FLAGS:STRING="" # Should not be needed, but is always causing problems on mac
-                                            # This is to prevent the garbage collection errors from creeping back in
-      )
-  else()
-    list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      -DVTK_USE_CARBON:BOOL=OFF
-      -DVTK_USE_COCOA:BOOL=ON # Default to Cocoa, VTK/CMakeLists.txt will enable Carbon and disable cocoa if needed
-      -DVTK_USE_X:BOOL=OFF
-      -DVTK_USE_GUISUPPORT:BOOL=ON
-      -DVTK_USE_QVTK_QTOPENGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
-      -DVTK_Group_Qt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}  ## VTK6
-      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-      )
-  endif()
-
-  list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      -DModule_vtkGUISupportQt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
-      -DModule_vtkGUISupportQtOpenGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT})
-
-  if(VTK_WRAP_TCL)
-    list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      -DTCL_INCLUDE_PATH:PATH=${TCL_INCLUDE_PATH}
-      -DTK_INCLUDE_PATH:PATH=${TK_INCLUDE_PATH}
-      -DTCL_LIBRARY:FILEPATH=${TCL_LIBRARY}
-      -DTK_LIBRARY:FILEPATH=${TK_LIBRARY}
-      -DTCL_TCLSH:FILEPATH=${TCL_TCLSH}
-      )
-  endif()
 
   set(CUSTOM_BUILD_COMMAND)
   if(CMAKE_GENERATOR MATCHES ".*Makefiles.*")
@@ -131,8 +96,13 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DVTK_WRAP_TCL:BOOL=${VTK_WRAP_TCL}
       -DModule_vtkIOXML:BOOL=ON
       -DModule_vtkIOXMLParser:BOOL=ON
-      ${VTK_QT_ARGS}
-      ${VTK_MAC_ARGS}
+## Build VTK without need for graphics
+      -DVTK_Group_Rendering:BOOL=OFF
+      -DVTK_Group_StandAlone:BOOL=OFF
+## then I enable the modules I need (e.g.)
+      -DModule_vtkCommonCore:BOOL=ON
+      -DModule_vtkFiltersGeneral:BOOL=ON
+
       # ZLIB
       -D${proj}_USE_SYSTEM_ZLIB:BOOL=ON
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
