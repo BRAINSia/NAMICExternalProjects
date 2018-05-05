@@ -102,6 +102,7 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
 ## then I enable the modules I need (e.g.)
       -DModule_vtkCommonCore:BOOL=ON
       -DModule_vtkFiltersGeneral:BOOL=ON
+      -DModule_vtkIOLegacy:BOOL=ON #needed for DTIProcess
 
       # ZLIB
       -D${proj}_USE_SYSTEM_ZLIB:BOOL=ON
