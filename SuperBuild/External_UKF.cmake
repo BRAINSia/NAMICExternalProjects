@@ -33,6 +33,12 @@ set(${proj}_CMAKE_OPTIONS
   -DSlicer_SOURCE_DIR:BOOL=ON ## THIS is a hack to prevent looking for slicer
   -DUKFTractography_SUPERBUILD:BOOL=OFF
 
+  -DUSE_SYSTEM_ZLIB:BOOL=ON
+  -Dzlib_DIR:PATH=${zlib_DIR}
+  -DZLIB_ROOT:PATH=${ZLIB_ROOT}
+  -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
+  -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
+
   -DUSE_SYSTEM_Boost:BOOL=ON
   -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
   -DBoost_DIR:PATH=${BOOST_ROOT}
