@@ -33,11 +33,6 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       )
   endif()
 
-  if(${CMAKE_CXX_STANDARD} EQUAL 98 )
-     message(FATAL_ERROR "When running cmake the first time, you must specify:
-        cmake -DCMAKE_CXX_STANDARD:STRING=11 ")
-  endif()
-
   ### --- Project specific additions here
   # message("VTK_DIR: ${VTK_DIR}")
   # message("ITK_DIR: ${ITK_DIR}")
@@ -106,7 +101,6 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_ICCDEF:BOOL=OFF
       -DUSE_ConvertBetweenFileFormats:BOOL=ON
       -DUSE_ImageCalculator:BOOL=ON
-      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
       -DTBB_DIR:PATH=${TBB_DIR}
       ${BRAINS_ANTS_PARAMS}
     )
