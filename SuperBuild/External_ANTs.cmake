@@ -67,4 +67,4 @@ mark_as_superbuild(
      ${proj}_SOURCE_DIR:PATH
      ${proj}_LIBRARY_DIR:PATH
   LABELS "FIND_PACKAGE"
-  )
+)

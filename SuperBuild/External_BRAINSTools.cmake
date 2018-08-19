@@ -2,9 +2,8 @@ set(proj        BRAINSTools) #This local name
 
 set(${proj}_DEPENDENCIES ITKv5 SlicerExecutionModel DCMTK JPEG TIFF teem OpenCV)
 # Boost
-if(USE_ANTS)
-  list(APPEND ${proj}_DEPENDENCIES ANTs)
-endif()
+list(APPEND ${proj}_DEPENDENCIES ANTs)
+
 if(${PRIMARY_PROJECT_NAME}_REQUIRES_VTK)
   list(APPEND ${proj}_DEPENDENCIES VTK )
 endif()
@@ -19,19 +18,17 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   set(BRAINS_ANTS_PARAMS
     -DUSE_ANTS:BOOL=${USE_ANTS}
     )
-  if(USE_ANTS)
-    list(APPEND BRAINS_ANTS_PARAMS
-      -DUSE_SYSTEM_ANTS:BOOL=ON
-      -DANTs_SOURCE_DIR:PATH=${ANTs_SOURCE_DIR}
-      -DANTs_LIBRARY_DIR:PATH=${ANTs_LIBRARY_DIR}
-      -DUSE_SYSTEM_Boost:BOOL=ON
-      -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
-      -DBoost_DIR:PATH=${BOOST_ROOT}
-      -DBOOST_DIR:PATH=${BOOST_ROOT}
-      -DBOOST_ROOT:PATH=${BOOST_ROOT}
-      -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
-      )
-  endif()
+  list(APPEND BRAINS_ANTS_PARAMS
+    -DUSE_SYSTEM_ANTS:BOOL=ON
+    -DANTs_SOURCE_DIR:PATH=${ANTs_SOURCE_DIR}
+    -DANTs_LIBRARY_DIR:PATH=${ANTs_LIBRARY_DIR}
+    -DUSE_SYSTEM_Boost:BOOL=ON
+    -DBoost_NO_BOOST_CMAKE:BOOL=ON #Set Boost_NO_BOOST_CMAKE to ON to disable the search for boost-cmake
+    -DBoost_DIR:PATH=${BOOST_ROOT}
+    -DBOOST_DIR:PATH=${BOOST_ROOT}
+    -DBOOST_ROOT:PATH=${BOOST_ROOT}
+    -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
+    )
 
   ### --- Project specific additions here
   # message("VTK_DIR: ${VTK_DIR}")
