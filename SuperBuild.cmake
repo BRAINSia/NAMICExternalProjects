@@ -234,7 +234,6 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   # NOT CURRENTLY USED DTIReg
   #   BatchMake  Needed by DTIReg
   # THIS DOES NOT WORK YET  DTIProcess
-  DTIProcess
   UKF
 )
 endif()

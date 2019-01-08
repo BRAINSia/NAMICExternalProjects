@@ -20,13 +20,14 @@ set(${proj}_CMAKE_OPTIONS
   )
 
 set(${proj}_REPOSITORY ${git_protocol}://github.com/01org/tbb.git)
-set(${proj}_GIT_TAG 2018_U2)  #
+#set(${proj}_GIT_TAG 2019_U2)  # 20181110
+set(${proj}_GIT_TAG 2019_U3)  # 20181222
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-  BINARY_DIR tbb_downloaded/2018_U2
+  BINARY_DIR tbb_downloaded/${${proj}_GIT_TAG}
   DOWNLOAD_COMMAND  "" #, no download
   CONFIGURE_COMMAND "" #, no config
   BUILD_COMMAND     "" #, no build
@@ -49,6 +50,10 @@ ExternalProject_Add(${proj}
 #TODO:  Will need to wrap configuration files for compilers
 #       that have non-default names
 #set(TBB_MAKE_ARGS "compiler=${CMAKE_CXX_COMPILER}")
+if(APPLE)
+  #message(FATAL_ERROR "min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
+  set(TBB_MAKE_ARGS "CXXFLAGS=\"-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}\"")
+endif()
 
 ## Following instructions from for source package integration
 ## https://github.com/01org/tbb/tree/tbb_2018/cmake#source-package-integration
@@ -56,15 +61,20 @@ include(${CMAKE_CURRENT_LIST_DIR}/tbb_cmake/TBBGet.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/tbb_cmake/TBBBuild.cmake)
 tbb_get(TBB_ROOT TBB_LOCAL_SRC_DIR
         SAVE_TO ${SOURCE_DOWNLOAD_CACHE}/${proj}
-        RELEASE_TAG 2018_U2
+        RELEASE_TAG ${${proj}_GIT_TAG}
         SYSTEM_NAME ${CMAKE_SYSTEM_NAME}
         CONFIG_DIR TBB_DIR
         SOURCE_CODE)
 tbb_build(TBB_ROOT ${TBB_LOCAL_SRC_DIR}
           CONFIG_DIR TBB_DIR  #Need to set TBB_DIR for the find_package, and to propogate to other packages
-          MAKE_ARGS ${TBB_MAKE_ARGS})
+          MAKE_ARGS ${TBB_MAKE_ARGS} CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER})
 
-find_package(TBB REQUIRED tbb tbbmalloc)
+if( APPLE )
+  set( TBB_MIN_VERSION "2019.0") ## Actually 2019.0.11002 is needed for when OSX MIN version < 10.12
+else()
+  set( TBB_MIN_VERSION "2017.0")
+endif()
+find_package(TBB ${TBB_MIN_VERSION} REQUIRED COMPONENTS tbb tbbmalloc NO_MODULE PATHS ${TBB_DIR} )
 
 if(NOT EXISTS ${TBB_DIR})
   message(FATAL_ERROR "'TBB_DIR:PATH=${TBB_DIR}' does not exist")

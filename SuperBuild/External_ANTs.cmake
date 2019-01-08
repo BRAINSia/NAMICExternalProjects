@@ -38,7 +38,7 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT)
 endif()
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://github.com/stnava/ANTs.git")
-set(${proj}_GIT_TAG c3a2857a0805b9b1e3abde1f7bae446453f0e713) # 20180422
+set(${proj}_GIT_TAG 5092de9a60abf553481f0dd22fa0ec1c5f58eeb3) # c++11-modernization 20181222
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
@@ -67,4 +67,4 @@ mark_as_superbuild(
      ${proj}_SOURCE_DIR:PATH
      ${proj}_LIBRARY_DIR:PATH
   LABELS "FIND_PACKAGE"
-)
+  )

@@ -1,4 +1,4 @@
-# Copyright (c) 2017 Intel Corporation
+# Copyright (c) 2017-2018 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -162,8 +162,8 @@ endif()")
     else()
         set(_tbb_config_template TBBConfig.cmake.in)
     endif()
-    configure_file(${_tbb_cmake_module_path}/templates/${_tbb_config_template}   ${tbb_config_dir}/TBBConfig.cmake @ONLY)
-    configure_file(${_tbb_cmake_module_path}/templates/TBBConfigVersion.cmake.in ${tbb_config_dir}/TBBConfigVersion.cmake @ONLY)
+    configure_file(${CMAKE_CURRENT_LIST_DIR}/tbb_cmake/templates/${_tbb_config_template}   ${tbb_config_dir}/TBBConfig.cmake @ONLY)
+    configure_file(${CMAKE_CURRENT_LIST_DIR}/tbb_cmake/templates/TBBConfigVersion.cmake.in ${tbb_config_dir}/TBBConfigVersion.cmake @ONLY)
 
     set(${tbb_MK_CONFIG_DIR} ${tbb_config_dir} PARENT_SCOPE)
 endfunction()
