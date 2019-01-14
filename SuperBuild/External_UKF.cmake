@@ -50,7 +50,7 @@ set(${proj}_CMAKE_OPTIONS
 ### --- End Project specific additions
 #set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
 set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
-set(${proj}_GIT_TAG "cbfc1e08f7537f1a8376f9df4ff9cbdba9096fa9") # 20190109
+set(${proj}_GIT_TAG "48b1b1ce6088da8d31996fb062a7631c762878a0") # 20190109
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}

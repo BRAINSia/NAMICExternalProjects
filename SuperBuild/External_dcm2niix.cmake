@@ -18,6 +18,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DBATCH_VERSION:BOOL=ON
       -DUSE_OPENJPEG:BOOL=ON
       #-DUSE_SYSTEM_JPEG:BOOL=ON
+      -DUSE_STATIC_RUNTIME:BOOL=OFF # HPC cluster does not install necessary static libraries
       -DJPEG_DIR:PATH=${JPEG_DIR}
       #-DUSE_SYSTEM_TIFF:BOOL=ON
       #-DTIFF_DIR:PATH=${TIFF_DIR}
@@ -30,7 +31,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/rordenlab/dcm2niix.git")
-  set(${proj}_GIT_TAG "eb899dbb26bb85b1166af5f118eef7975ef5cbff")
+  set(${proj}_GIT_TAG "32160d74cd266a59e81a75b655c16de27b8c7681")
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
