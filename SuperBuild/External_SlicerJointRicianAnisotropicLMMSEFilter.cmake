@@ -26,7 +26,7 @@ set(${proj}_CMAKE_OPTIONS
 
 ### --- End Project specific additions
 set(${proj}_GIT_REPOSITORY "git://github.com/BRAINSia/JALMMSE.git")
-set(${proj}_GIT_TAG 0ac2bc2d05684afc62e6f875ca6e5c54346bd84f)  # "master")
+set(${proj}_GIT_TAG 129769abb0225978aba523c0b6a9660174a0845a)  # "master")
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}

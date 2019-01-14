@@ -34,8 +34,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- End Project specific additions
 # SVN is too slow SVN_REPOSITORY http://svn.boost.org/svn/boost/trunk
 # SVN is too slow SVN_REVISION -r "82586"
-  set(${proj}_URL http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1.66_0.tar.gz )
-  set(${proj}_MD5 5a5d5614d9a07672e1ab2a250b5defc5 )
+#  set(${proj}_URL http://sourceforge.net/projects/boost/files/boost/1.66.0/boost_1.66_0.tar.gz )
+#  set(${proj}_MD5 5a5d5614d9a07672e1ab2a250b5defc5 )
 
 
   if(CMAKE_COMPILER_IS_CLANGXX)
@@ -45,7 +45,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/boostorg/boost.git")
-  set(${proj}_GIT_TAG "boost-1.69.0") # July 4, 2015
+  set(${proj}_GIT_TAG "boost-1.69.0") # Dec 12, 2018
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
