@@ -104,7 +104,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "694f31871f73b62c98f99ddde8b516af4b6dd92d") # 20190114 (BRAINSTools, ITKv5, VTK 8.2, allow C++14 build)
+  set(${proj}_GIT_TAG "b55098aae801b897158fc6ca4f62cedaa87aead5") # 20190116 (BRAINSTools, ITKv5, VTK 8.2, allow C++14 build)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
