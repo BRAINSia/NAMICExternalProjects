@@ -102,6 +102,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/Common.cmake) #<-- All feature options for t
 # Superbuild script
 #-----------------------------------------------------------------------------
 if(${LOCAL_PROJECT_NAME}_SUPERBUILD)
+  ## External automake packages depend on the setting of TMPDIR.
+  ## Set this consistently.
+  set(ENV{TMPDIR} ${CMAKE_CURRENT_BINARY_DIR})
   include("${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild.cmake") #<-- Harness for managing top superbuild, and finally delegate inner product build
   return()
 else()
