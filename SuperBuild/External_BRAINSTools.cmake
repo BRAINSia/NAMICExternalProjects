@@ -15,6 +15,7 @@ endif()
 # Set dependency list
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
+
   set(BRAINS_ANTS_PARAMS
     -DUSE_ANTS:BOOL=${USE_ANTS}
     )
@@ -104,7 +105,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "083ae59ed2067c6d817eacf90469290a24689a39") # 20190116 (BRAINSTools, ITKv5, VTK 8.2, allow C++14 build)
+  set(${proj}_GIT_TAG "ac4dafaa30f089747c15714f67cecc04f45c7183") # 20190120 (Verified BAW working!)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}

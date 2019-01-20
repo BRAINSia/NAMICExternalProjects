@@ -94,6 +94,9 @@ option(USE_SYSTEM_zlib "build using the system version of zlib" OFF)
 option(USE_SYSTEM_DCMTK "Build using an externally defined version of DCMTK" OFF)
 option(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT "Build Dicom Support" ON)
 
+
+option(USE_ANTS "Build BRAINSTools with ANTs integration" ON)
+
 #------------------------------------------------------------------------------
 # ${LOCAL_PROJECT_NAME} dependency list
 #------------------------------------------------------------------------------
