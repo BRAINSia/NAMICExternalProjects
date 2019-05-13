@@ -131,7 +131,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     DEPENDS
       ${${proj}_DEPENDENCIES}
   )
-  #set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/share/OpenCV/)
+  #OLD PATH set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/share/OpenCV)
   set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/opencv4)
 else()
   if(${USE_SYSTEM_${extProjName}})
