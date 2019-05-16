@@ -38,7 +38,7 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT)
 endif()
 ### --- End Project specific additions
 set(${proj}_REPOSITORY "https://github.com/ANTsX/ANTs.git")
-set(${proj}_GIT_TAG c56a0d8ccf683731d0b93f7a9358d03939d1238b) # Fixed SpatialObject API update
+set(${proj}_GIT_TAG 1904a52c5f112e0e1e89b06a83aa2d127cfbb369) # 20190515
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
