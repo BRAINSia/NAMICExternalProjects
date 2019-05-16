@@ -40,7 +40,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   #set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY ${git_protocol}://github.com/InsightSoftwareConsortium/ITK.git
   set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY ${git_protocol}://github.com/hjmjohnson/ITK.git)
-  set(${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG 08c84c34c750199573f380833c1927682a11dfa3 ) #20180513 - FixSpatialObjectsTesting
+  set(${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG a350ffe004712fc42153ed26b91ff110c032fde3 ) #20180515 - FixSpatialObjectsTesting
 
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
