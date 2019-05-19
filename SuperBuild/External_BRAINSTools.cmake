@@ -80,7 +80,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
       -DUSE_BRAINSConstellationDetector:BOOL=ON
       -DUSE_BRAINSContinuousClass:BOOL=ON
       -DUSE_BRAINSCut:BOOL=ON
-      -DUSE_BRAINSDemonWarp:BOOL=ON
+      -DUSE_BRAINSDemonWarp:BOOL=OFF
       -DUSE_BRAINSFit:BOOL=ON
       -DUSE_BRAINSImageConvert:BOOL=ON
       -DUSE_BRAINSInitializedControlPoints:BOOL=ON
@@ -105,7 +105,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
   # message("${proj}_CMAKE_OPTIONS=${${proj}_CMAKE_OPTIONS}")
   ### --- End Project specific additions
   set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/BRAINSTools.git")
-  set(${proj}_GIT_TAG "abead8e430b624104406b9735ccd53d908d5c0bc") # 20190518 (Update ANTs)
+  set(${proj}_GIT_TAG "e4dd4e38e16c7cd1e358495cc04ab26ecb08c271") # 20190518 (Update ANTs)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
