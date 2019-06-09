@@ -20,12 +20,12 @@ if(BUILD_TESTING AND NOT BRAINSTools_DISABLE_TESTING)
 endif()
 
 #-----------------------------------------------------------------------------
-# Git protocole option
+# Git protocol option
 #-----------------------------------------------------------------------------
 option(${CMAKE_PROJECT_NAME}_USE_GIT_PROTOCOL "If behind a firewall turn this off to use http instead." ON)
 set(git_protocol "git")
 if(NOT ${CMAKE_PROJECT_NAME}_USE_GIT_PROTOCOL)
-  set(git_protocol "http")
+  set(git_protocol "https")
   # Verify that the global git config has been updated with the expected "insteadOf" option.
   function(_check_for_required_git_config_insteadof base insteadof)
     execute_process(
@@ -46,6 +46,7 @@ if(NOT ${CMAKE_PROJECT_NAME}_USE_GIT_PROTOCOL)
     endif()
   endfunction()
 endif()
+
 find_package(Git REQUIRED)
 
 cmake_dependent_option(${CMAKE_PROJECT_NAME}_USE_CTKAPPLAUNCHER "CTKAppLauncher used with python" ON
@@ -93,7 +94,6 @@ option(USE_SYSTEM_VTK "Build using an externally defined version of VTK" OFF)
 option(USE_SYSTEM_zlib "build using the system version of zlib" OFF)
 option(USE_SYSTEM_DCMTK "Build using an externally defined version of DCMTK" OFF)
 option(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT "Build Dicom Support" ON)
-
 
 option(USE_ANTS "Build BRAINSTools with ANTs integration" ON)
 
