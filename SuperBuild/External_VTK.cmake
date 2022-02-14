@@ -1,13 +1,13 @@
 
 set(proj VTK)
 
-set(${proj}_REQUIRED_VERSION "v8.2.0")  #If a required version is necessary, then set this, else leave blank
-set(VTK_VERSION_MAJOR 8)
+set(VTK_VERSION_MAJOR 9)
+set(VTK_VERSION_MINOR 0)
+set(${proj}_REQUIRED_VERSION "9.0")  #If a required version is necessary, then set this, else leave blank
 
 # Set dependency list
-set(${proj}_DEPENDENCIES "zlib"
-# "TBB"
-)
+set(${proj}_DEPENDENCIES "zlib" )
+#"TBB")
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
@@ -34,8 +34,6 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
 
   set(VTK_WRAP_TCL OFF)
   set(VTK_WRAP_PYTHON OFF)
-  set(BUILD_SHARED_LIBS OFF)
-  set(VTK_WRAP_PYTHON OFF)
 
   if(NOT APPLE)
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
@@ -44,8 +42,8 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DVTK_USE_QVTK_QTOPENGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
       -DVTK_Group_Qt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT} ##VTK6
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-      -DVTK_REQUIRED_OBJCXX_FLAGS:STRING="" # Should not be needed, but is always causing problems on mac
-                                            # This is to prevent the garbage collection errors from creeping back in
+      -DVTK_REQUIRED_OBJCXX_FLAGS:STRING= # Should not be needed, but is always causing problems on mac
+                                          # This is to prevent the garbage collection errors from creeping back in
       )
   else()
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
@@ -103,36 +101,35 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   endif()
   set(vtk_git_protocol "https")
   set(${proj}_GIT_REPOSITORY "${vtk_git_protocol}://gitlab.kitware.com/vtk/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
-  set(${proj}_GIT_TAG "v8.2.0.rc2")  # VTK 20181222
+  set(${proj}_GIT_TAG "6b3a8ff048572d531f2cee9ced88ad72ce35210c")   # 20220126
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build
+    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build
     GIT_REPOSITORY "${${proj}_GIT_REPOSITORY}"
     GIT_TAG ${${proj}_GIT_TAG}
     ${CUSTOM_BUILD_COMMAND}
     CMAKE_ARGS -Wno-dev --no-warn-unused-cli
     CMAKE_CACHE_ARGS
       ${EXTERNAL_PROJECT_OPTIONAL_ARGS}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-      -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
-      -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+      ${EXTERNAL_PROJECT_DEFAULTS}
+      -DCMAKE_CXX_FLAGS:STRING=${ep_CMAKE_CXX_FLAGS}
+      -DCMAKE_C_FLAGS:STRING=${ep_CMAKE_C_FLAGS}
       -DCMAKE_INCLUDE_DIRECTORIES_BEFORE:BOOL=OFF
-      -DBUILD_TESTING:BOOL=OFF
-      -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_SHARED_LIBS:BOOL=OFF
       -DVTK_USE_PARALLEL:BOOL=ON
       -DVTK_DEBUG_LEAKS:BOOL=${VTK_DEBUG_LEAKS}
       -DVTK_LEGACY_REMOVE:BOOL=ON
       -DVTK_WRAP_TCL:BOOL=${VTK_WRAP_TCL}
+      -DVTK_WRAP_PYTHON:BOOL=${VTK_WRAP_PYTHON}
       -DModule_vtkIOXML:BOOL=ON
       -DModule_vtkIOXMLParser:BOOL=ON
+      ## Disable vtk dicom that conflicts with itk dcmtk with duplicate symbols
+      -DVTK_GROUP_ENABLE_MPI:STRING=DONT_WANT
+      -DVTK_MODULE_ENABLE_VTK_DICOMParser:STRING=DONT_WANT
+      -DVTK_MODULE_ENABLE_VTK_vtkDICOM:STRING=DONT_WANT
+      -DVTK_ENABLE_WRAPPING:BOOL=OFF
+      ##
       ${VTK_QT_ARGS}
       ${VTK_MAC_ARGS}
       # ZLIB
@@ -144,10 +141,12 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DVTK_SMP_IMPLEMENTATION_TYPE:STRING=Sequential
       #-DVTK_SMP_IMPLEMENTATION_TYPE:STRING=TBB
       #-DTBB_DIR:PATH=${TBB_DIR}
-      INSTALL_COMMAND ""
+      #INSTALL_COMMAND ""
+      DEPENDS "${${proj}_DEPENDENCIES}"
     )
   ### --- End Project specific additions
-  set(${proj}_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
+  set(${proj}_DIR ${CMAKE_INSTALL_PREFIX}/lib/cmake/vtk-${${proj}_REQUIRED_VERSION})
+  #${CMAKE_CURRENT_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build)
 
   set(VTK_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
@@ -169,10 +168,10 @@ else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
 
-mark_as_superbuild(VARS VTK_SOURCE_DIR:PATH ALL_PROJECTS)
+#mark_as_superbuild(VARS VTK_SOURCE_DIR:PATH ALL_PROJECTS)
 
 mark_as_superbuild(
-  VARS VTK_DIR:PATH
-       VTK_VERSION_MAJOR:STRING
+    VARS VTK_DIR:PATH
+    VTK_VERSION_MAJOR:STRING
   LABELS "FIND_PACKAGE"
   )

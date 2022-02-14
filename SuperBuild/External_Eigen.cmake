@@ -36,8 +36,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     )
 
 # Eigen version settings
-set(Eigen_GIT_REPOSITORY "${git_protocol}://github.com/eigenteam/eigen-git-mirror")
-set(Eigen_GIT_TAG "3.3.7")  ## updated version of Eigen needed for better C++11 support and CMake 11 fixes
+set(Eigen_GIT_REPOSITORY "https://gitlab.com/libeigen/eigen.git")
+set(Eigen_GIT_TAG "3.4.0")  ## updated version of Eigen needed for better C++11 support and CMake 11 fixes
 
   ### --- End Project specific additions
   ExternalProject_Add(Eigen

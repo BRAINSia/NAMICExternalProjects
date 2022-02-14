@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.12.0...3.13.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.16.3...3.20.3)
+cmake_policy(VERSION 3.16.3...3.20.3)
 
 #-----------------------------------------------------------------------------
 # Enable C++14
@@ -6,7 +7,7 @@ cmake_minimum_required(VERSION 3.12.0...3.13.2 FATAL_ERROR)
 #####
 ##  Set the default target properties for ITK
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14) # Supported values are 11, 14, 17, 20
+  set(CMAKE_CXX_STANDARD 14) # Supported values are 14, 17, 20, and 23.
 endif()
 if(NOT CMAKE_CXX_STANDARD_REQUIRED)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,9 +15,9 @@ endif()
 if(NOT CMAKE_CXX_EXTENSIONS)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
-set(VALID_CXX_STANDARDS "11" "14" "17" "20")
+set(VALID_CXX_STANDARDS "14" "17" "20" "23")
 if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
-   MESSAGE(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}  for NAMICExternalProjects version 5 and greater.")
+   MESSAGE(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}  for BRAINSTools version 5 and greater.")
 endif()
 
 #-----------------------------------------------------------------------------
@@ -57,7 +58,7 @@ endif()
 project(${LOCAL_PROJECT_NAME}
    LANGUAGES  C CXX
    DESCRIPTION "NAMICExternal Project wrapper see github at BRAINSia" #<-- cmake version 3.9 or greater
-   VERSION 5.0.0
+   VERSION 5.8.0
 )
 #-- The project() command stores the version number and its components in variables
 #-- PROJECT_VERSION, <PROJECT-NAME>_VERSION

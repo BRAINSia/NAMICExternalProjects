@@ -105,10 +105,10 @@ list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES DCMTK)
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES ITKv5)
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES SlicerExecutionModel)
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES teem)
-#list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES Boost)
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES TBB)
 
-list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES dcm2niix)
+# -- build separately list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES dcm2niix)
+#  list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES Boost)
 
 if(BUILD_STYLE_UTILS)
   list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES Cppcheck KWStyle Uncrustify)
@@ -209,7 +209,7 @@ mark_as_superbuild(
 
 ## for i in SuperBuild/*; do  echo $i |sed 's/.*External_\([a-zA-Z]*\).*/\1/g'|fgrep -v cmake|fgrep -v Template; done|sort -u
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
-  MRParameterMaps
+  # -- Needs updates for new ITK 5.3 enumerations MRParameterMaps
   OpenCV
   Eigen
   SlicerExecutionModel
@@ -236,8 +236,8 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   #  This does not build currently  MultiAtlas
   # NOT CURRENTLY USED DTIReg
   #   BatchMake  Needed by DTIReg
-  # THIS DOES NOT WORK YET  DTIProcess
-  UKF
+  # THIS DOES NOT WORK YET  DTIProcess --- Requires ITK 4.13
+  # -- Needs update for VTK and ITK 20220214 UKF
 )
 endif()
 

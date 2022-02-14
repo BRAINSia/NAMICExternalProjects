@@ -44,8 +44,9 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
     )
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/double-conversion.git)
-  set(${proj}_GIT_TAG 5ddd8066bea117b6dd0df19d1e8d19d2c1d609d8)
+  #set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/double-conversion.git)
+  set(${proj}_REPOSITORY ${git_protocol}://github.com/google/double-conversion.git)
+  set(${proj}_GIT_TAG    a109d7d05165b338513e3e379ecb5697a22b05c3) # 20220214
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}

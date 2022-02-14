@@ -31,26 +31,8 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
       -DDCMTK_FORCE_FPIC_ON_UNIX:BOOL=ON
       -DDCMTK_WITH_WRAP:BOOL=OFF   # CTK does not build on Mac with this option turned ON due to library dependencies missing
+      #TODO Test this -DDCMTK_ENABLE_STL:BOOL=ON
       )
-  endif()
-
-  set(ep_cxx_standard_args)
-  # XXX: On MSVC disable building DCMTK with C++11. DCMTK checks C++11.
-  # compiler compatibility by inspecting __cplusplus, but MSVC doesn't set __cplusplus.
-  # See https://blogs.msdn.microsoft.com/vcblog/2016/06/07/standards-version-switches-in-the-compiler/.
-  # Microsoft: "We won’t update __cplusplus until the compiler fully conforms to
-  # the standard. Until then, you can check the value of _MSVC_LANG."
-  if(CMAKE_CXX_STANDARD AND UNIX)
-    list(APPEND ep_cxx_standard_args
-      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-      -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
-      -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
-      )
-    if(NOT CMAKE_CXX_STANDARD EQUAL 98)
-      list(APPEND ep_cxx_standard_args
-      -DDCMTK_ENABLE_CXX11:BOOL=ON
-      )
-    endif()
   endif()
 
   ExternalProject_SetIfNotDefined(
@@ -66,12 +48,14 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     # plus the following patch:
     # * Set CMP0067 to ensure try_compile work as expected
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-    "9304628a87128aba312d401bc4e5fe8d82eb3de5" # 20190530
+    #"b0a30fb0fcb46ca765e9e2d88a92405946fa9d7e" # 20200312
+    #"3e299bc08f16da786883da73c6a4d35457b7838e" # 20210122
+    "62899a5e84e0f9918b520218effa75a0c9059e2f"   20210805
     QUIET
     )
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
-  set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build)
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
@@ -80,13 +64,9 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     SOURCE_DIR ${EP_SOURCE_DIR}
     BINARY_DIR ${EP_BINARY_DIR}
     CMAKE_CACHE_ARGS
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      ${ep_cxx_standard_args}
-      ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS}
-      -DBUILD_SHARED_LIBS:BOOL=OFF
+      ${EXTERNAL_PROJECT_DEFAULTS}
+      -DBUILD_APPS:BOOL=OFF
+      -DDCMTK_ENABLE_CXX11:BOOL=ON
       -DDCMTK_WITH_DOXYGEN:BOOL=OFF
       -DDCMTK_WITH_ZLIB:BOOL=OFF # see CTK github issue #25
       -DDCMTK_WITH_OPENSSL:BOOL=OFF # see CTK github issue #25
@@ -99,15 +79,15 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DDCMTK_ENABLE_PRIVATE_TAGS:BOOL=ON
       ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS}
       # macOS
-      -DCMAKE_MACOSX_RPATH:BOOL=0
-    INSTALL_COMMAND ""
+      -DCMAKE_MACOSX_RPATH:BOOL=${BRAINSTOOLS_MACOSX_RPATH}
+      #INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
   )
 
   ExternalProject_GenerateProjectDescription_Step(${proj})
 
-  set(DCMTK_DIR ${EP_BINARY_DIR})
+  set(DCMTK_DIR "${CMAKE_INSTALL_PREFIX}/lib/cmake/dcmtk")
 
   #-----------------------------------------------------------------------------
   # Launcher setting specific to build tree

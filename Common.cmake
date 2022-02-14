@@ -10,10 +10,25 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   mark_as_advanced(CMAKE_BUILD_TYPE)
   # Set the possible values of build type for cmake-gui
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithDebInfo")
-
-  mark_as_superbuild(VARS CMAKE_BUILD_TYPE ALL_PROJECTS)
 endif()
+#-----------------------------------------------------------------------------
+# Set a default external project build type if none was specified
+set(EXTERNAL_PROJECT_BUILD_TYPE "Release" CACHE STRING "Default build type for support libraries")
+set_property(CACHE EXTERNAL_PROJECT_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithDebInfo")
 
+#-----------------------------------------------------------------------------
+# Change the default install prefix for superbuild packages
+if(NOT CMAKE_INSTALL_PREFIX_SET)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/${LOCAL_PROJECT_NAME}-${CMAKE_BUILD_TYPE}-${PROJECT_VERSION}"
+      CACHE PATH "Install directory used by install" FORCE)
+endif()
+set(CMAKE_INSTALL_PREFIX_SET TRUE
+      CACHE BOOL "TAG indicating that INSTALL_PREFIX_WAS_SET" FORCE )
+include(GNUInstallDirs)
+
+if(NOT Slicer_BUILD_BRAINSTOOLS)
+  set(BRAINSTOOLS_MACOSX_RPATH ON)
+endif()
 #-----------------------------------------------------------------------------
 if(APPLE)
 #-----------------------------------------------------------------------------
@@ -27,8 +42,13 @@ if(APPLE)
   #  10.x == Mac OSX 10.6 (Snow Leopard)
   #  11.x == Mac OSX 10.7 (Lion)
   #  12.x == Mac OSX 10.8 (Mountain Lion)
-  if (DARWIN_MAJOR_VERSION LESS "13")
-    message(FATAL_ERROR "Only Mac OSX >= 10.9 are supported !")
+  #  13.x == Mac OSX 10.9 (Yosemite)
+  #  14.x == Mac OSX 10.10 (El Capitan)
+  #  15.x == Mac OSX 10.12 (Sierra)    # Sept 2016 -- Improve C++11 support by default, for TBB
+  #  17.x == Mac OSX 10.13 (High Sierra)
+  #  18.x == Mac OSX 10.14 (Mojave)
+  if (DARWIN_MAJOR_VERSION LESS "13")  #https://en.wikipedia.org/wiki/Darwin_(operating_system)
+    message(FATAL_ERROR "Only Mac OSX >= 10.13 are supported !")
   endif()
 
   ## RPATH-RPATH-RPATH
@@ -59,7 +79,6 @@ if(APPLE)
   endif("${isSystemDir}" STREQUAL "-1")
   ## RPATH-RPATH-RPATH
 endif()
-
 #-----------------------------------------------------------------------------
 # Sanity checks
 #------------------------------------------------------------------------------
@@ -141,7 +160,7 @@ endif()
 SETIFEMPTY(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 SETIFEMPTY(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 SETIFEMPTY(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
-SETIFEMPTY(CMAKE_BUNDLE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+SETIFEMPTY(CMAKE_BUNDLE_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/bin)
 file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 #-----------------------------------------------------------------------------
@@ -164,50 +183,40 @@ SETIFEMPTY(BRAINSTools_CLI_INSTALL_RUNTIME_DESTINATION ${CMAKE_INSTALL_RUNTIME_D
 # Augment compiler flags
 #-------------------------------------------------------------------------
 include(ITKSetStandardCompilerFlags)
-set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${ITK_REQUIRED_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ITK_REQUIRED_CXX_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
-set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${ITK_REQUIRED_LINK_FLAGS}")
-if(ITK_LEGACY_REMOVE)
-  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_DEBUG_DESIRED_FLAGS}" )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_DEBUG_DESIRED_FLAGS}")
-  else() # Release, or anything else
-    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${C_RELEASE_DESIRED_FLAGS}" )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_RELEASE_DESIRED_FLAGS}" )
-  endif()
-endif()
+string(APPEND CMAKE_C_FLAGS  " ${ITK_REQUIRED_C_FLAGS}")
+string(APPEND CMAKE_CXX_FLAGS " ${ITK_REQUIRED_CXX_FLAGS}")
+string(APPEND CMAKE_EXE_LINKER_FLAGS " ${ITK_REQUIRED_LINK_FLAGS}")
+string(APPEND CMAKE_SHARED_LINKER_FLAGS " ${ITK_REQUIRED_LINK_FLAGS}")
+string(APPEND CMAKE_MODULE_LINKER_FLAGS " ${ITK_REQUIRED_LINK_FLAGS}")
 
 #-----------------------------------------------------------------------------
 # Add needed flag for gnu on linux like enviroments to build static common libs
 # suitable for linking with shared object libs.
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
   if(NOT "${CMAKE_CXX_FLAGS}" MATCHES "-fPIC")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    string(APPEND CMAKE_CXX_FLAGS " -fPIC")
+    string(APPEND ep_CMAKE_CXX_FLAGS " -fPIC")
   endif()
   if(NOT "${CMAKE_C_FLAGS}" MATCHES "-fPIC")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+    string(APPEND CMAKE_C_FLAGS " -fPIC")
+    string(APPEND ep_CMAKE_C_FLAGS " -fPIC")
   endif()
 endif()
 
 option(BUILD_OPTIMIZED "Set compiler flags for native host building." OFF)
 mark_as_advanced(BUILD_OPTIMIZED)
 
-if(BUILD_OPTIMIZED)
-  include(CheckCXXCompilerFlag)
-  include(CheckCCompilerFlag)
-  CHECK_CXX_COMPILER_FLAG("-march=native" CAN_BUILD_CXX_OPTIMIZED)
-  CHECK_C_COMPILER_FLAG("-march=native" CAN_BUILD_C_OPTIMIZED)
+if(BUILD_OPTIMIZED AND NOT BUILD_COVERAGE)
   if(CAN_BUILD_CXX_OPTIMIZED AND CAN_BUILD_C_OPTIMIZED)
-    string(FIND CMAKE_CXX_FLAGS "-march=native" PREVIOUS_CXX_OPTIMIZED_SET)
-    if(PREVIOUS_CXX_OPTIMIZED_SET LESS 0)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
-    endif()
-    string(FIND CMAKE_C_FLAGS "-march=native" PREVIOUS_C_OPTIMIZED_SET)
-    if(PREVIOUS_C_OPTIMIZED_SET LESS 0 )
-      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=native")
-    endif()
+    string(APPEND CMAKE_CXX_FLAGS ${BRAINSToools_CXX_OPTIMIZATION_FLAGS})
+    string(APPEND CMAKE_C_FLAGS ${BRAINSToools_CXX_OPTIMIZATION_FLAGS})
+    string(REPLACE " " ";" CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${${PROJECT_NAME}_C_OPTIMIZATION_FLAGS} ${${PROJECT_NAME}_C_WARNING_FLAGS}")
+    list(REMOVE_DUPLICATES CMAKE_C_FLAGS)
+    string(REPLACE ";" " " CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+
+    string(REPLACE " " ";" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${${PROJECT_NAME}_CXX_OPTIMIZATION_FLAGS} ${${PROJECT_NAME}_CXX_WARNING_FLAGS}")
+    list(REMOVE_DUPLICATES CMAKE_CXX_FLAGS)
+    string(REPLACE ";" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
   else()
     message("WARNING: Requested optimized build, but -march=native flag not supported by"
             "${CMAKE_CXX_COMPILER}"
@@ -255,4 +264,13 @@ mark_as_superbuild(
 #--    MEMORYCHECK_COMMAND:PATH
 #--    MEMORYCHECK_COMMAND_OPTIONS:STRING
    ALL_PROJECTS
+)
+
+set( EXTERNAL_PROJECT_DEFAULTS
+  -DCMAKE_BUILD_TYPE:STRING=${EXTERNAL_PROJECT_BUILD_TYPE}
+  -DBUILD_EXAMPLES:BOOL=OFF
+  -DBUILD_TESTING:BOOL=OFF
+  #-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+  -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+  -DBUILD_SHARED_LIBS:BOOL=${EXTERNAL_BUILD_SHARED_LIBS}
 )

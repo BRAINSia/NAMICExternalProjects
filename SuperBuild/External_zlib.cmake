@@ -27,7 +27,8 @@ if(NOT DEFINED zlib_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
   set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-  set(EP_INSTALL_DIR ${CMAKE_BINARY_DIR}/${proj}-install)
+  #  set(EP_INSTALL_DIR ${CMAKE_BINARY_DIR}/${proj}-install)
+  set(EP_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
@@ -37,7 +38,7 @@ if(NOT DEFINED zlib_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-    "66a753054b356da85e1838a081aa94287226823e"
+    "66a753054b356da85e1838a081aa94287226823e" # 20210122
     QUIET
     )
 
@@ -47,16 +48,10 @@ if(NOT DEFINED zlib_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
     SOURCE_DIR ${EP_SOURCE_DIR}
     BINARY_DIR ${EP_BINARY_DIR}
-    INSTALL_DIR ${EP_INSTALL_DIR}
     CMAKE_CACHE_ARGS
-      ## CXX should not be needed, but it a cmake default test
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      ${EXTERNAL_PROJECT_DEFAULTS}
       -DZLIB_MANGLE_PREFIX:STRING=slicer_zlib_
-      -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-      # macOS
-      -DCMAKE_MACOSX_RPATH:BOOL=0
+      -DCMAKE_INSTALL_PREFIX:PATH=${EP_INSTALL_DIR}
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
@@ -66,10 +61,10 @@ if(NOT DEFINED zlib_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   set(zlib_DIR ${EP_INSTALL_DIR})
   set(ZLIB_ROOT ${zlib_DIR})
   set(ZLIB_INCLUDE_DIR ${zlib_DIR}/include)
-  if(WIN32)
-    set(ZLIB_LIBRARY ${zlib_DIR}/lib/zlib.lib)
+  if(BUILD_SHARED_LIBS)
+    set(ZLIB_LIBRARY ${zlib_DIR}/lib/libzlib${CMAKE_SHARED_LIBRARY_SUFFIX})
   else()
-    set(ZLIB_LIBRARY ${zlib_DIR}/lib/libzlib.a)
+    set(ZLIB_LIBRARY ${zlib_DIR}/lib/libzlib${CMAKE_STATIC_LIBRARY_SUFFIX})
   endif()
 else()
   # The project is provided using zlib_DIR, nevertheless since other project may depend on zlib,

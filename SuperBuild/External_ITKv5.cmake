@@ -1,13 +1,15 @@
 
 set(proj ITKv5)
+set(${proj}_REQUIRED_VERSION 5.3)
 
 # Set dependency list
-set(${proj}_DEPENDENCIES "zlib" "TBB")
+set(${proj}_DEPENDENCIES "zlib")
+list(APPEND ${proj}_DEPENDENCIES "TBB")
 if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   list(APPEND ${proj}_DEPENDENCIES "VTK")
 endif()
 #if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT)
-  list(APPEND ${proj}_DEPENDENCIES DCMTK)
+#  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
 
 # Include dependent projects if any
@@ -15,12 +17,17 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   unset(ITK_DIR CACHE)
-  find_package(ITK 5.0 COMPONENTS ${${CMAKE_PROJECT_NAME}_ITK_COMPONENTS} REQUIRED NO_MODULE)
+  find_package(ITK ${${proj}_REQUIRED_VERSION} COMPONENTS ${${CMAKE_PROJECT_NAME}_ITK_COMPONENTS} REQUIRED NO_MODULE)
 endif()
 
 # Sanity checks
 if(DEFINED ITK_DIR AND NOT EXISTS ${ITK_DIR})
   message(FATAL_ERROR "ITK_DIR variable is defined but corresponds to nonexistent directory")
+endif()
+
+if(USE_BRAINSSuperResolution)
+  set(ITK_RTK_OPTIONS)
+  list(APPEND ITK_RTK_OPTIONS -DModule_RTK:BOOL=ON)
 endif()
 
 if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
@@ -38,9 +45,20 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       set(git_protocol "git")
   endif()
 
-  #set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY ${git_protocol}://github.com/InsightSoftwareConsortium/ITK.git
-  set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY ${git_protocol}://github.com/hjmjohnson/ITK.git)
-  set(${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG ad41f2ef29c2ce393104ba1c6ec417f58ed75260 ) #20190608 - ITKv5 post release
+  # HINT: -DUSE BRAINSTools_ITKv5_GIT_REPOSITORY:STRING=git@github.com:hjmjohnson/ITK.git to override
+  # HINT: -DUSE BRAINSTools_ITKv5_GIT_TAG:STRING=fix-some-error-pr-request
+  ExternalProject_SetIfNotDefined(
+     ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
+     #${git_protocol}://github.com/BRAINSia/ITK.git
+     ${git_protocol}://github.com/InsightSoftwareConsortium/ITK.git
+     QUIET
+  )
+
+  ExternalProject_SetIfNotDefined(
+    ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
+    107384b11a26cb862772c24d9b7cce3db521a2fd # 20220210
+    QUIET
+    )
 
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
 
@@ -90,9 +108,8 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
-  set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build)
 
-  message(STATUS "Building against TBB_DIR:${TBB_DIR}:")
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
@@ -100,58 +117,57 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     SOURCE_DIR ${EP_SOURCE_DIR}
     BINARY_DIR ${EP_BINARY_DIR}
     CMAKE_CACHE_ARGS
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-      -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
-      -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
-      -DBUILD_TESTING:BOOL=OFF
-      -DBUILD_EXAMPLES:BOOL=OFF
-      -DITK_LEGACY_REMOVE:BOOL=ON
-      -DITK_FUTURE_LEGACY_REMOVE:BOOL=ON
+      ${EXTERNAL_PROJECT_DEFAULTS}
+      -DITK_LEGACY_REMOVE:BOOL=OFF # TURN ON AFTER ITK stablilizes
+      -DITK_FUTURE_LEGACY_REMOVE:BOOL=OFF
       -DITKV3_COMPATIBILITY:BOOL=OFF
       -DITK_BUILD_DEFAULT_MODULES:BOOL=ON
+      -DITK_CXX_OPTIMIZATION_FLAGS:STRING=${BRAINSToools_CXX_OPTIMIZATION_FLAGS}
+      -DITK_C_OPTIMIZATION_FLAGS:STRING=${BRAINSToools_C_OPTIMIZATION_FLAGS}
       -DModule_AnisotropicDiffusionLBR:BOOL=ON
       -DModule_GenericLabelInterpolator:BOOL=ON # Needed for ANTs
       -DModule_ITKReview:BOOL=ON
       -DModule_MGHIO:BOOL=ON
       -DModule_ITKIOMINC:BOOL=ON
       -DModule_ITKReview:BOOL=ON
-      -DBUILD_SHARED_LIBS:BOOL=OFF
-      -DITK_INSTALL_NO_DEVELOPMENT:BOOL=ON
+      -DModule_AdaptiveDenoising:BOOL=ON # Required for ANTs
+      -DModule_ITKMetricsv4:BOOL=ON # needed for MattesMutualInformationImageToImageMetricv4
       -DKWSYS_USE_MD5:BOOL=ON # Required by SlicerExecutionModel
-      -DITK_WRAPPING:BOOL=OFF #${BUILD_SHARED_LIBS} ## HACK:  QUICK CHANGE
+      -DITK_WRAPPING:BOOL=OFF # HACK:  QUICK CHANGE
       -DITK_WRAP_PYTHON:BOOL=OFF
       -DExternalData_OBJECT_STORES:PATH=${ExternalData_OBJECT_STORES}
-      # macOS
-      -DCMAKE_MACOSX_RPATH:BOOL=0
       # VTK
       ${ITK_VTK_OPTIONS}
+      # RTK
+      ${ITK_RTK_OPTIONS}
       # DCMTK
-      -DITK_USE_SYSTEM_DCMTK:BOOL=ON
-      -DDCMTK_DIR:PATH=${DCMTK_DIR}
+      #-DITK_USE_SYSTEM_DCMTK:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT}
+      #-DDCMTK_DIR:PATH=${DCMTK_DIR}
+      #-DModule_ITKIODCMTK:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT}
+      -DITK_USE_SYSTEM_DCMTK:BOOL=OFF
       -DModule_ITKIODCMTK:BOOL=ON
       # ZLIB
       -DITK_USE_SYSTEM_ZLIB:BOOL=ON
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
       -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
+      -DZLIB_INCLUDE_DIRS:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
-      -DITK_USE_FFTWD:BOOL=ON
-      -DITK_USE_FFTWF:BOOL=ON
+      -DITK_USE_FFTWF:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_FFTW}
+      -DITK_USE_FFTWD:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_FFTW}
       -DITK_USE_GOLD_LINKER:BOOL=OFF ## RHEL7 fails to build GDCM with gold linker
       # TBB
       -DModule_ITKTBB:BOOL=ON
       -DTBB_DIR:PATH=${TBB_DIR}
-    INSTALL_COMMAND ""
+      #INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
 
+  message(STATUS "Building ${proj} against TBB_DIR:${TBB_DIR}:")
   ExternalProject_GenerateProjectDescription_Step(${proj})
 
-  set(ITK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  set(ITK_DIR ${CMAKE_INSTALL_PREFIX}/lib/cmake/ITK-${${proj}_REQUIRED_VERSION})
+  #${CMAKE_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build)
 
   #-----------------------------------------------------------------------------
   # Launcher setting specific to build tree
