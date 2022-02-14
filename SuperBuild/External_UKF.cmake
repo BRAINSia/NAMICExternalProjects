@@ -47,6 +47,10 @@ set(${proj}_CMAKE_OPTIONS
   -DBOOST_INCLUDEDIR:PATH=${BOOST_INCLUDE_DIR}
   )
 
+string(REPLACE ";" " " NO_SEMIS_OPTIONS "${${proj}_CMAKE_OPTIONS}")
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build/${proj}_cmake_options.txt "${NO_SEMIS_OPTIONS}\n")
+unset(NO_SEMIS_OPTIONS)
+
 ### --- End Project specific additions
 #set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/ukftractography.git")
 set(${proj}_REPOSITORY "${git_protocol}://github.com/pnlbwh/ukftractography.git")
