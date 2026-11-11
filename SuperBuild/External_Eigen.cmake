@@ -30,6 +30,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   ### --- Project specific additions here
   set(${proj}_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-install)
   set(${proj}_CMAKE_OPTIONS
+    ${EXTERNAL_PROJECT_DEFAULTS}
       -DCMAKE_INSTALL_PREFIX:PATH=${${proj}_INSTALL_DIR}
       -DEIGEN_BUILD_PKGCONFIG:BOOL=OFF
       -DEIGEN_TEST_NOQT:BOOL=ON

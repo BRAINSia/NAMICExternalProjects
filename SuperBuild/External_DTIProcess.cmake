@@ -7,6 +7,7 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
 
 ### --- Project specific additions here
 set(${proj}_CMAKE_OPTIONS
+  ${EXTERNAL_PROJECT_DEFAULTS}
 #  -DBOOST_ROOT:PATH=${BOOST_ROOT}
 #  -DBOOST_INCLUDE_DIR:PATH=${BOOST_INCLUDE_DIR}
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
