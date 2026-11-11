@@ -24,6 +24,8 @@ if(NOT DEFINED SlicerExecutionModel_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM
 
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS)
   set(EXTERNAL_PROJECT_OPTIONAL_CMAKE_ARGS)
+  set(EXTERNAL_PROJECT_ADDITIONAL_FORWARD_PATHS_BUILD)
+  set(EXTERNAL_PROJECT_ADDITIONAL_FORWARD_PATHS_INSTALL)
 
   if(APPLE)
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
@@ -32,7 +34,7 @@ if(NOT DEFINED SlicerExecutionModel_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM
   endif()
 
   if(NOT DEFINED git_protocol)
-    set(git_protocol "git")
+    set(git_protocol "https")
   endif()
 
   macro(_set var type value)
@@ -83,7 +85,7 @@ if(NOT DEFINED SlicerExecutionModel_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
     # "update-tclap" # format outputs
-    f19d6e88a94ba8f31ddafcff4adf185fe90d7e72 # 20210122
+    "91b921bd5977c3384916ba4b03705d87b26067f7"
     QUIET
     )
 
@@ -94,12 +96,18 @@ if(NOT DEFINED SlicerExecutionModel_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
     GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+    GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}  # ON in CI; OFF for local builds
+    UPDATE_DISCONNECTED TRUE  # skip git-update step; cached source is at correct commit
     SOURCE_DIR ${EP_SOURCE_DIR}
     BINARY_DIR ${EP_BINARY_DIR}
+    LOG_CONFIGURE ON         # Suppress configure output; show only on failure
+    LOG_BUILD ON             # Suppress EP build warnings from CI log
+    LOG_INSTALL ON           # Suppress install output
+    LOG_OUTPUT_ON_FAILURE ON # Print logs to CI only when step fails
     CMAKE_CACHE_ARGS
       ${EXTERNAL_PROJECT_DEFAULTS}
+      -DCMAKE_MACOSX_RPATH:BOOL=${BRAINSTOOLS_MACOSX_RPATH}
       -DITK_DIR:PATH=${ITK_DIR}
-
       -DSlicerExecutionModel_USE_SERIALIZER:BOOL=${Slicer_BUILD_PARAMETERSERIALIZER_SUPPORT}
       -DSlicerExecutionModel_USE_JSONCPP:BOOL=${Slicer_BUILD_PARAMETERSERIALIZER_SUPPORT}
       -DDCMTK_DIR:PATH=${DCMTK_DIR}
@@ -116,10 +124,8 @@ if(NOT DEFINED SlicerExecutionModel_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM
       -DSlicerExecutionModel_DEFAULT_CLI_INSTALL_ARCHIVE_DESTINATION:STRING=${Slicer_INSTALL_CLIMODULES_LIB_DIR}
       -DSlicerExecutionModel_DEFAULT_CLI_TARGETS_FOLDER_PREFIX:STRING=Module-
       ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS}
-      ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_ARGS}
-      # macOS
-      -DCMAKE_MACOSX_RPATH:BOOL=${BRAINSTOOLS_MACOSX_RPATH}
-      #INSTALL_COMMAND ""
+    ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_ARGS}
+    INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
