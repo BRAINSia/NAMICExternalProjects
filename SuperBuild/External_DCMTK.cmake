@@ -37,20 +37,18 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
-    #"${git_protocol}://github.com/commontk/dcmtk"
-    "${git_protocol}://github.com/BRAINSia/dcmtk"
+    "${git_protocol}://github.com/DCMTK/DCMTK.git"
     QUIET
     )
 
   ExternalProject_SetIfNotDefined(
-    # Official DCMTK master as of 20180621
-    # http://git.dcmtk.org/?p=dcmtk.git;a=commit;h=29f9de10c2e8576147f16475b156bba98d14ba7d
-    # plus the following patch:
-    # * Set CMP0067 to ensure try_compile work as expected
+    # Official DCMTK repository
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
     #"b0a30fb0fcb46ca765e9e2d88a92405946fa9d7e" # 20200312
     #"3e299bc08f16da786883da73c6a4d35457b7838e" # 20210122
-    "62899a5e84e0f9918b520218effa75a0c9059e2f"   20210805
+    # "62899a5e84e0f9918b520218effa75a0c9059e2f"   20210805
+    #"ea07125078cd097245867a71d8fba8b36fd92878" # patched-DCMTK-3.6.8_20241024 (BRAINSia fork)
+    "a7369385d91f40e19a9b2d4ef922c61370dfc5b1" # DCMTK 3.7.0++ 2026-01-22
     QUIET
     )
 
@@ -66,21 +64,22 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     CMAKE_CACHE_ARGS
       ${EXTERNAL_PROJECT_DEFAULTS}
       -DBUILD_APPS:BOOL=OFF
-      -DDCMTK_ENABLE_CXX11:BOOL=ON
       -DDCMTK_WITH_DOXYGEN:BOOL=OFF
+      -DDCMTK_USE_FIND_PACKAGE:BOOL=ON
       -DDCMTK_WITH_ZLIB:BOOL=OFF # see CTK github issue #25
       -DDCMTK_WITH_OPENSSL:BOOL=OFF # see CTK github issue #25
       -DDCMTK_WITH_PNG:BOOL=OFF # see CTK github issue #25
       -DDCMTK_WITH_TIFF:BOOL=OFF  # see CTK github issue #25
       -DDCMTK_WITH_XML:BOOL=OFF  # see CTK github issue #25
       -DDCMTK_WITH_ICONV:BOOL=OFF  # see CTK github issue #178
+      -DDCMTK_WITH_SNDFILE:BOOL=OFF # see DCMQI github issue #395
       -DDCMTK_OVERWRITE_WIN32_COMPILER_FLAGS:BOOL=OFF
-      -DDCMTK_ENABLE_BUILTIN_DICTIONARY:BOOL=ON
+      -DDCMTK_DEFAULT_DICT:STRING=builtin
       -DDCMTK_ENABLE_PRIVATE_TAGS:BOOL=ON
       ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS}
       # macOS
       -DCMAKE_MACOSX_RPATH:BOOL=${BRAINSTOOLS_MACOSX_RPATH}
-      #INSTALL_COMMAND ""
+    INSTALL_COMMAND ""
     DEPENDS
       ${${proj}_DEPENDENCIES}
   )
