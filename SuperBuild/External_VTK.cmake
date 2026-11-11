@@ -2,12 +2,17 @@
 set(proj VTK)
 
 set(VTK_VERSION_MAJOR 9)
-set(VTK_VERSION_MINOR 0)
-set(${proj}_REQUIRED_VERSION "9.0")  #If a required version is necessary, then set this, else leave blank
+set(VTK_VERSION_MINOR 6)
+set(${proj}_REQUIRED_VERSION "9.6")  #If a required version is necessary, then set this, else leave blank
 
 # Set dependency list
-set(${proj}_DEPENDENCIES "zlib" )
-#"TBB")
+set(${proj}_DEPENDENCIES "zlib")
+if (Slicer_USE_PYTHONQT)
+  list(APPEND ${proj}_DEPENDENCIES python)
+endif()
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB)
+  list(APPEND ${proj}_DEPENDENCIES tbb)
+endif()
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
@@ -20,11 +25,11 @@ endif()
 
 # Sanity checks
 if(DEFINED VTK_DIR AND NOT EXISTS ${VTK_DIR})
-  message(FATAL_ERROR "VTK_DIR variable is defined but corresponds to non-existing directory")
+  message(FATAL_ERROR "VTK_DIR variable is defined but corresponds to nonexistent directory")
 endif()
 
 if(DEFINED VTK_SOURCE_DIR AND NOT EXISTS ${VTK_SOURCE_DIR})
-  message(FATAL_ERROR "VTK_SOURCE_DIR variable is defined but corresponds to non-existing directory")
+  message(FATAL_ERROR "VTK_SOURCE_DIR variable is defined but corresponds to nonexistent directory")
 endif()
 
 
@@ -32,103 +37,228 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
 
   set(EXTERNAL_PROJECT_OPTIONAL_ARGS)
 
-  set(VTK_WRAP_TCL OFF)
+  # SMP backend: TBB when ${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB is ON, otherwise Sequential
+  if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB)
+    set(_vtk_smp_type "TBB")
+  else()
+    set(_vtk_smp_type "Sequential")
+  endif()
+
   set(VTK_WRAP_PYTHON OFF)
 
-  if(NOT APPLE)
-    list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      #-DDESIRED_QT_VERSION:STRING=4 # Unused
-      -DVTK_USE_GUISUPPORT:BOOL=ON
-      -DVTK_USE_QVTK_QTOPENGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
-      -DVTK_Group_Qt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT} ##VTK6
-      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-      -DVTK_REQUIRED_OBJCXX_FLAGS:STRING= # Should not be needed, but is always causing problems on mac
-                                          # This is to prevent the garbage collection errors from creeping back in
+  if(Slicer_USE_PYTHONQT)
+    set(VTK_WRAP_PYTHON ON)
+  endif()
+
+  if(Slicer_USE_PYTHONQT)
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
+      -DPYTHON_EXECUTABLE:PATH=${PYTHON_EXECUTABLE}
+      -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR}
+      -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY}
+      )
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
+      -DPython3_ROOT_DIR:PATH=${Python3_ROOT_DIR}
+      -DPython3_INCLUDE_DIR:PATH=${Python3_INCLUDE_DIR}
+      -DPython3_LIBRARY:FILEPATH=${Python3_LIBRARY}
+      -DPython3_LIBRARY_DEBUG:FILEPATH=${Python3_LIBRARY_DEBUG}
+      -DPython3_LIBRARY_RELEASE:FILEPATH=${Python3_LIBRARY_RELEASE}
+      -DPython3_EXECUTABLE:FILEPATH=${Python3_EXECUTABLE}
+      )
+  endif()
+
+  # These tools do not use Slicer Markups / SplineDrivenImageSlicer
+  # list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
+  #   -DVTK_MODULE_ENABLE_VTK_SplineDrivenImageSlicer:BOOL=YES
+  #   )
+
+  # ChartsCore/Context2D/ViewsContext2D are Slicer-specific; these tools
+  # do not render charts — disable to reduce build footprint.
+  list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
+    -DVTK_MODULE_ENABLE_VTK_ChartsCore:STRING=DONT_WANT
+    -DVTK_MODULE_ENABLE_VTK_ViewsContext2D:STRING=DONT_WANT
+    -DVTK_MODULE_ENABLE_VTK_RenderingContext2D:STRING=DONT_WANT
+    -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2:STRING=DONT_WANT
+    # Parallel VTK not used here
+    -DVTK_GROUP_ENABLE_Parallel:STRING=DONT_WANT
+    )
+
+  # Wire Qt5 into VTK only when Qt5_DIR is provided (needed for DebugImageViewer
+  # and BRAINSConstellationDetectorGUI).  VTK_QT_ARGS is referenced in the
+  # ExternalProject_Add CMAKE_CACHE_ARGS block below.
+  # Without this guard the Qt VTK modules are forced to YES even when Qt5 is
+  # not installed, causing a fatal configure error on headless CI runners.
+  if(Qt5_DIR)
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
+      -DVTK_MODULE_ENABLE_VTK_GUISupportQt:STRING=YES
+      -DVTK_GROUP_ENABLE_Qt:STRING=YES
+      )
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
+      -DVTK_QT_VERSION:STRING=5
+      -DVTK_Group_Qt:BOOL=ON
+      -DQt5_DIR:FILEPATH=${Qt5_DIR}
+      )
+    set(VTK_QT_ARGS
+      -DVTK_QT_VERSION:STRING=5
+      -DVTK_GROUP_ENABLE_Qt:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_GUISupportQt:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_GUISupportQtQuick:STRING=NO
+      -DVTK_MODULE_ENABLE_VTK_InteractionImage:STRING=YES
+      -DQt5_DIR:PATH=${Qt5_DIR}
       )
   else()
-    list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
+      -DVTK_MODULE_ENABLE_VTK_GUISupportQt:STRING=DONT_WANT
+      -DVTK_GROUP_ENABLE_Qt:STRING=DONT_WANT
+      )
+  endif()
+
+  if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB)
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
+      -DTBB_DIR:PATH=${TBB_DIR}
+      )
+  endif()
+  if(APPLE)
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
       -DVTK_USE_CARBON:BOOL=OFF
       -DVTK_USE_COCOA:BOOL=ON # Default to Cocoa, VTK/CMakeLists.txt will enable Carbon and disable cocoa if needed
       -DVTK_USE_X:BOOL=OFF
-      -DVTK_USE_GUISUPPORT:BOOL=ON
-      -DVTK_USE_QVTK_QTOPENGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
-      -DVTK_Group_Qt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}  ## VTK6
-      -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+      -DVTK_REQUIRED_OBJCXX_FLAGS:STRING=
+      #-DVTK_USE_RPATH:BOOL=ON # Unused
+      )
+  endif()
+  if(UNIX AND NOT APPLE)
+    find_package(Fontconfig QUIET)
+    if(Fontconfig_FOUND)
+      list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
+        -DModule_vtkRenderingFreeTypeFontConfig:BOOL=ON
+        )
+    endif()
+
+    # OpenGL_GL_PREFERENCE
+    if(NOT "${OpenGL_GL_PREFERENCE}" MATCHES "^(LEGACY|GLVND)$")
+      message(FATAL_ERROR "OpenGL_GL_PREFERENCE variable is expected to be set to LEGACY or GLVND")
+    endif()
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
+      -DOpenGL_GL_PREFERENCE:STRING=${OpenGL_GL_PREFERENCE}
       )
   endif()
 
-  list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      -DModule_vtkGUISupportQt:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT}
-      -DModule_vtkGUISupportQtOpenGL:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT})
-
-  if(VTK_WRAP_TCL)
-    list(APPEND EXTERNAL_PROJECT_OPTIONAL_ARGS
-      -DTCL_INCLUDE_PATH:PATH=${TCL_INCLUDE_PATH}
-      -DTK_INCLUDE_PATH:PATH=${TK_INCLUDE_PATH}
-      -DTCL_LIBRARY:FILEPATH=${TCL_LIBRARY}
-      -DTK_LIBRARY:FILEPATH=${TK_LIBRARY}
-      -DTCL_TCLSH:FILEPATH=${TCL_TCLSH}
+  # Disable Tk when Python wrapping is enabled
+  if(Slicer_USE_PYTHONQT)
+    list(APPEND EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS
+      -DVTK_USE_TK:BOOL=OFF
       )
   endif()
 
-  set(CUSTOM_BUILD_COMMAND)
-  if(CMAKE_GENERATOR MATCHES ".*Makefiles.*")
-    # Use $(MAKE) as build command to propagate parallel make option
-    set(CUSTOM_BUILD_COMMAND BUILD_COMMAND "$(MAKE)")
-    set(make_command_definition -DMAKE_COMMAND=$(MAKE) )
+  list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
+    -DVTK_BUILD_TESTING:STRING=OFF
+    -DVTK_MODULE_ENABLE_VTK_AcceleratorsVTKm:BOOL=NO
+    -DCMAKE_INSTALL_LIBDIR:STRING=lib # Force value to prevent lib64 from being used on Linux
+    -DVTK_MODULE_ENABLE_VTK_GUISupportQtQuick:BOOL=NO
+    )
+
+  if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK_RENDERING)
+    set(_vtk_module_args
+      # ITK Bridge/VtkGlue/CMakeLists.txt requires these VTK targets:
+      #   IOImage, ImagingSources, RenderingOpenGL2, RenderingFreeType,
+      #   InteractionStyle, InteractionWidgets
+      # Explicitly enable each to guarantee they are present in VTKConfig.cmake
+      # regardless of VTK's default enablement policy on headless CI runners.
+      -DVTK_GROUP_ENABLE_Rendering:STRING=DEFAULT
+      -DVTK_MODULE_ENABLE_VTK_RenderingOpenGL2:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_RenderingFreeType:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_RenderingContext2D:STRING=DONT_WANT
+      -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2:STRING=DONT_WANT
+      -DVTK_MODULE_ENABLE_VTK_RenderingQt:STRING=DONT_WANT
+      -DVTK_GROUP_ENABLE_Interaction:STRING=DEFAULT
+      -DVTK_MODULE_ENABLE_VTK_InteractionStyle:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_InteractionWidgets:STRING=YES
+      -DVTK_GROUP_ENABLE_IO:STRING=DEFAULT
+      -DVTK_MODULE_ENABLE_VTK_IOImage:STRING=YES
+      -DVTK_GROUP_ENABLE_Imaging:STRING=DEFAULT
+      -DVTK_MODULE_ENABLE_VTK_ImagingSources:STRING=YES
+      )
   else()
-    set(make_command_definition -DMAKE_COMMAND=${CMAKE_MAKE_PROGRAM})
+    # Exactly what GTRACT links; everything else stays off.
+    set(_vtk_module_args
+      -DVTK_BUILD_ALL_MODULES:BOOL=OFF
+      -DVTK_GROUP_ENABLE_StandAlone:STRING=DONT_WANT
+      -DVTK_GROUP_ENABLE_Rendering:STRING=DONT_WANT
+      -DVTK_GROUP_ENABLE_Imaging:STRING=DONT_WANT
+      )
+    foreach(_vtk_module
+        CommonCore CommonDataModel CommonMath CommonMisc CommonSystem CommonTransforms
+        FiltersCore FiltersGeneral IOXML IOLegacy)
+      list(APPEND _vtk_module_args -DVTK_MODULE_ENABLE_VTK_${_vtk_module}:STRING=YES)
+    endforeach()
   endif()
 
-  if(UNIX)
-    configure_file(SuperBuild/VTK_build_step.cmake.in
-      ${CMAKE_CURRENT_BINARY_DIR}/VTK_build_step.cmake
-      @ONLY)
-    set(CUSTOM_BUILD_COMMAND BUILD_COMMAND ${CMAKE_COMMAND}
-      ${make_command_definition}
-      -P ${CMAKE_CURRENT_BINARY_DIR}/VTK_build_step.cmake)
+  ExternalProject_SetIfNotDefined(
+    Slicer_${proj}_GIT_REPOSITORY
+    "${EP_GIT_PROTOCOL}://github.com/slicer/VTK.git"
+    QUIET
+    )
+
+  set(_git_tag)
+  if("${VTK_VERSION_MAJOR}.${VTK_VERSION_MINOR}" STREQUAL "9.2")
+    set(_git_tag "59ec450206012e86d4855bc669800499254bfc77") # slicer-v9.2.20230607-1ff325c54-2
+    set(vtk_dist_info_version "9.2.20230607")
+  elseif("${VTK_VERSION_MAJOR}.${VTK_VERSION_MINOR}" STREQUAL "9.4")
+    set(_git_tag "454bb391dff78c6ff463298a5143ab5b4f0aa083") # slicer-v9.4.2-2025-03-26-13acb1a5d
+    set(vtk_dist_info_version "9.4.2")
+  elseif("${VTK_VERSION_MAJOR}.${VTK_VERSION_MINOR}" STREQUAL "9.5")
+    set(_git_tag "08210fbecda09bea2544dbb80777d634e1bfea25") # slicer-v9.5.2-2025-09-16-7c0494a68
+    set(vtk_dist_info_version "9.5.2")
+  elseif("${VTK_VERSION_MAJOR}.${VTK_VERSION_MINOR}" STREQUAL "9.6")
+    set(_git_tag "470a7a557adaf5f1ea8031665134d18835356b85") # slicer-v9.6.2-2026-05-15-f49a1dbaf
+    set(vtk_dist_info_version "9.6.2")
+  else()
+    message(FATAL_ERROR "error: Unsupported VTK_VERSION_MAJOR.VTK_VERSION_MINOR: ${VTK_VERSION_MAJOR}.${VTK_VERSION_MINOR}")
   endif()
 
-  # Slicer settings
-  # set(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
-  #   "github.com/Slicer/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
-  # set(${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-  #   "c88dfedb277969e5f1f6c5349d8f7898610e75f4" CACHE STRING "VTK git tag to use" FORCE)
-  #
-  # mark_as_advanced(${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG)
-  if(NOT DEFINED git_protocol)
-    set(git_protocol "git")
-  endif()
-  set(vtk_git_protocol "https")
-  set(${proj}_GIT_REPOSITORY "${vtk_git_protocol}://gitlab.kitware.com/vtk/VTK.git" CACHE STRING "Repository from which to get VTK" FORCE)
-  set(${proj}_GIT_TAG "6b3a8ff048572d531f2cee9ced88ad72ce35210c")   # 20220126
+  ExternalProject_SetIfNotDefined(
+    Slicer_${proj}_GIT_TAG
+    ${_git_tag}
+    QUIET
+    )
+
+  set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
+  set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+
+  # GCC 14 errors on implicit-function-declaration; bundled VTK hdf5 uses vasprintf without _GNU_SOURCE.
+  string(APPEND ep_CMAKE_C_FLAGS " -Wno-error=implicit-function-declaration")
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
+    GIT_REPOSITORY "${Slicer_${proj}_GIT_REPOSITORY}"
+    GIT_TAG "${Slicer_${proj}_GIT_TAG}"
+    GIT_SUBMODULES ""  # VTK 9.x has no submodules; prevents false-failure in CMake 3.26
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
     BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build
-    GIT_REPOSITORY "${${proj}_GIT_REPOSITORY}"
-    GIT_TAG ${${proj}_GIT_TAG}
-    ${CUSTOM_BUILD_COMMAND}
     CMAKE_ARGS -Wno-dev --no-warn-unused-cli
     CMAKE_CACHE_ARGS
       ${EXTERNAL_PROJECT_OPTIONAL_ARGS}
+      ${EXTERNAL_PROJECT_OPTIONAL_CMAKE_CACHE_ARGS}
+      ${EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS}
       ${EXTERNAL_PROJECT_DEFAULTS}
       -DCMAKE_CXX_FLAGS:STRING=${ep_CMAKE_CXX_FLAGS}
       -DCMAKE_C_FLAGS:STRING=${ep_CMAKE_C_FLAGS}
       -DCMAKE_INCLUDE_DIRECTORIES_BEFORE:BOOL=OFF
-      -DVTK_USE_PARALLEL:BOOL=ON
       -DVTK_DEBUG_LEAKS:BOOL=${VTK_DEBUG_LEAKS}
       -DVTK_LEGACY_REMOVE:BOOL=ON
-      -DVTK_WRAP_TCL:BOOL=${VTK_WRAP_TCL}
+      #-DVTK_USE_RPATH:BOOL=ON # Unused
       -DVTK_WRAP_PYTHON:BOOL=${VTK_WRAP_PYTHON}
       -DModule_vtkIOXML:BOOL=ON
       -DModule_vtkIOXMLParser:BOOL=ON
+      -DVTK_USE_PARALLEL:BOOL=ON
       ## Disable vtk dicom that conflicts with itk dcmtk with duplicate symbols
       -DVTK_GROUP_ENABLE_MPI:STRING=DONT_WANT
       -DVTK_MODULE_ENABLE_VTK_DICOMParser:STRING=DONT_WANT
       -DVTK_MODULE_ENABLE_VTK_vtkDICOM:STRING=DONT_WANT
       -DVTK_ENABLE_WRAPPING:BOOL=OFF
+      -DVTK_GROUP_ENABLE_Views:STRING=DONT_WANT
+      -DVTK_GROUP_ENABLE_Web:STRING=DONT_WANT
+      ${_vtk_module_args}
       ##
       ${VTK_QT_ARGS}
       ${VTK_MAC_ARGS}
@@ -137,16 +267,15 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DZLIB_ROOT:PATH=${ZLIB_ROOT}
       -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
       -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
-      # TBB
-      -DVTK_SMP_IMPLEMENTATION_TYPE:STRING=Sequential
-      #-DVTK_SMP_IMPLEMENTATION_TYPE:STRING=TBB
-      #-DTBB_DIR:PATH=${TBB_DIR}
-      #INSTALL_COMMAND ""
-      DEPENDS "${${proj}_DEPENDENCIES}"
+      # TBB — use TBB SMP backend when ${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB, else Sequential
+      -DVTK_SMP_IMPLEMENTATION_TYPE:STRING=${_vtk_smp_type}
+      -DTBB_DIR:PATH=${TBB_DIR}
+    INSTALL_COMMAND ""
+    DEPENDS
+      ${${proj}_DEPENDENCIES}
     )
   ### --- End Project specific additions
-  set(${proj}_DIR ${CMAKE_INSTALL_PREFIX}/lib/cmake/vtk-${${proj}_REQUIRED_VERSION})
-  #${CMAKE_CURRENT_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build)
+  set(${proj}_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build/lib/cmake/vtk-${${proj}_REQUIRED_VERSION})
 
   set(VTK_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
@@ -171,7 +300,7 @@ endif()
 #mark_as_superbuild(VARS VTK_SOURCE_DIR:PATH ALL_PROJECTS)
 
 mark_as_superbuild(
-    VARS VTK_DIR:PATH
-    VTK_VERSION_MAJOR:STRING
+  VARS VTK_DIR:PATH
+  VTK_VERSION_MAJOR:STRING
   LABELS "FIND_PACKAGE"
   )
