@@ -7,6 +7,7 @@ set(${proj}_DEPENDENCIES teem ITKv5 SlicerExecutionModel)
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 set(${proj}_CMAKE_OPTIONS
+  ${EXTERNAL_PROJECT_DEFAULTS}
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}

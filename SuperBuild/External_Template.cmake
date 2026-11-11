@@ -45,6 +45,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   endif()
 
   set(${proj}_CMAKE_OPTIONS
+    ${EXTERNAL_PROJECT_DEFAULTS}
       XXXX MODIFY THESE
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}

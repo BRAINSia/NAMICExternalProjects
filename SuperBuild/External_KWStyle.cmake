@@ -41,6 +41,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- Project specific additions here
   set(${proj}_CMAKE_OPTIONS
+    ${EXTERNAL_PROJECT_DEFAULTS}
       -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/Utils
   )
   ### --- End Project specific additions
