@@ -110,6 +110,11 @@ cmake_dependent_option(${LOCAL_PROJECT_NAME}_USE_QT
       "Find and use Qt with VTK to build GUI Tools" OFF
       "${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK" OFF)
 
+if(UNIX AND NOT APPLE)
+  set(OpenGL_GL_PREFERENCE "GLVND" CACHE STRING "OpenGL library preference passed to VTK (LEGACY or GLVND)")
+  set_property(CACHE OpenGL_GL_PREFERENCE PROPERTY STRINGS LEGACY GLVND)
+endif()
+
 # ITK VtkGlue and the VTK rendering modules are only needed for the Qt GUI tools.
 if(${LOCAL_PROJECT_NAME}_USE_QT)
   set(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK_RENDERING ON)
