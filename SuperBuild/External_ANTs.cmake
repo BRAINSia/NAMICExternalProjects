@@ -5,20 +5,51 @@ set(${proj}_DEPENDENCIES ITKv5 SlicerExecutionModel )
 #if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
-if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
-  list(APPEND ${proj}_DEPENDENCIES VTK)
-endif()
 
 
 # Set dependency list
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
+# Consume a pre-built ANTs instead of building it when USE_SYSTEM_ANTs is ON or
+# an ANTS_DIR is supplied (mirrors External_ITKv5 / External_VTK). The inner
+# build resolves ANTs via find_package(ANTS CONFIG) using ANTS_DIR.
+if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
+  unset(ANTS_DIR CACHE)
+  find_package(ANTS CONFIG REQUIRED)
+endif()
+
+if(DEFINED ANTS_DIR AND NOT EXISTS ${ANTS_DIR})
+  message(FATAL_ERROR "ANTS_DIR variable is defined but corresponds to nonexistent directory")
+endif()
+
+if(DEFINED ANTS_DIR OR ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
+  # ANTs supplied externally: add a no-op target so dependents resolve, expose
+  # ANTS_DIR to the inner build, and skip building ANTs.
+  ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
+  mark_as_superbuild(VARS ANTS_DIR:PATH LABELS "FIND_PACKAGE")
+  return()
+endif()
+
 
 
 ### --- Project specific additions here
+# ANTs refuses to configure unless ITK_VERSION_MAJOR (default 6) matches the ITK it finds.
+string(REGEX MATCH "^[0-9]+" _ants_itk_major "${ITKv5_REQUIRED_VERSION}")
+# ITK 6 exports zlib as ZLIB::ZLIB, so consumers must find the zlib that ITK was built with.
+set(_ants_zlib_args)
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_VERSION VERSION_GREATER_EQUAL 6)
+  set(_ants_zlib_args
+    -DZLIB_ROOT:PATH=${ZLIB_ROOT}
+    -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
+    -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
+    )
+endif()
+
 set(${proj}_CMAKE_OPTIONS
   -DUSE_SYSTEM_ITK:BOOL=ON
   -DITK_DIR:PATH=${ITK_DIR}
+  -DITK_VERSION_MAJOR:STRING=${_ants_itk_major}
+  ${_ants_zlib_args}
   -DUSE_VTK:BOOL=OFF
   -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
   -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
@@ -130,22 +161,34 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT)
   list(APPEND ${proj}_CMAKE_OPTIONS -DANTS_USE_QT:BOOL=ON)
 endif()
 ### --- End Project specific additions
-set(${proj}_REPOSITORY "https://github.com/ANTsX/ANTs.git")
-## set(${proj}_REPOSITORY "https://github.com/BRAINSia/ANTs.git")
-set(${proj}_GIT_TAG
-  6f07ac55569d0d085d2adf7888d1c7a2bd563bfe  # 20220210 - Update to new ITK version
-)
+
+# HINT: -D${CMAKE_PROJECT_NAME}_ANTs_GIT_REPOSITORY:STRING=https://github.com/hjmjohnson/ANTs.git to override
+# HINT: -D${CMAKE_PROJECT_NAME}_ANTs_GIT_TAG:STRING=antsconfig-cmake-modernize
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
+  "https://github.com/ANTsX/ANTs.git"
+  QUIET
+  )
+
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
+  dcdaf4212df415b089b09b8b6b0a2560c57af546 # ANTsX/ANTs main 2026-10-30
+  QUIET
+  )
 
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
-  GIT_REPOSITORY ${${proj}_REPOSITORY}
-  GIT_TAG ${${proj}_GIT_TAG}
+  GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
+  GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+  GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}  # ON in CI; OFF for local builds
+  UPDATE_DISCONNECTED TRUE  # skip git-update step; cached source is at correct commit
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build
-  LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
-  LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
-  LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
-  LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
+  LOG_CONFIGURE ON         # Suppress configure output; show only on failure
+  LOG_BUILD ON             # Suppress EP build warnings from CI log
+  LOG_TEST ON              # Suppress test output
+  LOG_INSTALL ON           # Suppress install output
+  LOG_OUTPUT_ON_FAILURE ON # Print logs to CI only when step fails
   ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
@@ -158,11 +201,14 @@ ExternalProject_Add(${proj}
 
 set(${proj}_SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj})
 set(${proj}_LIBRARY_DIR ${CMAKE_INSTALL_PREFIX}/lib)
-#${CMAKE_CURRENT_BINARY_DIR}/${LOCAL_PROJECT_NAME}-${CMAKE_BUILD_TYPE}-EP${EXTERNAL_PROJECT_BUILD_TYPE}-build/lib)
+# Once ANTsX/ANTs#1973 lands and an ANTs release containing it ships,
+# downstream consumes ANTs via find_package(ANTS) -> ${ANTS_DIR}/ANTSConfig.cmake.
+set(ANTS_DIR ${CMAKE_INSTALL_PREFIX}/lib/cmake/ANTS)
 
 mark_as_superbuild(
   VARS
      ${proj}_SOURCE_DIR:PATH
      ${proj}_LIBRARY_DIR:PATH
+     ANTS_DIR:PATH
   LABELS "FIND_PACKAGE"
   )
