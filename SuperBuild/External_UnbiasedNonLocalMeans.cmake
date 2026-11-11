@@ -16,7 +16,7 @@ set(${proj}_DEPENDENCIES ITKv5 SlicerExecutionModel )
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj}  PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
-set(${proj}_GIT_REPOSITORY "git://github.com/BRAINSia/UnbiasedNonLocalMeans.git")
+set(${proj}_GIT_REPOSITORY "https://github.com/BRAINSia/UnbiasedNonLocalMeans.git")
 set(${proj}_GIT_TAG 80ae4451473bb8bec7b91682a1bbcbf92d5146ab)  # 20180414
 
 ExternalProject_Add(${proj}
