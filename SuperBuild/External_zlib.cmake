@@ -8,37 +8,36 @@ set(${proj}_DEPENDENCIES "")
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
-  unset(zlib_DIR CACHE)
+  unset(ZLIB_ROOT CACHE)
   find_package(ZLIB REQUIRED)
   set(ZLIB_INCLUDE_DIR ${ZLIB_INCLUDE_DIRS})
   set(ZLIB_LIBRARY ${ZLIB_LIBRARIES})
 endif()
 
 # Sanity checks
-if(DEFINED zlib_DIR AND NOT EXISTS ${zlib_DIR})
-  message(FATAL_ERROR "zlib_DIR variable is defined but corresponds to nonexistent directory")
+if(DEFINED ZLIB_ROOT AND NOT EXISTS ${ZLIB_ROOT})
+  message(FATAL_ERROR "ZLIB_ROOT variable is defined but corresponds to nonexistent directory")
 endif()
 
-if(NOT DEFINED zlib_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
+if(NOT DEFINED ZLIB_ROOT AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   if(NOT DEFINED git_protocol)
-    set(git_protocol "git")
+    set(git_protocol "https")
   endif()
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
   set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-  #  set(EP_INSTALL_DIR ${CMAKE_BINARY_DIR}/${proj}-install)
   set(EP_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
-    "${git_protocol}://github.com/commontk/zlib.git"
+    "${git_protocol}://github.com/Slicer/zlib-ng.git"
     QUIET
     )
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-    "66a753054b356da85e1838a081aa94287226823e" # 20210122
+    "de0aca6040339aad56d96ab1c29850b00ec36a9b"  # slicer-2.2.4-2025-02-10-860e4cf
     QUIET
     )
 
@@ -46,12 +45,27 @@ if(NOT DEFINED zlib_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
     GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+    GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}  # ON in CI; OFF for local builds
+    UPDATE_DISCONNECTED TRUE  # skip git-update step; cached source is at correct commit
     SOURCE_DIR ${EP_SOURCE_DIR}
     BINARY_DIR ${EP_BINARY_DIR}
+    INSTALL_DIR ${EP_INSTALL_DIR}
+    LOG_CONFIGURE ON         # Suppress configure output; show only on failure
+    LOG_BUILD ON             # Suppress EP build warnings from CI log
+    LOG_INSTALL ON           # Suppress install output
+    LOG_OUTPUT_ON_FAILURE ON # Print logs to CI only when step fails
     CMAKE_CACHE_ARGS
+      ## CXX should not be needed, but it a cmake default test
       ${EXTERNAL_PROJECT_DEFAULTS}
-      -DZLIB_MANGLE_PREFIX:STRING=slicer_zlib_
-      -DCMAKE_INSTALL_PREFIX:PATH=${EP_INSTALL_DIR}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+      -DZLIB_COMPAT:BOOL=ON
+      -DZLIB_ENABLE_TESTS:BOOL=OFF
+      -DZLIB_SYMBOL_PREFIX:STRING=slicer_zlib_
+      -DCMAKE_INSTALL_LIBDIR:STRING=lib
+      -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
@@ -61,10 +75,10 @@ if(NOT DEFINED zlib_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   set(zlib_DIR ${EP_INSTALL_DIR})
   set(ZLIB_ROOT ${zlib_DIR})
   set(ZLIB_INCLUDE_DIR ${zlib_DIR}/include)
-  if(BUILD_SHARED_LIBS)
-    set(ZLIB_LIBRARY ${zlib_DIR}/lib/libzlib${CMAKE_SHARED_LIBRARY_SUFFIX})
+  if(WIN32)
+    set(ZLIB_LIBRARY ${zlib_DIR}/lib/zlib.lib)
   else()
-    set(ZLIB_LIBRARY ${zlib_DIR}/lib/libzlib${CMAKE_STATIC_LIBRARY_SUFFIX})
+    set(ZLIB_LIBRARY ${zlib_DIR}/lib/libzlib.a)
   endif()
 else()
   # The project is provided using zlib_DIR, nevertheless since other project may depend on zlib,
