@@ -1,13 +1,10 @@
-cmake_minimum_required(VERSION 3.16.3...3.20.3)
-cmake_policy(VERSION 3.16.3...3.20.3)
+cmake_minimum_required(VERSION 4.2)
 
 #-----------------------------------------------------------------------------
-# Enable C++14
+# Require C++17 (ITK 5.4 minimum)
 #-----------------------------------------------------------------------------
-#####
-##  Set the default target properties for ITK
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14) # Supported values are 14, 17, 20, and 23.
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 if(NOT CMAKE_CXX_STANDARD_REQUIRED)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,9 +12,9 @@ endif()
 if(NOT CMAKE_CXX_EXTENSIONS)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
-set(VALID_CXX_STANDARDS "14" "17" "20" "23")
+set(VALID_CXX_STANDARDS "17" "20" "23" "26")
 if(NOT CMAKE_CXX_STANDARD IN_LIST VALID_CXX_STANDARDS )
-   MESSAGE(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} not in know standards list\n ${VALID_CXX_STANDARDS}  for BRAINSTools version 5 and greater.")
+  message(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD} is not one of: ${VALID_CXX_STANDARDS}")
 endif()
 
 #-----------------------------------------------------------------------------
@@ -33,7 +30,7 @@ endforeach()
 #-----------------------------------------------------------------------------
 # Update CMake module path
 #------------------------------------------------------------------------------
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/CMake)
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_CURRENT_LIST_DIR}/CMake)
 #-----------------------------------------------------------------------------
 set(LOCAL_PROJECT_NAME NAMICExternalProjects) # <-- the primary product endpoint (Often matches the superbuild name)
 set(SUPERBUILD_TOPLEVEL_PROJECT ${LOCAL_PROJECT_NAME})
