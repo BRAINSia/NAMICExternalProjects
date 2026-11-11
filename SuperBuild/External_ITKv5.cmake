@@ -1,11 +1,14 @@
 
 set(proj ITKv5)
-set(${proj}_REQUIRED_VERSION 5.3)
+set(${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_VERSION 5.4 CACHE STRING "Major.minor version of the ITK that ${SUPERBUILD_TOPLEVEL_PROJECT}_ITKv5_GIT_TAG provides")
+set(${proj}_REQUIRED_VERSION ${${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_VERSION})
 
 # Set dependency list
 set(${proj}_DEPENDENCIES "zlib")
-list(APPEND ${proj}_DEPENDENCIES "TBB")
-if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB)
+  list(APPEND ${proj}_DEPENDENCIES "tbb")
+endif()
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK_RENDERING)
   list(APPEND ${proj}_DEPENDENCIES "VTK")
 endif()
 #if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT)
@@ -34,7 +37,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   set(ITK_VTK_OPTIONS )
 
-  if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
+  if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK_RENDERING)
     list(APPEND ITK_VTK_OPTIONS
       -DModule_ITKVtkGlue:BOOL=ON
       -DVTK_DIR:PATH=${VTK_DIR}
@@ -42,21 +45,20 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   if(NOT DEFINED git_protocol)
-      set(git_protocol "git")
+      set(git_protocol "https")
   endif()
 
-  # HINT: -DUSE BRAINSTools_ITKv5_GIT_REPOSITORY:STRING=git@github.com:hjmjohnson/ITK.git to override
-  # HINT: -DUSE BRAINSTools_ITKv5_GIT_TAG:STRING=fix-some-error-pr-request
+  # HINT: -D${CMAKE_PROJECT_NAME}_ITKv5_GIT_REPOSITORY:STRING=https://github.com/hjmjohnson/ITK.git to override
+  # HINT: -D${CMAKE_PROJECT_NAME}_ITKv5_GIT_TAG:STRING=<branch-or-sha>
   ExternalProject_SetIfNotDefined(
      ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
-     #${git_protocol}://github.com/BRAINSia/ITK.git
      ${git_protocol}://github.com/InsightSoftwareConsortium/ITK.git
      QUIET
   )
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-    107384b11a26cb862772c24d9b7cce3db521a2fd # 20220210
+    f3471840064a70ff5cbf31ec2915d3b6c040563a # v5.4.8
     QUIET
     )
 
@@ -101,11 +103,13 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR}
       -DSWIG_EXECUTABLE:PATH=${SWIG_EXECUTABLE}
       -DITK_USE_SYSTEM_SWIG:BOOL=ON
-      -DITK_LEGACY_SILENT:BOOL=OFF
       -DWRAP_ITK_INSTALL_COMPONENT_IDENTIFIER:STRING=${Slicer_WRAP_ITK_INSTALL_COMPONENT_IDENTIFIER}
       -DPY_SITE_PACKAGES_PATH:STRING=${PY_SITE_PACKAGES_PATH}
       )
   endif()
+
+  # Many of the older tools still use legacy ITK API.
+  set(_itk_legacy_remove OFF)
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
   set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build)
@@ -114,28 +118,54 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
     GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+    GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}  # ON in CI; OFF for local builds
+    UPDATE_DISCONNECTED TRUE  # skip git-update step; cached source is at correct commit
     SOURCE_DIR ${EP_SOURCE_DIR}
     BINARY_DIR ${EP_BINARY_DIR}
+    LOG_CONFIGURE ON         # Suppress configure output; show only on failure
+    LOG_BUILD ON             # Suppress EP build warnings from CI log
+    LOG_INSTALL ON           # Suppress install output
+    LOG_OUTPUT_ON_FAILURE ON # Print logs to CI only when step fails
     CMAKE_CACHE_ARGS
       ${EXTERNAL_PROJECT_DEFAULTS}
-      -DITK_LEGACY_REMOVE:BOOL=OFF # TURN ON AFTER ITK stablilizes
-      -DITK_FUTURE_LEGACY_REMOVE:BOOL=OFF
+      -DITK_LEGACY_SILENT:BOOL=OFF
+      -DITK_LEGACY_REMOVE:BOOL=${_itk_legacy_remove}
+      -DITK_FUTURE_LEGACY_REMOVE:BOOL=${_itk_legacy_remove}
       -DITKV3_COMPATIBILITY:BOOL=OFF
       -DITK_BUILD_DEFAULT_MODULES:BOOL=ON
       -DITK_CXX_OPTIMIZATION_FLAGS:STRING=${BRAINSToools_CXX_OPTIMIZATION_FLAGS}
       -DITK_C_OPTIMIZATION_FLAGS:STRING=${BRAINSToools_C_OPTIMIZATION_FLAGS}
-      -DModule_AnisotropicDiffusionLBR:BOOL=ON
-      -DModule_GenericLabelInterpolator:BOOL=ON # Needed for ANTs
       -DModule_ITKReview:BOOL=ON
+      -DModule_AnisotropicDiffusionLBR:BOOL=ON
+      -DModule_AnisotropicDiffusionLBR_GIT_TAG:STRING=4dbdfe9dd209c0f266a821d1cc2c2135c8057bf9
+      -DModule_GenericLabelInterpolator:BOOL=ON # Needed for ANTs
+      -DModule_GenericLabelInterpolator_GIT_TAG:STRING=70b9ccc9a897043f66b7cd198343e3f5252a3d32
       -DModule_MGHIO:BOOL=ON
+      -DModule_MGHIO_GIT_TAG:STRING=969f1827d92ddac18339e9a4d9120fea0e2bc916
+      -DModule_AdaptiveDenoising:BOOL=ON # Required for ANTs
+      -DModule_AdaptiveDenoising_GIT_TAG:STRING=853934c352f83cb1e8f87e3051e1b8e75dbb41fe  # Required for ANTs
       -DModule_ITKIOMINC:BOOL=ON
       -DModule_ITKReview:BOOL=ON
-      -DModule_AdaptiveDenoising:BOOL=ON # Required for ANTs
       -DModule_ITKMetricsv4:BOOL=ON # needed for MattesMutualInformationImageToImageMetricv4
       -DKWSYS_USE_MD5:BOOL=ON # Required by SlicerExecutionModel
-      -DITK_WRAPPING:BOOL=OFF # HACK:  QUICK CHANGE
+      -DITK_WRAPPING:BOOL=OFF
       -DITK_WRAP_PYTHON:BOOL=OFF
       -DExternalData_OBJECT_STORES:PATH=${ExternalData_OBJECT_STORES}
+      # No tool here uses the CUDA/OpenCL GPU modules
+      -DITK_USE_GPU:BOOL=OFF
+      # No tool here uses the ITK video pipeline
+      -DModule_ITKVideoCore:BOOL=OFF
+      -DModule_ITKVideoFiltering:BOOL=OFF
+      -DModule_ITKVideoIO:BOOL=OFF
+      -DModule_ITKVideoBridgeOpenCV:BOOL=OFF
+      -DModule_ITKVideoBridgeVXL:BOOL=OFF
+      # Disable test/benchmark infrastructure in production EP build
+      -DModule_ITKGoogleTest:BOOL=OFF
+      -DModule_ITKIntegratedTest:BOOL=OFF
+      # Disable Python bridge (no Python wrapping in this build)
+      -DModule_ITKBridgeNumPy:BOOL=OFF
+      # Disable deprecated ITK API
+      -DModule_ITKDeprecated:BOOL=ON
       # VTK
       ${ITK_VTK_OPTIONS}
       # RTK
@@ -156,7 +186,7 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DITK_USE_FFTWD:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_FFTW}
       -DITK_USE_GOLD_LINKER:BOOL=OFF ## RHEL7 fails to build GDCM with gold linker
       # TBB
-      -DModule_ITKTBB:BOOL=ON
+      -DModule_ITKTBB:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB}
       -DTBB_DIR:PATH=${TBB_DIR}
       #INSTALL_COMMAND ""
     DEPENDS
