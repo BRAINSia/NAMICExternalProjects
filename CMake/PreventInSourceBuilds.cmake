@@ -1,4 +1,4 @@
-# Adapated from ITKv4/CMake/PreventInSourceBuilds.cmake
+# Adapted from ITKv4/CMake/PreventInSourceBuilds.cmake
 #
 # This function will prevent in-source builds
 function(AssureOutOfSourceBuilds)
@@ -13,7 +13,7 @@ function(AssureOutOfSourceBuilds)
     message("# You must run cmake in a build directory.")
     message("# For example:")
     message("# mkdir ${PROJECT_NAME}-sandbox ; cd ${PROJECT_NAME}-sandbox")
-    message("# git clone git://github.com/${PROJECT_NAME}/${PROJECT_NAME}.git # or download & unpack the source tarball")
+    message("# git clone https://github.com/${PROJECT_NAME}/${PROJECT_NAME}.git # or download & unpack the source tarball")
     message("# mkdir ${PROJECT_NAME}-SuperBuild")
     message("# this will create the following directory structure")
     message("#")
