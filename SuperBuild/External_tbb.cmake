@@ -1,5 +1,8 @@
 
-set(proj TBB)
+set(proj tbb)
+
+# Set dependency list
+set(${proj}_DEPENDENCIES "")
 
 # Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
@@ -17,19 +20,23 @@ endif()
 if(NOT DEFINED TBB_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   if(NOT DEFINED git_protocol)
-      set(git_protocol "git")
+      set(git_protocol "https")
+  set(tbb_ver "v2022.3.0")
   endif()
 
   ExternalProject_SetIfNotDefined(
      ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
-     ${git_protocol}://github.com/oneapi-src/oneTBB.git
+     ${git_protocol}://github.com/uxlfoundation/oneTBB.git
      QUIET
   )
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
     #68e075cbb96de2b92d1a95832754c24a07b31cc8 # 20210713
-    v2021.5.0 # 20211223
+    #e6104c9599f7f10473caf545199f7468c0a8e52f # 20221221
+    #v2021.5.0 # 20211223
+    #v2022.2.0-rc1
+    v2022.3.0
     QUIET
     )
 
@@ -42,8 +49,14 @@ if(NOT DEFINED TBB_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
     GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+    GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}  # ON in CI; OFF for local builds
+    UPDATE_DISCONNECTED TRUE  # skip git-update step; cached source is at correct commit
     SOURCE_DIR ${EP_SOURCE_DIR}
     BINARY_DIR ${EP_BINARY_DIR}
+    LOG_CONFIGURE ON         # Suppress configure output; show only on failure
+    LOG_BUILD ON             # Suppress EP build warnings from CI log
+    LOG_INSTALL ON           # Suppress install output
+    LOG_OUTPUT_ON_FAILURE ON # Print logs to CI only when step fails
     CMAKE_CACHE_ARGS
       ${EXTERNAL_PROJECT_DEFAULTS}
       -DTBB_CXX_OPTIMIZATION_FLAGS:STRING=${BRAINSToools_CXX_OPTIMIZATION_FLAGS}
@@ -68,50 +81,34 @@ if(NOT DEFINED TBB_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     )
 
   message(STATUS "Building ${proj} against TBB_DIR:${TBB_DIR}:")
-  ExternalProject_GenerateProjectDescription_Step(${proj})
-
   set(TBB_DIR ${CMAKE_INSTALL_PREFIX}/lib/cmake/TBB)
-  #${CMAKE_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build)
+  ExternalProject_GenerateProjectDescription_Step(${proj}
+    VERSION ${tbb_ver}
+    LICENSE_FILES "https://raw.githubusercontent.com/uxlfoundation/oneTBB/${tbb_ver}/LICENSE.txt"
+    )
 
   #-----------------------------------------------------------------------------
   # Launcher setting specific to build tree
 
-  set(_lib_subdir lib)
-  if(WIN32)
-    set(_lib_subdir bin)
-  endif()
-
-  # library paths
-  set(${proj}_LIBRARY_PATHS_LAUNCHER_BUILD ${TBB_DIR}/${_lib_subdir}/<CMAKE_CFG_INTDIR>)
+  set(${proj}_LIBRARY_PATHS_LAUNCHER_BUILD "${TBB_BIN_DIR}")
   mark_as_superbuild(
     VARS ${proj}_LIBRARY_PATHS_LAUNCHER_BUILD
     LABELS "LIBRARY_PATHS_LAUNCHER_BUILD"
     )
 
-  if(Slicer_BUILD_TBBPython)
-    # pythonpath
-    set(${proj}_PYTHONPATH_LAUNCHER_BUILD
-      ${TBB_DIR}/Wrapping/Generators/Python/<CMAKE_CFG_INTDIR>
-      ${TBB_DIR}/lib/<CMAKE_CFG_INTDIR>
-      ${TBB_DIR}/lib
-      )
-    mark_as_superbuild(
-      VARS ${proj}_PYTHONPATH_LAUNCHER_BUILD
-      LABELS "PYTHONPATH_LAUNCHER_BUILD"
-      )
-  endif()
-
-  #-----------------------------------------------------------------------------
-  # Launcher setting specific to install tree
-
-  # Since TBB Wrapping is installed in the Slicer standard site-packages
-  # location, there is no need to specify custom setting for the install
-  # case.
-
 else()
+  # The project is provided using TBB_DIR, nevertheless since other project may depend on TBB,
+  # let's add an 'empty' one
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
 
+mark_as_superbuild(
+  VARS
+    TBB_BIN_DIR:PATH
+    TBB_LIB_DIR:PATH
+  )
+
+ExternalProject_Message(${proj} "TBB_DIR:${TBB_DIR}")
 mark_as_superbuild(
   VARS TBB_DIR:PATH
   LABELS "FIND_PACKAGE"
