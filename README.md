@@ -43,7 +43,6 @@ __NAMICExternalProjects/__
 * A C++17 compiler (GCC 13 and Clang are tested)
 * Python 3.12 or newer, found at configure time
 * Ninja (recommended); ccache is used automatically when found
-* FFTW 3 development files for calatk (`libfftw3-dev` on Ubuntu)
 
 ### Building
 
@@ -66,7 +65,6 @@ most command line tools are also placed in `NEP-build/bin`.
   Python wrapping against the superbuild ITK.  `pip install SimpleITK`
   is the quicker route when the superbuild ITK is not needed.
 * `BUILD_STYLE_UTILS` (OFF): build KWStyle, Cppcheck, and Uncrustify.
-* `BUILD_CALATK` (ON): build calatk.
 * `NAMICExternalProjects_EP_GIT_SHALLOW` (OFF): shallow clones.
 
 ### What is built
@@ -74,9 +72,8 @@ most command line tools are also placed in `NEP-build/bin`.
 The toolkits are ITK 5.4.8, VTK 9, oneTBB, zlib-ng, DCMTK, teem,
 Eigen, and SlicerExecutionModel.  The tools are BRAINSTools, ANTs,
 DTIProcess, niral_utilities, UKFTractography, dcm2niix,
-MRParameterMaps, LogSymmetricDemons, MultiAtlas (MABMIS), calatk,
-JointRicianAnisotropicLMMSEFilter, UnbiasedNonLocalMeans, and
-DoubleConvert.  The nipype and tract_querier Python sources are
+MRParameterMaps, JointRicianAnisotropicLMMSEFilter,
+UnbiasedNonLocalMeans, and DoubleConvert.  The nipype and tract_querier Python sources are
 fetched for installation with pip.
 
 Tools whose upstream has not been updated for ITK 5 carry a patch in
