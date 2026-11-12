@@ -84,13 +84,6 @@ if(BUILD_STYLE_UTILS)
 endif()
 
 
-option(BUILD_CALATK "build the calatk project" ON)
-set(CALATK_DEP)
-if(${BUILD_CALATK})
-  set(CALATK_DEP calatk)
-endif()
-
-
 #-----------------------------------------------------------------------------
 # Common external projects CMake variables
 #-----------------------------------------------------------------------------
@@ -190,12 +183,7 @@ list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
   UnbiasedNonLocalMeans
   ANTs
   ${QT_DEPENDENT_PACKAGES}
-
-## These packages are not yet needed, but will evenutally be needed.
-  ${CALATK_DEP}
   tract_querier
-  LogSymmetricDemons
-  MultiAtlas
   )
 if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
