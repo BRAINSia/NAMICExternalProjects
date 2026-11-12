@@ -90,6 +90,13 @@ option(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_SimpleITK "Build SimpleITK with Pyth
 option(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB "Build TBB and enable the ITK and VTK TBB backends." ON)
 mark_as_advanced(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB)
 
+option(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_vv "Build the vv viewer (needs Qt 6 and VTK rendering)." OFF)
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_vv)
+  set(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK ON CACHE BOOL "" FORCE)
+  find_package(Qt6 REQUIRED COMPONENTS Widgets Network OpenGLWidgets)
+  mark_as_superbuild(VARS Qt6_DIR:PATH)
+endif()
+
 cmake_dependent_option(${LOCAL_PROJECT_NAME}_USE_QT
       "Find and use Qt with VTK to build GUI Tools" OFF
       "${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK" OFF)
@@ -100,7 +107,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 # ITK VtkGlue and the VTK rendering modules are only needed for the Qt GUI tools.
-if(${LOCAL_PROJECT_NAME}_USE_QT)
+if(${LOCAL_PROJECT_NAME}_USE_QT OR ${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_vv)
   set(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK_RENDERING ON)
 else()
   set(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK_RENDERING OFF)

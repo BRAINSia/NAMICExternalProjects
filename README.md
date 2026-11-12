@@ -65,6 +65,9 @@ most command line tools are also placed in `NEP-build/bin`.
   Python wrapping against the superbuild ITK.  `pip install SimpleITK`
   is the quicker route when the superbuild ITK is not needed.
 * `BUILD_STYLE_UTILS` (OFF): build KWStyle, Cppcheck, and Uncrustify.
+* `NAMICExternalProjects_BUILD_vv` (OFF): build the vv image viewer.
+  Needs Qt 6 development files; turns on VTK rendering with Qt and
+  ITK's RTK module.  The viewer is `bin/vv` in the build tree.
 * `NAMICExternalProjects_EP_GIT_SHALLOW` (OFF): shallow clones.
 
 ### What is built

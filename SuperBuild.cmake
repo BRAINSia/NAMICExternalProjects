@@ -204,6 +204,9 @@ endif()
 if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_SimpleITK)
   list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES SimpleITK)
 endif()
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_vv)
+  list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES vv)
+endif()
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES NIPYPE)
 
 #-----------------------------------------------------------------------------

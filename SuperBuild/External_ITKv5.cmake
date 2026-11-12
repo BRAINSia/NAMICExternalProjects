@@ -34,8 +34,8 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_SimpleITK)
     )
 endif()
 
-if(USE_BRAINSSuperResolution)
-  set(ITK_RTK_OPTIONS)
+set(ITK_RTK_OPTIONS)
+if(USE_BRAINSSuperResolution OR ${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_vv)
   list(APPEND ITK_RTK_OPTIONS -DModule_RTK:BOOL=ON)
 endif()
 

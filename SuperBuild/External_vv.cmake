@@ -1,8 +1,5 @@
 set(proj vv)
 
-# vv now requires ITK 6, VTK 9.5+ with rendering, and Qt 6.  It is not
-# part of any default dependency list; add it once the ITKv5 project
-# provides ITK 6.
 set(${proj}_DEPENDENCIES ITKv5 VTK)
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
@@ -27,11 +24,11 @@ ExternalProject_Add(${proj}
   GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
   GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}
   UPDATE_DISCONNECTED TRUE
+  PATCH_COMMAND ${CMAKE_COMMAND} -DGIT_EXECUTABLE=${GIT_EXECUTABLE} -DPATCH_FILE=${CMAKE_CURRENT_LIST_DIR}/patches/vv-itk6.patch -P ${CMAKE_CURRENT_LIST_DIR}/../CMake/ExternalProjectApplyPatch.cmake
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-build
   LOG_CONFIGURE ON
   LOG_BUILD ON
-  LOG_INSTALL ON
   LOG_OUTPUT_ON_FAILURE ON
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
@@ -40,6 +37,10 @@ ExternalProject_Add(${proj}
     -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
     -DITK_DIR:PATH=${ITK_DIR}
     -DVTK_DIR:PATH=${VTK_DIR}
+    -DQt6_DIR:PATH=${Qt6_DIR}
+    -DGENGETOPT_EXECUTABLE:FILEPATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gengetopt
+  # vv installs a relocatable package with Qt; the superbuild uses bin/vv.
+  INSTALL_COMMAND ""
   DEPENDS
     ${${proj}_DEPENDENCIES}
   )
