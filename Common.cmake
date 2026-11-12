@@ -109,39 +109,6 @@ endif()
 
 
 
-if(${LOCAL_PROJECT_NAME}_USE_QT) #//TODO:  BRAINSTools only indirectly needs QT!,
-  set(${LOCAL_PROJECT_NAME}_REQUIRED_QT_MODULES
-    Core Widgets
-    Multimedia
-    Network OpenGL
-    PrintSupport # Required by "Annotations" module
-    UiTools #no dll
-    Xml XmlPatterns
-    Svg Sql
-    )
-  find_package(Qt5 COMPONENTS Core QUIET)
-  if(Qt5_VERSION VERSION_LESS "5.6.0")
-    list(APPEND ${LOCAL_PROJECT_NAME}_REQUIRED_QT_MODULES
-      WebKit
-      )
-  else()
-    list(APPEND ${LOCAL_PROJECT_NAME}_REQUIRED_QT_MODULES
-      WebEngine
-      WebEngineWidgets
-      WebChannel
-      )
-  endif()
-  if(${LOCAL_PROJECT_NAME}_BUILD_EXTENSIONMANAGER_SUPPORT)
-    list(APPEND ${LOCAL_PROJECT_NAME}_REQUIRED_QT_MODULES Script)
-  endif()
-  if(${LOCAL_PROJECT_NAME}_BUILD_I18N_SUPPORT)
-    list(APPEND ${LOCAL_PROJECT_NAME}_REQUIRED_QT_MODULES LinguistTools) # no dll
-  endif()
-  if(BUILD_TESTING)
-    list(APPEND ${LOCAL_PROJECT_NAME}_REQUIRED_QT_MODULES Test)
-  endif()
-  find_package(Qt5 COMPONENTS ${${LOCAL_PROJECT_NAME}_REQUIRED_QT_MODULES})
-endif()
 
 
 #-----------------------------------------------------------------------------
