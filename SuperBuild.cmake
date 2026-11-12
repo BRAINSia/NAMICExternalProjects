@@ -172,7 +172,6 @@ mark_as_superbuild(
 ## for i in SuperBuild/*; do  echo $i |sed 's/.*External_\([a-zA-Z]*\).*/\1/g'|fgrep -v cmake|fgrep -v Template; done|sort -u
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
   MRParameterMaps
-  Eigen
   SlicerExecutionModel
   DoubleConvert
   dcm2niix
