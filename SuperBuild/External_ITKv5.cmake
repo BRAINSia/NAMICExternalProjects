@@ -28,6 +28,17 @@ if(DEFINED ITK_DIR AND NOT EXISTS ${ITK_DIR})
   message(FATAL_ERROR "ITK_DIR variable is defined but corresponds to nonexistent directory")
 endif()
 
+set(ITK_SimpleITK_OPTIONS)
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_SimpleITK)
+  list(APPEND ITK_SimpleITK_OPTIONS
+    -DModule_SimpleITKFilters:BOOL=ON
+    -DModule_ITKIOTransformMINC:BOOL=ON
+    -DModule_LabelErodeDilate:BOOL=ON
+    # SimpleITK 2.5 wraps a newer AnisotropicDiffusionLBR API than ITK 5.4.8 provides.
+    -DModule_AnisotropicDiffusionLBR:BOOL=OFF
+    )
+endif()
+
 if(USE_BRAINSSuperResolution)
   set(ITK_RTK_OPTIONS)
   list(APPEND ITK_RTK_OPTIONS -DModule_RTK:BOOL=ON)
@@ -166,6 +177,8 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       ${ITK_VTK_OPTIONS}
       # RTK
       ${ITK_RTK_OPTIONS}
+      # SimpleITK
+      ${ITK_SimpleITK_OPTIONS}
       # DCMTK
       #-DITK_USE_SYSTEM_DCMTK:BOOL=${${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT}
       #-DDCMTK_DIR:PATH=${DCMTK_DIR}

@@ -107,6 +107,7 @@ set(GENERATECLP_USE_MD5 ON)
 
 option(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK "Determine if tools depending on VTK need to be built." ON)
 mark_as_advanced(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
+option(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_SimpleITK "Build SimpleITK with Python wrapping against the superbuild ITK." OFF)
 option(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB "Build TBB and enable the ITK and VTK TBB backends." ON)
 mark_as_advanced(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB)
 
