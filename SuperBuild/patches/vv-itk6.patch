@@ -1,0 +1,76 @@
+diff --git a/tools/clitkHistogramImageGenericFilter.cxx b/tools/clitkHistogramImageGenericFilter.cxx
+index 59ce547d..b957c448 100644
+--- a/tools/clitkHistogramImageGenericFilter.cxx
++++ b/tools/clitkHistogramImageGenericFilter.cxx
+@@ -170,7 +170,7 @@ void HistogramImageGenericFilter::SaveAs()
+   std::ofstream fileOpen(textFileName.c_str(), std::ofstream::trunc);
+ 
+   if(!fileOpen) {
+-      cerr << "Error during saving" << endl;
++      std::cerr << "Error during saving" << std::endl;
+       return;
+   }
+ 
+diff --git a/tools/clitkProfileImageGenericFilter.cxx b/tools/clitkProfileImageGenericFilter.cxx
+index 9375023f..d9d32508 100644
+--- a/tools/clitkProfileImageGenericFilter.cxx
++++ b/tools/clitkProfileImageGenericFilter.cxx
+@@ -202,7 +202,7 @@ void ProfileImageGenericFilter::WriteOutput(std::string outputFilename)
+   std::ofstream fileOpen(outputFilename.c_str(), std::ofstream::trunc);
+ 
+   if(!fileOpen) {
+-      cerr << "Error during saving" << endl;
++      std::cerr << "Error during saving" << std::endl;
+       return;
+   }
+ 
+diff --git a/vv/vtkVOXImageWriter.cxx b/vv/vtkVOXImageWriter.cxx
+index b703e96b..68f650aa 100644
+--- a/vv/vtkVOXImageWriter.cxx
++++ b/vv/vtkVOXImageWriter.cxx
+@@ -17,6 +17,7 @@
+ ===========================================================================**/
+ #include <string>
+ #include <fstream>
++#include <iostream>
+ 
+ #include "vtkVOXImageWriter.h"
+ 
+diff --git a/vv/vvLandmarksGlyph.cxx b/vv/vvLandmarksGlyph.cxx
+index d2517313..bab89e03 100644
+--- a/vv/vvLandmarksGlyph.cxx
++++ b/vv/vvLandmarksGlyph.cxx
+@@ -16,6 +16,7 @@
+   - CeCILL-B   http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
+ ===========================================================================**/
+ #include "vvLandmarksGlyph.h"
++#include <iostream>
+ 
+ #include "vtkCellArray.h"
+ #include "vtkInformation.h"
+diff --git a/vv/vvToolHistogram.cxx b/vv/vvToolHistogram.cxx
+index ac10c119..8b86e09b 100644
+--- a/vv/vvToolHistogram.cxx
++++ b/vv/vvToolHistogram.cxx
+@@ -435,7 +435,7 @@ void vvToolHistogram::SaveAs()
+         std::ofstream fileOpen(mTextFileName.c_str(), std::ofstream::trunc);
+   
+         if(!fileOpen) {
+-            cerr << "Error during saving" << endl;
++            std::cerr << "Error during saving" << std::endl;
+             QApplication::restoreOverrideCursor();
+             close();
+             return;
+diff --git a/vv/vvToolProfile.cxx b/vv/vvToolProfile.cxx
+index 5b831ea8..1e44b82e 100644
+--- a/vv/vvToolProfile.cxx
++++ b/vv/vvToolProfile.cxx
+@@ -507,7 +507,7 @@ void vvToolProfile::SaveAs()
+         std::ofstream fileOpen(mTextFileName.c_str(), std::ofstream::trunc);
+   
+         if(!fileOpen) {
+-            cerr << "Error during saving" << endl;
++            std::cerr << "Error during saving" << std::endl;
+             QApplication::restoreOverrideCursor();
+             close();
+             return;
