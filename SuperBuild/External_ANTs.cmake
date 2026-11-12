@@ -172,7 +172,7 @@ ExternalProject_SetIfNotDefined(
 
 ExternalProject_SetIfNotDefined(
   ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-  dcdaf4212df415b089b09b8b6b0a2560c57af546 # ANTsX/ANTs main 2026-10-30
+  eb096f0fecc405e063ba14e45dcfc048e204220f # ANTsX/ANTs main 2026-11-08
   QUIET
   )
 
