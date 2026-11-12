@@ -1,67 +1,33 @@
-# Make sure that the ExtProjName/IntProjName variables are unique globally
-# even if other External_${ExtProjName}.cmake files are sourced by
-# SlicerMacroCheckExternalProjectDependency
-set(extProjName tract_querier) #The find_package known name
-set(proj        tract_querier) #This local name
-set(${extProjName}_REQUIRED_VERSION "")  #If a required version is necessary, then set this, else leave blank
+set(proj tract_querier)
 
-#if(${USE_SYSTEM_${extProjName}})
-#  unset(${extProjName}_DIR CACHE)
-#endif()
-
-# Sanity checks
-if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
-  message(FATAL_ERROR "${extProjName}_DIR variable is defined but corresponds to non-existing directory (${${extProjName}_DIR})")
-endif()
-
-# Set dependency list
 set(${proj}_DEPENDENCIES "")
-#if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
-#  list(APPEND ${proj}_DEPENDENCIES DCMTK)
-#endif()
+ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
-# Include dependent projects if any
-SlicerMacroCheckExternalProjectDependency(${proj})
-
-if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" ) )
-  #message(STATUS "${__indent}Adding project ${proj}")
-
-  ### --- Project specific additions here
-
-  ### --- End Project specific additions
-  set(${proj}_REPOSITORY "https://github.com/demianw/tract_querier.git")
-  set(${proj}_GIT_TAG "f88f0ab0a33d19a89e7992e6cd390146e7d91e69")
-  ExternalProject_Add(${proj}
-    ${${proj}_EP_ARGS}
-    GIT_REPOSITORY ${${proj}_REPOSITORY}
-    GIT_TAG ${${proj}_GIT_TAG}
-    SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-    BINARY_DIR ${proj}-build
-    LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
-    LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
-    LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
-    LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
-    BUILD_COMMAND ""
-    CONFIGURE_COMMAND ""
-    INSTALL_COMMAND ""
-## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
-    DEPENDS
-      ${${proj}_DEPENDENCIES}
+# Python package: the source is fetched for "pip install" into a Python 3.12+ environment.
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
+  "${git_protocol}://github.com/demianw/tract_querier.git"
+  QUIET
   )
-  set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-else()
-  if(${USE_SYSTEM_${extProjName}})
-    find_package(${extProjName} ${${extProjName}_REQUIRED_VERSION} REQUIRED)
-    message("USING the system ${extProjName}, set ${extProjName}_DIR=${${extProjName}_DIR}")
-  endif()
-  # The project is provided using ${extProjName}_DIR, nevertheless since other
-  # project may depend on ${extProjName}, let's add an 'empty' one
-  SlicerMacroEmptyExternalProject(${proj} "${${proj}_DEPENDENCIES}")
-endif()
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
+  d7ea421f78a248bf03e12235fff83dbff37a1452 # master 2026-11-04
+  QUIET
+  )
 
-mark_as_superbuild(
-  VARS
-    ${extProjName}_DIR:FILE
-  LABELS
-     "FIND_PACKAGE"
-)
+ExternalProject_Add(${proj}
+  ${${proj}_EP_ARGS}
+  GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
+  GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+  GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}
+  UPDATE_DISCONNECTED TRUE
+  SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND ""
+  DEPENDS
+    ${${proj}_DEPENDENCIES}
+  )
+
+set(${proj}_SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj})
+mark_as_superbuild(VARS ${proj}_SOURCE_DIR:PATH LABELS "FIND_PACKAGE")

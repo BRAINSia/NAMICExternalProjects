@@ -196,7 +196,7 @@ list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
 ## These packages are not yet needed, but will evenutally be needed.
   #qhull
   #${CALATK_DEP}
-  #tract_querier
+  tract_querier
   LogSymmetricDemons
   )
 if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
