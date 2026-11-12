@@ -1,0 +1,369 @@
+diff --git a/Applications/dtiestim.cxx b/Applications/dtiestim.cxx
+index 7aee901..7f7d9f9 100644
+--- a/Applications/dtiestim.cxx
++++ b/Applications/dtiestim.cxx
+@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
+     std::vector<std::vector<double> > nrrdmf;
+     itk::ExposeMetaData<std::vector<std::vector<double> > >(dict, NRRD_MEASUREMENT_KEY, nrrdmf);
+ 
+-    imgf = dwi->GetDirection().GetVnlMatrix();
++    imgf = dwi->GetDirection().GetVnlMatrix().as_matrix();
+     if( VERBOSE )
+       {
+       std::cout << "Image frame: " << std::endl;
+@@ -701,7 +701,7 @@ int main(int argc, char* argv[])
+     estimator->SetDefaultTensor(defaultTensor);
+     estimator->SetThreshold(_threshold);
+     estimator->SetStep(stepSize);
+-    estimator->SetNumberOfThreads(1);
++    estimator->SetNumberOfWorkUnits(1);
+     estimator->SetVerbose( verbose ) ;
+     estimator->SetShiftNegativeEigenvalues( ShiftNegativeEigenvalues ) ;
+     estimator->SetShiftNegativeEigenvaluesCoefficient( ShiftNegativeEigenvaluesCoefficient ) ;
+@@ -760,7 +760,7 @@ int main(int argc, char* argv[])
+     estimator->SetThreshold(_threshold);
+     estimator->SetInitialTensor(inittensors);
+     estimator->SetStep(stepSize);
+-    estimator->SetNumberOfThreads(1);
++    estimator->SetNumberOfWorkUnits(1);
+     std::cout << "Start sigma: " << sigma << std::endl;
+     estimator->SetSigma(sigma);
+     estimator->Update();
+diff --git a/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.h b/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.h
+index e7b76cf..abd359e 100644
+--- a/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.h
++++ b/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.h
+@@ -127,7 +127,7 @@ protected:
+ 
+   void GenerateOutputInformation();
+ 
+-  void GenerateInputRequestedRegion() throw (InvalidRequestedRegionError);
++  void GenerateInputRequestedRegion();
+ 
+   void GenerateData();
+ 
+diff --git a/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.txx b/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.txx
+index e096ab9..5110b78 100644
+--- a/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.txx
++++ b/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.txx
+@@ -46,7 +46,7 @@ SphericalHarmonicsInterpolationFilter<TInputImage, TOutputImage>
+ template <class TInputImage, class TOutputImage>
+ void
+ SphericalHarmonicsInterpolationFilter<TInputImage, TOutputImage>
+-::GenerateInputRequestedRegion() throw (InvalidRequestedRegionError)
++::GenerateInputRequestedRegion()
+ {
+   // call the superclass' implementation of this method
+   Superclass::GenerateInputRequestedRegion();
+diff --git a/Applications/dwiAtlas/itkMaskedMeanImageFilter.h b/Applications/dwiAtlas/itkMaskedMeanImageFilter.h
+index 2e0bfef..954e7f4 100644
+--- a/Applications/dwiAtlas/itkMaskedMeanImageFilter.h
++++ b/Applications/dwiAtlas/itkMaskedMeanImageFilter.h
+@@ -94,7 +94,7 @@ public:
+    * in order to inform the pipeline execution model.
+    *
+    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
+-  virtual void GenerateInputRequestedRegion() throw (InvalidRequestedRegionError) override;
++  virtual void GenerateInputRequestedRegion() override;
+ 
+ #ifdef ITK_USE_CONCEPT_CHECKING
+   /** Begin concept checking */
+diff --git a/Applications/dwiAtlas/itkMaskedMeanImageFilter.txx b/Applications/dwiAtlas/itkMaskedMeanImageFilter.txx
+index 83115f5..5d32730 100644
+--- a/Applications/dwiAtlas/itkMaskedMeanImageFilter.txx
++++ b/Applications/dwiAtlas/itkMaskedMeanImageFilter.txx
+@@ -40,7 +40,7 @@ MaskedMeanImageFilter<TInputImage, TOutputImage>
+ template <class TInputImage, class TOutputImage>
+ void
+ MaskedMeanImageFilter<TInputImage, TOutputImage>
+-::GenerateInputRequestedRegion() throw (InvalidRequestedRegionError)
++::GenerateInputRequestedRegion()
+ {
+   // call the superclass' implementation of this method
+   Superclass::GenerateInputRequestedRegion();
+diff --git a/Applications/dwiprocess.cxx b/Applications/dwiprocess.cxx
+index c749b6a..f00a20a 100644
+--- a/Applications/dwiprocess.cxx
++++ b/Applications/dwiprocess.cxx
+@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
+ 
+     // gradient transform
+     // g' = R g
+-    R = vnl_matrix_inverse<TransformRealType>(transform->GetMatrix().GetVnlMatrix() );
++    R = vnl_matrix_inverse<TransformRealType>(transform->GetMatrix().GetVnlMatrix().as_matrix() ).inverse();
+ 
+     }
+   else
+diff --git a/Library/itkDeformationFieldJacobianFilter.h b/Library/itkDeformationFieldJacobianFilter.h
+index f63f6cf..14526f0 100644
+--- a/Library/itkDeformationFieldJacobianFilter.h
++++ b/Library/itkDeformationFieldJacobianFilter.h
+@@ -148,7 +148,7 @@ public:
+    * pipeline execution model.
+    *
+    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
+-  virtual void GenerateInputRequestedRegion() throw (InvalidRequestedRegionError) override;
++  virtual void GenerateInputRequestedRegion() override;
+ 
+   /** Set the derivative weights according to the spacing of the input image
+       (1/spacing). Use this option if you want to calculate the Jacobian
+diff --git a/Library/itkDeformationFieldJacobianFilter.txx b/Library/itkDeformationFieldJacobianFilter.txx
+index a752bb6..9d24c38 100644
+--- a/Library/itkDeformationFieldJacobianFilter.txx
++++ b/Library/itkDeformationFieldJacobianFilter.txx
+@@ -23,7 +23,7 @@
+ #include "itkImageRegionIterator.h"
+ #include "itkZeroFluxNeumannBoundaryCondition.h"
+ #include "itkProgressReporter.h"
+-#include "itkVectorCastImageFilter.h"
++#include "itkCastImageFilter.h"
+ 
+ #include "itkMath.h"
+ 
+@@ -37,7 +37,7 @@ DeformationFieldJacobianFilter<TInputImage, TRealType, TOutputImage>
+   unsigned int i;
+ 
+   m_UseImageSpacing = false;
+-  m_RequestedNumberOfThreads = this->GetNumberOfThreads();
++  m_RequestedNumberOfThreads = this->GetNumberOfWorkUnits();
+   for( i = 0; i < ImageDimension; i++ )
+     {
+     m_NeighborhoodRadius[i] = 1; // radius of neighborhood we will use
+@@ -87,7 +87,7 @@ DeformationFieldJacobianFilter<TInputImage, TRealType, TOutputImage>
+ template <typename TInputImage, typename TRealType, typename TOutputImage>
+ void
+ DeformationFieldJacobianFilter<TInputImage, TRealType, TOutputImage>
+-::GenerateInputRequestedRegion() throw (InvalidRequestedRegionError)
++::GenerateInputRequestedRegion()
+ {
+   // call the superclass' implementation of this method
+   Superclass::GenerateInputRequestedRegion();
+@@ -162,8 +162,8 @@ DeformationFieldJacobianFilter<TInputImage, TRealType, TOutputImage>
+       image.  Otherwise just point to the input image. */
+   if( typeid( typename InputImageType::PixelType ) != typeid( RealVectorType ) )
+     {
+-    typename VectorCastImageFilter<TInputImage, RealVectorImageType>::Pointer
+-    caster = VectorCastImageFilter<TInputImage, RealVectorImageType>::New();
++    typename CastImageFilter<TInputImage, RealVectorImageType>::Pointer
++    caster = CastImageFilter<TInputImage, RealVectorImageType>::New();
+     caster->SetInput(this->GetInput() );
+     caster->Update();
+     m_RealValuedInputImage = caster->GetOutput();
+diff --git a/Library/itkDiffusionTensor3DReconstructionImageFilterBase.txx b/Library/itkDiffusionTensor3DReconstructionImageFilterBase.txx
+index fb7ea0a..bcb9650 100644
+--- a/Library/itkDiffusionTensor3DReconstructionImageFilterBase.txx
++++ b/Library/itkDiffusionTensor3DReconstructionImageFilterBase.txx
+@@ -106,7 +106,7 @@ void DiffusionTensor3DReconstructionImageFilterBase<TGradientImagePixelType, TTe
+   typename OutputImageType::Pointer outputImage = dynamic_cast<OutputImageType *>(this->ProcessObject::GetOutput(0) );
+   if(outputImage.IsNull() )
+     {
+-    itkExceptionMacro( << "ERROR:  outputImage is not converted properly from ProcessObject." )
++    itkExceptionMacro( << "ERROR:  outputImage is not converted properly from ProcessObject." );
+     }
+ 
+   ImageRegionIterator<OutputImageType> oit(outputImage, outputRegionForThread);
+@@ -128,7 +128,7 @@ void DiffusionTensor3DReconstructionImageFilterBase<TGradientImagePixelType, TTe
+     typename ScalarImageType::Pointer baselineImage = dynamic_cast<ScalarImageType *>(this->ProcessObject::GetOutput(1) );
+     if(baselineImage.IsNull() )
+       {
+-      itkExceptionMacro( << "ERROR:  baselineImage is not converted properly from ProcessObject." )
++      itkExceptionMacro( << "ERROR:  baselineImage is not converted properly from ProcessObject." );
+       }
+     bit = ScalarIteratorType(baselineImage, outputRegionForThread);
+     bit.GoToBegin();
+diff --git a/Library/itkTensorRotateFromDeformationFieldImageFilter.h b/Library/itkTensorRotateFromDeformationFieldImageFilter.h
+index 9fa9669..d888b76 100644
+--- a/Library/itkTensorRotateFromDeformationFieldImageFilter.h
++++ b/Library/itkTensorRotateFromDeformationFieldImageFilter.h
+@@ -71,7 +71,7 @@ public:
+         }
+       }
+ 
+-    vnl_svd<TransformPrecision> svd(y.GetVnlMatrix() + iden);
++    vnl_svd<TransformPrecision> svd( (y.GetVnlMatrix() + iden).as_matrix() );
+     VnlMatrixType               R(svd.U() * svd.V().transpose() );
+ 
+     VnlMatrixType res = R.transpose() * vnlx * R;
+diff --git a/Library/itkVectorBSplineInterpolateImageFunction.h b/Library/itkVectorBSplineInterpolateImageFunction.h
+index a3aac71..f5bb95b 100644
+--- a/Library/itkVectorBSplineInterpolateImageFunction.h
++++ b/Library/itkVectorBSplineInterpolateImageFunction.h
+@@ -17,6 +17,7 @@
+ #ifndef __itkVectorBSplineInterpolateImageFunction_h
+ #define __itkVectorBSplineInterpolateImageFunction_h
+ 
++#include "itkInterpolateImageFunction.h"
+ #include "itkVectorInterpolateImageFunction.h"
+ #include "itkBSplineInterpolateImageFunction.h"
+ #include "itkVectorIndexSelectionCastImageFilter.h"
+@@ -40,14 +41,15 @@ namespace itk
+  * \ingroup ImageFunctions ImageInterpolators
+  *
+  */
+-template <class TInputImage, class TCoordRep = float, class TCoefficientType = double>
++template <class TInputImage, class TCoordRep = float, class TCoefficientType = double,
++          template <class, class> class TBase = VectorInterpolateImageFunction>
+ class ITK_EXPORT VectorBSplineInterpolateImageFunction :
+-  public         VectorInterpolateImageFunction<TInputImage, TCoordRep>
++  public         TBase<TInputImage, TCoordRep>
+ {
+ public:
+   /** Standard class typedefs. */
+   typedef VectorBSplineInterpolateImageFunction                  Self;
+-  typedef VectorInterpolateImageFunction<TInputImage, TCoordRep> Superclass;
++  typedef TBase<TInputImage, TCoordRep>                          Superclass;
+   typedef SmartPointer<Self>                                     Pointer;
+   typedef SmartPointer<const Self>                               ConstPointer;
+ 
+@@ -60,13 +62,12 @@ public:
+ 
+   /** InputImageType typedef support. */
+   typedef typename Superclass::InputImageType InputImageType;
+-  typedef typename Superclass::PixelType      PixelType;
+-  typedef typename Superclass::ValueType      ValueType;
++  typedef typename TInputImage::PixelType     PixelType;
++  typedef typename PixelType::ValueType       ValueType;
+   typedef typename Superclass::RealType       RealType;
++  typedef typename TInputImage::SizeType      SizeType;
+ 
+-  /** Grab the vector dimension from the superclass. */
+-  itkStaticConstMacro(Dimension, unsigned int,
+-                      Superclass::Dimension);
++  static constexpr unsigned int Dimension = PixelType::Dimension;
+ 
+   /** Dimension underlying input image. */
+   static constexpr unsigned int ImageDimension = Superclass::ImageDimension;
+@@ -105,6 +106,11 @@ public:
+    * calling the method. */
+   virtual OutputType EvaluateAtContinuousIndex(const ContinuousIndexType & index ) const override;
+ 
++  SizeType GetRadius() const
++  {
++    return m_ComponentInterpolators[0]->GetRadius();
++  }
++
+ protected:
+   VectorBSplineInterpolateImageFunction();
+   ~VectorBSplineInterpolateImageFunction()
+diff --git a/Library/itkVectorBSplineInterpolateImageFunction.txx b/Library/itkVectorBSplineInterpolateImageFunction.txx
+index 8ac3075..30b28e3 100644
+--- a/Library/itkVectorBSplineInterpolateImageFunction.txx
++++ b/Library/itkVectorBSplineInterpolateImageFunction.txx
+@@ -27,16 +27,16 @@ namespace itk
+ /**
+  * Define the number of neighbors
+  */
+-template <class TInputImage, class TCoordRep, class TCoefficientType>
++template <class TInputImage, class TCoordRep, class TCoefficientType, template <class, class> class TBase>
+ const unsigned long
+-VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType>
++VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType, TBase>
+ ::m_Neighbors = 1 << TInputImage::ImageDimension;
+ 
+ /**
+  * Constructor
+  */
+-template <class TInputImage, class TCoordRep, class TCoefficientType>
+-VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType>
++template <class TInputImage, class TCoordRep, class TCoefficientType, template <class, class> class TBase>
++VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType, TBase>
+ ::VectorBSplineInterpolateImageFunction()
+ {
+   m_ComponentInterpolators.resize(Dimension);
+@@ -51,22 +51,22 @@ VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType>
+ /**
+  * PrintSelf
+  */
+-template <class TInputImage, class TCoordRep, class TCoefficientType>
++template <class TInputImage, class TCoordRep, class TCoefficientType, template <class, class> class TBase>
+ void
+-VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType>
++VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType, TBase>
+ ::PrintSelf(std::ostream& os, Indent indent) const
+ {
+   os << "Vector BSpline" << std::endl;
+   this->Superclass::PrintSelf(os, indent);
+ }
+ 
+-template <class TImageType, class TCoordRep, class TCoefficientType>
++template <class TImageType, class TCoordRep, class TCoefficientType, template <class, class> class TBase>
+ void
+-VectorBSplineInterpolateImageFunction<TImageType, TCoordRep, TCoefficientType>
++VectorBSplineInterpolateImageFunction<TImageType, TCoordRep, TCoefficientType, TBase>
+ ::SetInputImage(const TImageType * inputData)
+ {
+   // Call super class input set
+-  this->VectorInterpolateImageFunction<TImageType, TCoordRep>::SetInputImage(inputData);
++  this->Superclass::SetInputImage(inputData);
+ 
+   if( inputData )
+     {
+@@ -85,10 +85,10 @@ VectorBSplineInterpolateImageFunction<TImageType, TCoordRep, TCoefficientType>
+ /**
+  * Evaluate at image index position
+  */
+-template <class TInputImage, class TCoordRep, class TCoefficientType>
+-typename VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType>
++template <class TInputImage, class TCoordRep, class TCoefficientType, template <class, class> class TBase>
++typename VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType, TBase>
+ ::OutputType
+-VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType>
++VectorBSplineInterpolateImageFunction<TInputImage, TCoordRep, TCoefficientType, TBase>
+ ::EvaluateAtContinuousIndex(
+   const ContinuousIndexType& index) const
+ {
+diff --git a/PrivateLibrary/tensordeformation.cxx b/PrivateLibrary/tensordeformation.cxx
+index e671ef5..7ced2eb 100644
+--- a/PrivateLibrary/tensordeformation.cxx
++++ b/PrivateLibrary/tensordeformation.cxx
+@@ -1,7 +1,7 @@
+ #include "tensordeformation.h"
+ #include "transforms.h"
+ 
+-#include <itkVectorResampleImageFilter.h>
++#include <itkResampleImageFilter.h>
+ #include <itkWarpVectorImageFilter.h>
+ #include <itkVectorLinearInterpolateImageFunction.h>
+ #include <itkVectorNearestNeighborInterpolateImageFunction.h>
+@@ -121,12 +121,13 @@ TensorImageType::Pointer createROT(TensorImageType::Pointer timg,
+   logf->SetInput(trotfilt->GetOutput() );
+   logf->Update();
+ 
+-  typedef itk::VectorResampleImageFilter<
++  typedef itk::ResampleImageFilter<
+       LogTensorImageType, LogTensorImageType> ResampleFilterType; // TODO: Should accept precision
+   ResampleFilterType::Pointer resampler = ResampleFilterType::New();
+ 
+   // Set interpolator
+-  typedef itk::VectorBSplineInterpolateImageFunction<LogTensorImageType, double, double> InterpolatorType;
++  typedef itk::VectorBSplineInterpolateImageFunction<LogTensorImageType, double, double,
++                                                     itk::InterpolateImageFunction> InterpolatorType;
+   InterpolatorType::Pointer interpolator = InterpolatorType::New();
+ 
+   resampler->SetInterpolator(interpolator);
+diff --git a/PrivateLibrary/transforms.h b/PrivateLibrary/transforms.h
+index 48566eb..6af6b36 100644
+--- a/PrivateLibrary/transforms.h
++++ b/PrivateLibrary/transforms.h
+@@ -336,7 +336,7 @@ getInverseRotation(const T& transform)
+   typedef typename T::ObjectType::ScalarType Precision;
+ 
+   // I think we need the inverse for rotating
+-  vnl_matrix<Precision> inv = vnl_matrix_inverse<Precision>(transform->GetMatrix().GetVnlMatrix() );
++  vnl_matrix<Precision> inv = vnl_matrix_inverse<Precision>(transform->GetMatrix().GetVnlMatrix().as_matrix() ).inverse();
+   vnl_svd<Precision>    svd(inv);
+ 
+   vnl_matrix<Precision> R(svd.U() * svd.V().transpose() );
+diff --git a/PrivateLibrary/transforms.txx b/PrivateLibrary/transforms.txx
+index 7d0cc36..2744e0d 100644
+--- a/PrivateLibrary/transforms.txx
++++ b/PrivateLibrary/transforms.txx
+@@ -310,7 +310,7 @@ getInverseRotation(const T& transform)
+   typedef typename T::ObjectType::ScalarType Precision;
+ 
+   // I think we need the inverse for rotating
+-  vnl_matrix<Precision> inv = vnl_matrix_inverse<Precision>(transform->GetMatrix().GetVnlMatrix() );
++  vnl_matrix<Precision> inv = vnl_matrix_inverse<Precision>(transform->GetMatrix().GetVnlMatrix().as_matrix() ).inverse();
+   vnl_svd<Precision>    svd(inv);
+ 
+   vnl_matrix<Precision> R(svd.U() * svd.V().transpose() );
