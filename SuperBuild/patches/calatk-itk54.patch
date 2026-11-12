@@ -1,0 +1,3235 @@
+diff --git a/Code/Applications/AtlasBuilder/AtlasBuilder.cxx b/Code/Applications/AtlasBuilder/AtlasBuilder.cxx
+index faaec94..2222a1d 100644
+--- a/Code/Applications/AtlasBuilder/AtlasBuilder.cxx
++++ b/Code/Applications/AtlasBuilder/AtlasBuilder.cxx
+@@ -218,7 +218,7 @@ int DoIt( int argc, char** argv )
+   // write out the atlas image
+   if ( atlasImage.compare("None") != 0 )
+   {
+-    const VectorImageType* ptrAtlasImage = NULL;
++    const VectorImageType* ptrAtlasImage = nullptr;
+ 
+     if ( bSubiterationUpdate )
+     {
+diff --git a/Code/Applications/LDDMM/LDDMM.cxx b/Code/Applications/LDDMM/LDDMM.cxx
+index ef13a9b..71953df 100644
+--- a/Code/Applications/LDDMM/LDDMM.cxx
++++ b/Code/Applications/LDDMM/LDDMM.cxx
+@@ -64,7 +64,7 @@ int DoIt( int argc, char** argv )
+ 
+   typedef CALATK::CAlgorithmBase< TFLOAT, VImageDimension > TReg;
+ 
+-  typename TReg::Pointer plddmm = NULL;
++  typename TReg::Pointer plddmm = nullptr;
+   bool bIsInitialImageMomentumType = false;
+   bool bIsSpatioTemporalVelocityType = false;
+   bool bStateContainsInitialImage = false;
+@@ -170,7 +170,7 @@ int DoIt( int argc, char** argv )
+ 
+   if ( initialMomentumImage.compare("None") !=0 )
+   {
+-    const VectorImageType* ptrp0 = NULL;
++    const VectorImageType* ptrp0 = nullptr;
+     if ( bIsInitialImageMomentumType )
+     {
+       if ( bStateContainsInitialImage )
+@@ -197,7 +197,7 @@ int DoIt( int argc, char** argv )
+ 
+   if ( internalInitialImage.compare("None") !=0 )
+   {
+-    const VectorImageType* ptrI0 = NULL;
++    const VectorImageType* ptrI0 = nullptr;
+     if ( bIsInitialImageMomentumType )
+     {
+       if ( bStateContainsInitialImage )
+@@ -226,7 +226,7 @@ int DoIt( int argc, char** argv )
+ 
+   if ( internalTargetImage.compare("None") !=0 )
+   {
+-    const VectorImageType* ptrI0 = NULL;
++    const VectorImageType* ptrI0 = nullptr;
+     if ( bIsInitialImageMomentumType )
+     {
+       if ( bStateContainsInitialImage )
+diff --git a/Code/Applications/MetamorphosisShooting/MetamorphosisShooting.cxx b/Code/Applications/MetamorphosisShooting/MetamorphosisShooting.cxx
+index fa1ca02..12e1ad0 100644
+--- a/Code/Applications/MetamorphosisShooting/MetamorphosisShooting.cxx
++++ b/Code/Applications/MetamorphosisShooting/MetamorphosisShooting.cxx
+@@ -59,7 +59,7 @@ int DoIt( int argc, char** argv )
+ 
+   typedef CALATK::CAlgorithmBase< TFLOAT, VImageDimension > TReg;
+ 
+-  typename TReg::Pointer plddmm = NULL;
++  typename TReg::Pointer plddmm = nullptr;
+ 
+   bool bStateContainsInitialImage = false;
+   bool bIsSimplified = false;
+diff --git a/Code/CMakeLists.txt b/Code/CMakeLists.txt
+index 72b0c93..99497e4 100644
+--- a/Code/CMakeLists.txt
++++ b/Code/CMakeLists.txt
+@@ -3,7 +3,8 @@ if(COMPILE_CLP_MODULES)
+   #
+   # Include everything to build generateclp
+   #
+-  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/External/SlicerExecutionModel)
++  find_package(SlicerExecutionModel REQUIRED GenerateCLP)
++  include(${SlicerExecutionModel_USE_FILE})
+ 
+   #
+   # Include GenerateCLP
+@@ -111,6 +112,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Statistics)
+ # Add external utilities
+ #add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/External)
+ 
+-# Set up testing
+-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Testing)
++if(BUILD_TESTING)
++  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Testing)
++endif()
+ 
+diff --git a/Code/Libraries/Algorithms/CAlgorithm.txx b/Code/Libraries/Algorithms/CAlgorithm.txx
+index 7d2f93b..c43cefd 100644
+--- a/Code/Libraries/Algorithms/CAlgorithm.txx
++++ b/Code/Libraries/Algorithms/CAlgorithm.txx
+@@ -24,8 +24,8 @@ template < class TState >
+ CAlgorithm< TState >::CAlgorithm()
+   : m_DisplayCleanedConfigurations( true )
+ {
+-  this->m_ptrObjectiveFunction = NULL;
+-  this->m_ptrSolver = NULL;
++  this->m_ptrObjectiveFunction = nullptr;
++  this->m_ptrSolver = nullptr;
+ }
+ 
+ template < class TState >
+@@ -51,7 +51,7 @@ void CAlgorithm< TState >::SetDefaultsIfNeeded()
+ {
+   Superclass::SetDefaultsIfNeeded();
+ 
+-  if ( this->m_ptrSolver.GetPointer() == NULL )
++  if ( this->m_ptrSolver.GetPointer() == nullptr )
+     {
+     this->SetDefaultSolverPointer();
+     }
+@@ -61,7 +61,7 @@ void CAlgorithm< TState >::SetDefaultsIfNeeded()
+   this->m_ptrSolver->SetAutoConfiguration( this->m_CombinedJSONConfig, this->m_CleanedJSONConfig );
+   this->m_ptrSolver->SetMaxDesiredLogLevel( this->GetMaxDesiredLogLevel() );
+ 
+-  if ( this->m_ptrObjectiveFunction.GetPointer() == NULL )
++  if ( this->m_ptrObjectiveFunction.GetPointer() == nullptr )
+     {
+     this->SetDefaultObjectiveFunctionPointer();
+     }
+@@ -85,7 +85,7 @@ void CAlgorithm< TState >::Solve()
+     }
+ 
+   // image manager needs to be specified, so that data can be assigned
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::logic_error( "CAlgorithm: Image manager not initialized. Did you specify input images?" );
+     }
+@@ -140,7 +140,7 @@ template < class TState >
+ typename CAlgorithm< TState >::ObjectiveFunctionType *
+ CAlgorithm< TState >::GetObjectiveFunctionPointer()
+ {
+-  if ( m_ptrObjectiveFunction.GetPointer() == NULL )
++  if ( m_ptrObjectiveFunction.GetPointer() == nullptr )
+     {
+     this->SetDefaultObjectiveFunctionPointer();
+     }
+@@ -157,7 +157,7 @@ template < class TState >
+ typename CAlgorithm< TState >::SolverType *
+ CAlgorithm< TState >::GetSolverPointer()
+ {
+-  if ( this->m_ptrSolver.GetPointer() == NULL )
++  if ( this->m_ptrSolver.GetPointer() == nullptr )
+     {
+     this->SetDefaultSolverPointer();
+     }
+diff --git a/Code/Libraries/Algorithms/CAlgorithmBase.txx b/Code/Libraries/Algorithms/CAlgorithmBase.txx
+index ecc1eb7..f034aeb 100644
+--- a/Code/Libraries/Algorithms/CAlgorithmBase.txx
++++ b/Code/Libraries/Algorithms/CAlgorithmBase.txx
+@@ -29,13 +29,13 @@ template < class T, unsigned int VImageDimension >
+ CAlgorithmBase< T, VImageDimension >::CAlgorithmBase()
+   : m_CurrentlyActiveSubjectId( -1 )
+   {
+-  this->m_ptrMetric = NULL;
+-  this->m_ptrImageManager = NULL;
+-  this->m_ptrEvolver = NULL;
+-  this->m_ptrKernel = NULL;
++  this->m_ptrMetric = nullptr;
++  this->m_ptrImageManager = nullptr;
++  this->m_ptrEvolver = nullptr;
++  this->m_ptrKernel = nullptr;
+ 
+-  this->m_ptrIm = NULL;
+-  this->m_ptrMap = NULL;
++  this->m_ptrIm = nullptr;
++  this->m_ptrMap = nullptr;
+ }
+ 
+ 
+@@ -59,7 +59,7 @@ int CAlgorithmBase< T, VImageDimension >::GetActiveSubjectId() const
+ template < class T, unsigned int VImageDimension >
+ void CAlgorithmBase< T, VImageDimension >::SetDefaultsIfNeeded()
+ {
+-  if ( m_ptrMetric.GetPointer() == NULL )
++  if ( m_ptrMetric.GetPointer() == nullptr )
+     {
+     this->SetDefaultMetricPointer();
+     }
+@@ -70,7 +70,7 @@ void CAlgorithmBase< T, VImageDimension >::SetDefaultsIfNeeded()
+   this->m_ptrMetric->SetMaxDesiredLogLevel( this->GetMaxDesiredLogLevel() );
+ 
+ 
+-  if ( this->m_ptrEvolver.GetPointer() == NULL )
++  if ( this->m_ptrEvolver.GetPointer() == nullptr )
+     {
+     this->SetDefaultEvolverPointer();
+     }
+@@ -80,7 +80,7 @@ void CAlgorithmBase< T, VImageDimension >::SetDefaultsIfNeeded()
+   this->m_ptrEvolver->SetAutoConfiguration( this->m_CombinedJSONConfig, this->m_CleanedJSONConfig );
+   this->m_ptrEvolver->SetMaxDesiredLogLevel( this->GetMaxDesiredLogLevel() );
+ 
+-  if ( this->m_ptrKernel.GetPointer() == NULL )
++  if ( this->m_ptrKernel.GetPointer() == nullptr )
+     {
+     this->SetDefaultKernelPointer();
+     }
+@@ -90,7 +90,7 @@ void CAlgorithmBase< T, VImageDimension >::SetDefaultsIfNeeded()
+   this->m_ptrKernel->SetAutoConfiguration( this->m_CombinedJSONConfig, this->m_CleanedJSONConfig );
+   this->m_ptrKernel->SetMaxDesiredLogLevel( this->GetMaxDesiredLogLevel() );
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+   {
+     this->SetDefaultImageManagerPointer();
+   }
+@@ -108,11 +108,11 @@ void CAlgorithmBase< T, VImageDimension >::PreFirstSolve()
+   // create the memory for the map and the image at the resolution of the original image, so we can use it to return a map and an image at any time
+   const VectorImageType* graftImage = m_ptrImageManager->GetGraftImagePointerAtScale( this->GetActiveSubjectId() );
+ 
+-  assert( this->m_ptrIm.GetPointer() == NULL );
++  assert( this->m_ptrIm.GetPointer() == nullptr );
+   this->m_ptrIm = new VectorImageType( graftImage );
+   this->m_ptrIm->SetToConstant( 0 );
+ 
+-  assert( m_ptrMap.GetPointer() == NULL );
++  assert( m_ptrMap.GetPointer() == nullptr );
+   this->m_ptrMap = new VectorFieldType( graftImage );
+   this->m_ptrMap->SetToConstant( 0 );
+ }
+@@ -127,7 +127,7 @@ template < class T, unsigned int VImageDimension >
+ typename CAlgorithmBase< T, VImageDimension >::ImageManagerType *
+ CAlgorithmBase< T, VImageDimension >::GetImageManagerPointer()
+ {
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     this->SetDefaultImageManagerPointer();
+     }
+@@ -144,7 +144,7 @@ template < class T, unsigned int VImageDimension >
+ typename CAlgorithmBase< T, VImageDimension >::KernelType *
+ CAlgorithmBase< T, VImageDimension >::GetKernelPointer()
+ {
+-  if ( this->m_ptrKernel.GetPointer() == NULL )
++  if ( this->m_ptrKernel.GetPointer() == nullptr )
+     {
+     this->SetDefaultKernelPointer();
+     }
+@@ -161,7 +161,7 @@ template < class T, unsigned int VImageDimension >
+ typename CAlgorithmBase< T, VImageDimension >::EvolverType *
+ CAlgorithmBase< T, VImageDimension >::GetEvolverPointer()
+ {
+-  if ( this->m_ptrEvolver.GetPointer() == NULL )
++  if ( this->m_ptrEvolver.GetPointer() == nullptr )
+     {
+     this->SetDefaultEvolverPointer();
+     }
+@@ -180,7 +180,7 @@ template < class T, unsigned int VImageDimension >
+ typename CAlgorithmBase< T, VImageDimension >::MetricType *
+ CAlgorithmBase< T, VImageDimension >::GetMetricPointer()
+ {
+-  if ( this->m_ptrMetric.GetPointer() == NULL )
++  if ( this->m_ptrMetric.GetPointer() == nullptr )
+     {
+     this->SetDefaultMetricPointer();
+     }
+diff --git a/Code/Libraries/Algorithms/CAlgorithmFactory.txx b/Code/Libraries/Algorithms/CAlgorithmFactory.txx
+index be2eb0a..41321fa 100644
+--- a/Code/Libraries/Algorithms/CAlgorithmFactory.txx
++++ b/Code/Libraries/Algorithms/CAlgorithmFactory.txx
+@@ -44,7 +44,7 @@ template< class TFloat, unsigned int VImageDimension >
+ typename CAlgorithmFactory< TFloat, VImageDimension >::AlgorithmBaseType *
+ CAlgorithmFactory< TFloat, VImageDimension >::CreateNewAlgorithm( CALATKAlgorithmName algorithmName )
+ {
+-  AlgorithmBaseType * algorithm = NULL;
++  AlgorithmBaseType * algorithm = nullptr;
+ 
+   switch( algorithmName )
+     {
+diff --git a/Code/Libraries/Algorithms/CAtlasBuilder.txx b/Code/Libraries/Algorithms/CAtlasBuilder.txx
+index 1d07c37..1d56279 100644
+--- a/Code/Libraries/Algorithms/CAtlasBuilder.txx
++++ b/Code/Libraries/Algorithms/CAtlasBuilder.txx
+@@ -59,7 +59,7 @@ typename CAtlasBuilder< TState >::KernelType*
+ CAtlasBuilder< TState >::GetKernelPointer()
+ {
+   throw std::runtime_error( "GetKernelPointer should not be used for atlas builder." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ template < class TState >
+@@ -73,7 +73,7 @@ typename CAtlasBuilder< TState >::EvolverType*
+ CAtlasBuilder< TState >::GetEvolverPointer()
+ {
+   throw std::runtime_error( "GetEvolverPointer should not be used for atlas builder." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ template < class TState >
+@@ -87,7 +87,7 @@ typename CAtlasBuilder< TState >::MetricType*
+ CAtlasBuilder< TState >::GetMetricPointer()
+ {
+   throw std::runtime_error( "GetMetricPointer should not be used for atlas builder." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ template < class TState >
+@@ -332,7 +332,7 @@ void CAtlasBuilder< TState >::SetDefaultsIfNeeded()
+ {
+   // we need to start with the image manager, to get the number of images
+   // which determines number of kernels, metrics, etc.
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+   {
+     this->SetDefaultImageManagerPointer();
+   }
+@@ -382,7 +382,7 @@ void CAtlasBuilder< TState >::SetDefaultsIfNeeded()
+   }
+ 
+ // from algorithm
+-  if ( this->m_ptrSolver.GetPointer() == NULL )
++  if ( this->m_ptrSolver.GetPointer() == nullptr )
+     {
+     this->SetDefaultSolverPointer();
+     }
+@@ -392,7 +392,7 @@ void CAtlasBuilder< TState >::SetDefaultsIfNeeded()
+   this->m_ptrSolver->SetAutoConfiguration( this->m_CombinedJSONConfig, this->m_CleanedJSONConfig );
+   this->m_ptrSolver->SetMaxDesiredLogLevel( this->GetMaxDesiredLogLevel() );
+ 
+-  if ( this->m_ptrObjectiveFunction.GetPointer() == NULL )
++  if ( this->m_ptrObjectiveFunction.GetPointer() == nullptr )
+     {
+     this->SetDefaultObjectiveFunctionPointer();
+     }
+@@ -544,7 +544,7 @@ void CAtlasBuilder< TState >::SetDefaultObjectiveFunctionPointer()
+     throw std::runtime_error( "Evolver needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Image manager needs to be defined before default objective function can be created." );
+     }
+@@ -591,7 +591,7 @@ void CAtlasBuilder< TState >::SetDefaultObjectiveFunctionPointer()
+       {
+         typename LDDMMVelocityFieldObjectiveFunctionWithMomentumType::Pointer ptrCurrentIndividualObjectiveFunction =
+             dynamic_cast< LDDMMVelocityFieldObjectiveFunctionWithMomentumType * >( CObjectiveFunctionFactory< FloatType, TState::ImageDimension >::CreateNewObjectiveFunction( m_ObjectiveFunction ) );
+-        if ( ptrCurrentIndividualObjectiveFunction.GetPointer() == NULL )
++        if ( ptrCurrentIndividualObjectiveFunction.GetPointer() == nullptr )
+         {
+           throw std::runtime_error("Could not initialize the objective function. Make sure the instantiated state type is consistent with the objective function chosen.");
+           return;
+@@ -640,7 +640,7 @@ void CAtlasBuilder< TState >::SetDefaultObjectiveFunctionPointer()
+     for ( unsigned int iI = 0; iI < numberOfIndividualRegistrations; ++iI )
+     {
+       typename LDDMMVelocityFieldObjectiveFunctionWithMomentumType::Pointer ptrCurrentIndividualObjectiveFunction = dynamic_cast< LDDMMVelocityFieldObjectiveFunctionWithMomentumType * >( GetIndividualObjectiveFunction( iI ) );
+-      if ( ptrCurrentIndividualObjectiveFunction.GetPointer() == NULL )
++      if ( ptrCurrentIndividualObjectiveFunction.GetPointer() == nullptr )
+       {
+         throw std::runtime_error("Could not initialize the objective function. Make sure the instantiated state type is consistent with the objective function chosen.");
+         return;
+@@ -765,7 +765,7 @@ void CAtlasBuilder< TState >::InitializeAtlasImage()
+   std::vector< int > availableSubjectIndices;
+   this->m_ptrImageManager->GetAvailableSubjectIndices( availableSubjectIndices );
+ 
+-  if ( m_AtlasImage.GetPointer() == NULL )
++  if ( m_AtlasImage.GetPointer() == nullptr )
+     {
+       throw std::runtime_error( "Atlas-image needs to be created before it can be updated." );
+       return;
+@@ -828,7 +828,7 @@ void CAtlasBuilder< TState >::CreateAtlasImageForImageManager()
+   std::vector< int > availableSubjectIndices;
+   this->m_ptrImageManager->GetAvailableSubjectIndices( availableSubjectIndices );
+ 
+-  if ( m_AtlasImage.GetPointer() == NULL )
++  if ( m_AtlasImage.GetPointer() == nullptr )
+     {
+       // create one
+       if ( availableSubjectIndices.size() < 1 )
+@@ -864,7 +864,7 @@ void CAtlasBuilder< TState >::PreFirstSolve()
+   Superclass::PreFirstSolve();
+   CreateAtlasImageForImageManager();
+ 
+-  if ( this->m_ptrObjectiveFunction.GetPointer() == NULL )
++  if ( this->m_ptrObjectiveFunction.GetPointer() == nullptr )
+   {
+     throw std::runtime_error( "Atlas objective function was not initialized." );
+     return;
+diff --git a/Code/Libraries/Algorithms/CLDDMMGenericRegistration.txx b/Code/Libraries/Algorithms/CLDDMMGenericRegistration.txx
+index 3de0051..3d95cc0 100644
+--- a/Code/Libraries/Algorithms/CLDDMMGenericRegistration.txx
++++ b/Code/Libraries/Algorithms/CLDDMMGenericRegistration.txx
+@@ -55,29 +55,29 @@ void CLDDMMGenericRegistration< TState >::SetDefaultObjectiveFunctionPointer()
+ {
+   // make sure that all we need has already been allocated
+ 
+-  if ( this->m_ptrKernel.GetPointer() == NULL )
++  if ( this->m_ptrKernel.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Kernel needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrMetric.GetPointer() == NULL )
++  if ( this->m_ptrMetric.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Metric needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Image manager needs to be defined before default objective function can be created." );
+     }
+ 
+   //typedef CObjectiveFunction< TState > CLDDMMType;
+-  //CLDDMMType* plddmm = NULL;
++  //CLDDMMType* plddmm = nullptr;
+   typedef CVelocityFieldObjectiveFunctionWithMomentum< TState > LDDMMVelocityFieldObjectiveFunctionWithMomentumType;
+-  LDDMMVelocityFieldObjectiveFunctionWithMomentumType* plddmm = NULL;
++  LDDMMVelocityFieldObjectiveFunctionWithMomentumType* plddmm = nullptr;
+ 
+   plddmm = dynamic_cast< LDDMMVelocityFieldObjectiveFunctionWithMomentumType * >( CObjectiveFunctionFactory< typename TState::FloatType, TState::ImageDimension >::CreateNewObjectiveFunction( m_ObjectiveFunction ) );
+ 
+-  if ( plddmm == NULL )
++  if ( plddmm == nullptr )
+   {
+     throw std::runtime_error("Could not initialize the objective function. Make sure the instantiated state type is consistent with the objective function chosen.");
+   }
+@@ -93,11 +93,11 @@ void CLDDMMGenericRegistration< TState >::PreFirstSolve()
+   Superclass::PreFirstSolve();
+ 
+   typedef CVelocityFieldObjectiveFunctionWithMomentum< TState > LDDMMVelocityFieldObjectiveFunctionWithMomentumType;
+-  LDDMMVelocityFieldObjectiveFunctionWithMomentumType* plddmm = NULL;
++  LDDMMVelocityFieldObjectiveFunctionWithMomentumType* plddmm = nullptr;
+ 
+   plddmm = dynamic_cast< LDDMMVelocityFieldObjectiveFunctionWithMomentumType * >( this->m_ptrObjectiveFunction.GetPointer() );
+ 
+-  if ( plddmm == NULL )
++  if ( plddmm == nullptr )
+   {
+     throw std::runtime_error( "Objective function was not intialized." );
+     return;
+diff --git a/Code/Libraries/Algorithms/CLDDMMGeodesicShootingInitialImageMomentumRegistration.txx b/Code/Libraries/Algorithms/CLDDMMGeodesicShootingInitialImageMomentumRegistration.txx
+index 0b8e3f8..fcacbcb 100644
+--- a/Code/Libraries/Algorithms/CLDDMMGeodesicShootingInitialImageMomentumRegistration.txx
++++ b/Code/Libraries/Algorithms/CLDDMMGeodesicShootingInitialImageMomentumRegistration.txx
+@@ -35,17 +35,17 @@ void CLDDMMGeodesicShootingInitialImageMomentumRegistration< TState >::SetDefaul
+ {
+   // make sure that all we need has already been allocated
+ 
+-  if ( this->m_ptrKernel.GetPointer() == NULL )
++  if ( this->m_ptrKernel.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Kernel needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrMetric.GetPointer() == NULL )
++  if ( this->m_ptrMetric.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Metric needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Image manager needs to be defined before default objective function can be created." );
+     }
+@@ -64,11 +64,11 @@ void CLDDMMGeodesicShootingInitialImageMomentumRegistration< TState >::PreFirstS
+   Superclass::PreFirstSolve();
+ 
+   typedef CLDDMMAdjointGeodesicShootingObjectiveFunction< TState > CLDDMMType;
+-  CLDDMMType * plddmm = NULL;
++  CLDDMMType * plddmm = nullptr;
+ 
+   plddmm = dynamic_cast< CLDDMMType* >( this->m_ptrObjectiveFunction.GetPointer() );
+ 
+-  if ( plddmm == NULL )
++  if ( plddmm == nullptr )
+   {
+     throw std::runtime_error( "Objective function was not intialized." );
+   }
+diff --git a/Code/Libraries/Algorithms/CLDDMMGeometricMetamorphosisRegistration.txx b/Code/Libraries/Algorithms/CLDDMMGeometricMetamorphosisRegistration.txx
+index 21fdc24..a2335c8 100644
+--- a/Code/Libraries/Algorithms/CLDDMMGeometricMetamorphosisRegistration.txx
++++ b/Code/Libraries/Algorithms/CLDDMMGeometricMetamorphosisRegistration.txx
+@@ -26,7 +26,7 @@ CLDDMMGeometricMetamorphosisRegistration< TState >::CLDDMMGeometricMetamorphosis
+ {
+   m_MaskKernel = DefaultMaskKernel;
+ 
+-  m_ptrMaskKernel = NULL;
++  m_ptrMaskKernel = nullptr;
+ }
+ 
+ template < class TState >
+@@ -60,7 +60,7 @@ template < class TState >
+ typename CLDDMMGeometricMetamorphosisRegistration< TState >::KernelType *
+ CLDDMMGeometricMetamorphosisRegistration< TState >::GetMaskKernelPointer()
+ {
+-  if ( m_ptrMaskKernel.GetPointer() == NULL )
++  if ( m_ptrMaskKernel.GetPointer() == nullptr )
+     {
+     this->SetDefaultMaskKernelPointer();
+     }
+@@ -85,7 +85,7 @@ template < class TState >
+ void CLDDMMGeometricMetamorphosisRegistration< TState >::SetDefaultsIfNeeded()
+ {
+   std::cout << "Called the default mask kernel function" << std::endl;
+-  if ( m_ptrMaskKernel.GetPointer() == NULL )
++  if ( m_ptrMaskKernel.GetPointer() == nullptr )
+     {
+     SetDefaultMaskKernelPointer();
+     }
+@@ -108,22 +108,22 @@ void CLDDMMGeometricMetamorphosisRegistration< TState >::SetDefaultObjectiveFunc
+ {
+   // make sure that all we need has already been allocated
+ 
+-  if ( this->m_ptrKernel.GetPointer() == NULL )
++  if ( this->m_ptrKernel.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Kernel needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrMaskKernel.GetPointer() == NULL )
++  if ( this->m_ptrMaskKernel.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Mask kernel needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrMetric.GetPointer() == NULL )
++  if ( this->m_ptrMetric.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Metric needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Image manager needs to be defined before default objective function can be created." );
+     }
+@@ -142,11 +142,11 @@ void CLDDMMGeometricMetamorphosisRegistration< TState >::PreFirstSolve()
+   Superclass::PreFirstSolve();
+ 
+   typedef CLDDMMGeometricMetamorphosisObjectiveFunction< TState > CLDDMMType;
+-  CLDDMMType * plddmm = NULL;
++  CLDDMMType * plddmm = nullptr;
+ 
+   plddmm = dynamic_cast< CLDDMMType* >( this->m_ptrObjectiveFunction.GetPointer() );
+ 
+-  if ( plddmm == NULL )
++  if ( plddmm == nullptr )
+   {
+     throw std::runtime_error( "Objective function was not intialized." );
+   }
+diff --git a/Code/Libraries/Algorithms/CLDDMMGrowthModelRegistration.txx b/Code/Libraries/Algorithms/CLDDMMGrowthModelRegistration.txx
+index e1990fe..d3222c5 100644
+--- a/Code/Libraries/Algorithms/CLDDMMGrowthModelRegistration.txx
++++ b/Code/Libraries/Algorithms/CLDDMMGrowthModelRegistration.txx
+@@ -35,17 +35,17 @@ void CLDDMMGrowthModelRegistration< TState >::SetDefaultObjectiveFunctionPointer
+ {
+   // make sure that all we need has already been allocated
+ 
+-  if ( this->m_ptrKernel.GetPointer() == NULL )
++  if ( this->m_ptrKernel.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Kernel needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrMetric.GetPointer() == NULL )
++  if ( this->m_ptrMetric.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Metric needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Image manager needs to be defined before default objective function can be created." );
+     }
+@@ -64,11 +64,11 @@ void CLDDMMGrowthModelRegistration< TState >::PreFirstSolve()
+   Superclass::PreFirstSolve();
+ 
+   typedef CLDDMMGrowthModelObjectiveFunction< TState > CLDDMMType;
+-  CLDDMMType* plddmm = NULL;
++  CLDDMMType* plddmm = nullptr;
+ 
+   plddmm = dynamic_cast< CLDDMMType* >( this->m_ptrObjectiveFunction.GetPointer() );
+ 
+-  if ( plddmm == NULL )
++  if ( plddmm == nullptr )
+   {
+     throw std::runtime_error( "Objective function was not intialized." );
+   }
+diff --git a/Code/Libraries/Algorithms/CLDDMMSimplifiedMetamorphosisGeodesicShootingRegistration.txx b/Code/Libraries/Algorithms/CLDDMMSimplifiedMetamorphosisGeodesicShootingRegistration.txx
+index e3b4830..32ae446 100644
+--- a/Code/Libraries/Algorithms/CLDDMMSimplifiedMetamorphosisGeodesicShootingRegistration.txx
++++ b/Code/Libraries/Algorithms/CLDDMMSimplifiedMetamorphosisGeodesicShootingRegistration.txx
+@@ -46,17 +46,17 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingRegistration< TState >::SetDef
+ {
+   // make sure that all we need has already been allocated
+ 
+-  if ( this->m_ptrKernel.GetPointer() == NULL )
++  if ( this->m_ptrKernel.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Kernel needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrMetric.GetPointer() == NULL )
++  if ( this->m_ptrMetric.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Metric needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Image manager needs to be defined before default objective function can be created." );
+     }
+@@ -75,11 +75,11 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingRegistration< TState >::PreFir
+   Superclass::PreFirstSolve();
+ 
+   typedef CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState > CMetamorphosisType;
+-  CMetamorphosisType* pMetamorphosis = NULL;
++  CMetamorphosisType* pMetamorphosis = nullptr;
+ 
+   pMetamorphosis = dynamic_cast< CMetamorphosisType* >( this->m_ptrObjectiveFunction.GetPointer() );
+ 
+-  if ( pMetamorphosis == NULL )
++  if ( pMetamorphosis == nullptr )
+   {
+     throw std::runtime_error( "Objective function was not intialized." );
+   }
+diff --git a/Code/Libraries/Algorithms/CLongitudinalAtlasBuilder.txx b/Code/Libraries/Algorithms/CLongitudinalAtlasBuilder.txx
+index 6cf386c..0c74095 100644
+--- a/Code/Libraries/Algorithms/CLongitudinalAtlasBuilder.txx
++++ b/Code/Libraries/Algorithms/CLongitudinalAtlasBuilder.txx
+@@ -552,7 +552,7 @@ CLongitudinalAtlasBuilder< TFloat, VImageDimension >::ComputeIndividualGrowthMod
+   typedef CALATK::CLDDMMGenericRegistration< TStateSpatioTemporalVelocityField > regTypeSpatioTemporalVelocityField;
+ 
+   typename regTypeSpatioTemporalVelocityField::Pointer plddmm;
+-  ImageManagerType* ptrImageManager = NULL;
++  ImageManagerType* ptrImageManager = nullptr;
+   std::vector< unsigned int > imageIDs;
+ 
+   if ( !m_WriteDesiredComputationsToFileWithoutComputation && !m_UsePrecomputedIndividualGrowthModels )
+@@ -714,7 +714,7 @@ CLongitudinalAtlasBuilder< TFloat, VImageDimension >::ComputePopulationGrowthMod
+ 
+   typename regTypeSpatioTemporalVelocityField::Pointer plddmm;
+ 
+-  ImageManagerType* ptrImageManager = NULL;
++  ImageManagerType* ptrImageManager = nullptr;
+ 
+   if ( !m_WriteDesiredComputationsToFileWithoutComputation && !m_UsePrecomputedPopulationGrowthModel )
+   {
+@@ -1407,7 +1407,7 @@ typename CLongitudinalAtlasBuilder< TFloat, VImageDimension >::KernelType*
+ CLongitudinalAtlasBuilder< TFloat, VImageDimension >::GetKernelPointer()
+ {
+   throw std::runtime_error( "GetKernelPointer should not be used for longitudinal atlas builder." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ template < class TFloat, unsigned int VImageDimension >
+@@ -1421,7 +1421,7 @@ typename CLongitudinalAtlasBuilder< TFloat, VImageDimension >::EvolverType*
+ CLongitudinalAtlasBuilder< TFloat, VImageDimension >::GetEvolverPointer()
+ {
+   throw std::runtime_error( "GetEvolverPointer should not be used for longitudinal atlas builder." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ template < class TFloat, unsigned int VImageDimension >
+@@ -1435,7 +1435,7 @@ typename CLongitudinalAtlasBuilder< TFloat, VImageDimension >::MetricType*
+ CLongitudinalAtlasBuilder< TFloat, VImageDimension >::GetMetricPointer()
+ {
+   throw std::runtime_error( "GetMetricPointer should not be used for longitudinal atlas builder." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ template < class TFloat, unsigned int VImageDimension >
+@@ -1449,7 +1449,7 @@ typename CLongitudinalAtlasBuilder< TFloat, VImageDimension >::ImageManagerType*
+ CLongitudinalAtlasBuilder< TFloat, VImageDimension >::GetImageManagerPointer()
+ {
+   throw std::runtime_error( "GetImageManagerPointer should not be used for longitudinal atlas builder." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ 
+diff --git a/Code/Libraries/Algorithms/CMetamorphosisGeodesicShootingInitialImageMomentumRegistration.txx b/Code/Libraries/Algorithms/CMetamorphosisGeodesicShootingInitialImageMomentumRegistration.txx
+index 21ead5b..7bf639d 100644
+--- a/Code/Libraries/Algorithms/CMetamorphosisGeodesicShootingInitialImageMomentumRegistration.txx
++++ b/Code/Libraries/Algorithms/CMetamorphosisGeodesicShootingInitialImageMomentumRegistration.txx
+@@ -48,17 +48,17 @@ void CMetamorphosisGeodesicShootingInitialImageMomentumRegistration< TState >::S
+ {
+   // make sure that all we need has already been allocated
+ 
+-  if ( this->m_ptrKernel.GetPointer() == NULL )
++  if ( this->m_ptrKernel.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Kernel needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrMetric.GetPointer() == NULL )
++  if ( this->m_ptrMetric.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Metric needs to be defined before default objective function can be created." );
+     }
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Image manager needs to be defined before default objective function can be created." );
+     }
+@@ -83,11 +83,11 @@ void CMetamorphosisGeodesicShootingInitialImageMomentumRegistration< TState >::P
+   Superclass::PreFirstSolve();
+ 
+   typedef CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState > CMetamorphosisType;
+-  CMetamorphosisType* pMetamorphosis = NULL;
++  CMetamorphosisType* pMetamorphosis = nullptr;
+ 
+   pMetamorphosis = dynamic_cast< CMetamorphosisType* >( this->m_ptrObjectiveFunction.GetPointer() );
+ 
+-  if ( pMetamorphosis == NULL )
++  if ( pMetamorphosis == nullptr )
+   {
+     throw std::runtime_error( "Objective function was not intialized." );
+   }
+diff --git a/Code/Libraries/Base/CBase.cxx b/Code/Libraries/Base/CBase.cxx
+index 6609dec..b3c8521 100644
+--- a/Code/Libraries/Base/CBase.cxx
++++ b/Code/Libraries/Base/CBase.cxx
+@@ -18,6 +18,7 @@
+ */
+ 
+ #include "CBase.h"
++#include <iostream>
+ 
+ #if defined( __APPLE__ )
+ // OSAtomic.h optimizations only used in 10.5 and later
+diff --git a/Code/Libraries/DataStructures/VectorArray.txx b/Code/Libraries/DataStructures/VectorArray.txx
+index b684dd6..62f19ba 100644
+--- a/Code/Libraries/DataStructures/VectorArray.txx
++++ b/Code/Libraries/DataStructures/VectorArray.txx
+@@ -37,7 +37,7 @@ VectorArray<T, VImageDimension>::VectorArray() :
+   m_SizeZ(0),
+   m_Dimension(0),
+   m_Length(0),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {}
+ 
+@@ -51,7 +51,7 @@ VectorArray<T, VImageDimension>::VectorArray(unsigned int dim) :
+   m_SizeZ(1),
+   m_Dimension(dim),
+   m_Length(m_Dimension),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   this->Allocate();
+@@ -67,7 +67,7 @@ VectorArray<T, VImageDimension>::VectorArray(unsigned int sizeX, unsigned int di
+   m_SizeZ(1),
+   m_Dimension(dim),
+   m_Length(m_SizeX*m_Dimension),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   this->Allocate();
+@@ -84,7 +84,7 @@ VectorArray<T, VImageDimension>::VectorArray(unsigned int sizeX, unsigned int si
+   m_SizeZ(1),
+   m_Dimension(dim),
+   m_Length(m_SizeX*m_SizeY*m_Dimension),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   this->Allocate();
+@@ -101,7 +101,7 @@ VectorArray<T, VImageDimension>::VectorArray(unsigned int sizeX, unsigned int si
+   m_SizeZ(sizeZ),
+   m_Dimension(dim),
+   m_Length(m_SizeX*m_SizeY*m_SizeZ*m_Dimension),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   this->Allocate();
+@@ -114,7 +114,7 @@ VectorArray<T, VImageDimension>::VectorArray( const VectorArray<T, VImageDimensi
+   m_SizeZ(source->GetSizeZ()),
+   m_Dimension(source->GetDimension()),
+   m_Length(m_SizeX*m_SizeY*m_SizeZ*m_Dimension),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   this->Allocate();
+@@ -148,7 +148,7 @@ VectorArray<T, VImageDimension>::VectorArray( const VectorArray<T, VImageDimensi
+   m_SizeZ(source->GetSizeZ()),
+   m_Dimension(source->GetDimension()),
+   m_Length(m_SizeX*m_SizeY*m_SizeZ*m_Dimension),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   this->Allocate();
+@@ -164,7 +164,7 @@ VectorArray<T, VImageDimension>::VectorArray( const VectorArray<T, 1>* source, T
+   m_SizeZ(source->GetSizeZ()),
+   m_Dimension(uiNumDim),
+   m_Length(m_SizeX*m_SizeY*m_SizeZ*uiNumDim),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   Allocate();
+@@ -192,7 +192,7 @@ VectorArray<T, VImageDimension>::VectorArray( const VectorArray<T, 2>* source, T
+   m_SizeZ(source->GetSizeZ()),
+   m_Dimension(uiNumDim),
+   m_Length(m_SizeX*m_SizeY*m_SizeZ*uiNumDim),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   this->Allocate();
+@@ -226,7 +226,7 @@ VectorArray<T, VImageDimension>::VectorArray( const VectorArray<T, 3>* source, T
+   m_SizeZ(source->GetSizeZ()),
+   m_Dimension(uiNumDim),
+   m_Length(m_SizeX*m_SizeY*m_SizeZ*uiNumDim),
+-  m_DataPtr(NULL),
++  m_DataPtr(nullptr),
+   m_ManageMemory( true )
+ {
+   this->Allocate();
+@@ -277,7 +277,7 @@ inline T& VectorArray<T, VImageDimension>::GetValue(unsigned int d) const
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -300,7 +300,7 @@ inline T& VectorArray<T, VImageDimension>::GetValue(unsigned int x, unsigned int
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -332,7 +332,7 @@ inline T& VectorArray<T, VImageDimension>::GetValue(unsigned int x, unsigned int
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -366,7 +366,7 @@ inline T& VectorArray<T, VImageDimension>::GetValue(unsigned int x, unsigned int
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -403,7 +403,7 @@ void VectorArray<T, VImageDimension>::SetValue(unsigned int d, T value)
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -425,7 +425,7 @@ void VectorArray<T, VImageDimension>::SetValue(unsigned int x, unsigned int d, T
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -456,7 +456,7 @@ void VectorArray<T, VImageDimension>::SetValue(unsigned int x, unsigned int y, u
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -490,7 +490,7 @@ void VectorArray<T, VImageDimension>::SetValue(unsigned int x, unsigned int y, u
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -941,7 +941,7 @@ void VectorArray<T, VImageDimension>::Copy(const VectorArray<T, VImageDimension>
+ 
+ #ifdef DEBUG
+   // throw exception if there is no data
+-  if (m_DataPtr == NULL) {
++  if (m_DataPtr == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ 
+@@ -1016,7 +1016,7 @@ template <class T, unsigned int VImageDimension>
+ void VectorArray<T, VImageDimension>::Allocate()
+ {
+ 
+-  if ( m_DataPtr != NULL )
++  if ( m_DataPtr != nullptr )
+     {
+     throw std::logic_error("Tried to re-allocate memory");
+     }
+@@ -1031,11 +1031,11 @@ void VectorArray<T, VImageDimension>::Deallocate()
+ {
+   if ( m_ManageMemory )
+     {
+-    if( m_DataPtr != NULL )
++    if( m_DataPtr != nullptr )
+       {
+       delete [] m_DataPtr;
+       }
+-    m_DataPtr = NULL;
++    m_DataPtr = nullptr;
+     }
+ }
+ 
+diff --git a/Code/Libraries/DataStructures/VectorField.txx b/Code/Libraries/DataStructures/VectorField.txx
+index 1679d3b..0cf8f98 100644
+--- a/Code/Libraries/DataStructures/VectorField.txx
++++ b/Code/Libraries/DataStructures/VectorField.txx
+@@ -62,7 +62,7 @@ VectorField< T, VImageDimension >::VectorField( const VectorImageType* source, T
+   this->m_SizeZ = source->GetSizeZ();
+   this->m_Dimension = VImageDimension;
+   this->m_Length = this->m_SizeX*this->m_SizeY*this->m_SizeZ*this->m_Dimension;
+-  this->m_DataPtr = NULL;
++  this->m_DataPtr = nullptr;
+   this->Allocate();
+ 
+   this->m_SpacingX = source->GetSpacingX();
+diff --git a/Code/Libraries/ImageManager/CImageInformation.txx b/Code/Libraries/ImageManager/CImageInformation.txx
+index 52011f5..3d4492e 100644
+--- a/Code/Libraries/ImageManager/CImageInformation.txx
++++ b/Code/Libraries/ImageManager/CImageInformation.txx
+@@ -206,7 +206,7 @@ void CImageInformation< TFloat, VImageDimension >::SetScales( const ScalesType &
+ 
+   const unsigned int numberOfScales = scales.size();
+   m_ImagesOfAllScales.clear();
+-  m_ImagesOfAllScales.resize( numberOfScales, NULL );
++  m_ImagesOfAllScales.resize( numberOfScales, nullptr );
+ 
+   m_Scales.clear();
+ 
+@@ -287,7 +287,7 @@ void CImageInformation< TFloat, VImageDimension >::SetExternallySpecifiedImage(
+ template < class TFloat, unsigned int VImageDimension >
+ void CImageInformation< TFloat, VImageDimension >::RemoveExternallySpecifiedImage()
+ {
+-  m_ExternallySpecifiedImage = NULL;
++  m_ExternallySpecifiedImage = nullptr;
+   m_HasExternallySpecifiedImage = false;
+ }
+ 
+@@ -315,13 +315,13 @@ typename CImageInformation< TFloat, VImageDimension >::VectorFieldType *
+ CImageInformation< TFloat, VImageDimension >::GetOriginalTransform()
+ {
+   // do we need to load the transform?
+-  if ( m_OriginalTransform.GetPointer() == NULL )
++  if ( m_OriginalTransform.GetPointer() == nullptr )
+     {
+     if ( m_ImageTransformationFileName.compare("") != 0 ) // is set to something
+       {
+       // load it
+ 
+-      if ( m_OriginalImage.GetPointer() != NULL ) // image should have been loaded previously
++      if ( m_OriginalImage.GetPointer() != nullptr ) // image should have been loaded previously
+       {
+         throw std::runtime_error( "Image needs to be loaded before transform to determine desired dimensions and spacing." );
+       }
+@@ -391,14 +391,14 @@ typename CImageInformation< TFloat, VImageDimension >::VectorImageType *
+ CImageInformation< TFloat, VImageDimension >::GetOriginalImage()
+ {
+   // check if the image has not been loaded
+-  if ( m_OriginalImage.GetPointer() == NULL )
++  if ( m_OriginalImage.GetPointer() == nullptr )
+   {
+     if ( m_ImageFileName.compare("") != 0 || m_HasExternallySpecifiedImage )
+     {
+       if ( m_ImageFileName.compare("") != 0 && m_HasExternallySpecifiedImage )
+       {
+         throw std::runtime_error( "Image filename is not allowed to be simultaneously specified with an external image." );
+-        return NULL;
++        return nullptr;
+       }
+ 
+       if ( m_ImageFileName.compare("") !=0 )
+@@ -408,7 +408,7 @@ CImageInformation< TFloat, VImageDimension >::GetOriginalImage()
+         std::string expandedImageFileName = ApplicationUtils::findDataFileName( m_ImageFileName );
+         m_OriginalImage = VectorImageUtils< TFloat, VImageDimension>::readFileITK( expandedImageFileName );
+ 
+-        if ( m_OriginalImage.GetPointer() == NULL )
++        if ( m_OriginalImage.GetPointer() == nullptr )
+         {
+           // could not be read, just return
+           return m_OriginalImage;
+@@ -507,21 +507,21 @@ CImageInformation< TFloat, VImageDimension >::GetCurrentlyActiveImage()
+   if ( activeScale >= numberOfScales )
+   {
+     throw std::runtime_error( "Requesting out-of-range scale." );
+-    return NULL;
++    return nullptr;
+   }
+ 
+   // needs to determine if it already has been computed and if not, compute it on the fly
+   bool imageHasBeenComputed = false;
+   if ( activeScale == 0 )
+     {
+-      if ( m_OriginalImage.GetPointer() != NULL )
++      if ( m_OriginalImage.GetPointer() != nullptr )
+         {
+           imageHasBeenComputed = true;
+         }
+     }
+   else
+     {
+-      if ( m_ImagesOfAllScales[ activeScale - 1 ].GetPointer() != NULL )
++      if ( m_ImagesOfAllScales[ activeScale - 1 ].GetPointer() != nullptr )
+         {
+           imageHasBeenComputed = true;
+         }
+@@ -543,10 +543,10 @@ CImageInformation< TFloat, VImageDimension >::GetCurrentlyActiveImage()
+           std::cout << "Computing scale " << activeScale << " of: " << m_ImageFileName << std::endl;
+           typename VectorImageType::Pointer resampledImage = VectorImageUtils< TFloat, VImageDimension >::AllocateMemoryForScaledVectorImage( m_OriginalImage, m_Scales[ activeScale - 1] );
+ 
+-          if ( m_Resampler.GetPointer() == NULL )
++          if ( m_Resampler.GetPointer() == nullptr )
+             {
+             throw std::runtime_error( "Resampler needs to be specified for multi-resolution support." );
+-            return NULL;
++            return nullptr;
+             }
+           std::cout << "Computing resampled image with sigma (physical coordinates!) = " << m_Sigma/m_Scales[ activeScale - 1] << std::endl;
+ 
+@@ -573,26 +573,26 @@ CImageInformation< TFloat, VImageDimension >::GetCurrentlyActiveImage()
+ 
+     if ( activeScale > 0 ) // otherwise we want the original image and need to keep it
+       {
+-        m_OriginalImage = NULL;
+-        m_OriginalTransform = NULL;
++        m_OriginalImage = nullptr;
++        m_OriginalTransform = nullptr;
+ 
+         for ( unsigned int iI = 0; iI < activeScale-1; ++iI )
+           {
+             // TODO: add deletion of transform, once supported
+-            m_ImagesOfAllScales[ iI ] = NULL;
++            m_ImagesOfAllScales[ iI ] = nullptr;
+           }
+ 
+         for ( unsigned int iI = activeScale; iI < m_ImagesOfAllScales.size(); ++iI )
+           {
+             // TODO: add deletion of transform, once supported
+-            m_ImagesOfAllScales[ iI ] = NULL;
++            m_ImagesOfAllScales[ iI ] = nullptr;
+           }
+       }
+     else // active scale == 0
+       {
+         for ( unsigned int iI=0; iI < m_ImagesOfAllScales.size(); ++iI )
+           {
+-            m_ImagesOfAllScales[ iI ] = NULL;
++            m_ImagesOfAllScales[ iI ] = nullptr;
+           }
+       }
+ 
+@@ -617,7 +617,7 @@ CImageInformation< TFloat, VImageDimension >::GetCurrentlyActiveTransform()
+   // throw std::runtime_error( "TODO: Tranforms are not yet supported." );
+   // needs to determine if it already has been computed and if not compute it on the fly
+ 
+-  return NULL;
++  return nullptr;
+ }
+ 
+ } // end of namespace
+diff --git a/Code/Libraries/ImageManager/CImageManager.h b/Code/Libraries/ImageManager/CImageManager.h
+index 895bc81..901a160 100644
+--- a/Code/Libraries/ImageManager/CImageManager.h
++++ b/Code/Libraries/ImageManager/CImageManager.h
+@@ -418,11 +418,11 @@ private:
+ 
+   /** Master internal AddImageAndTransform used by AddImage, AddCommonImage,
+    * and AddImageAndTransform to prevent code duplication. */
+-  int InternalAddImage( FloatType timePoint, int subjectId, const std::string & fileName = "", VectorImageType * pIm = NULL, const std::string & transformFileName = "", const std::string & subjectString = "" );
++  int InternalAddImage( FloatType timePoint, int subjectId, const std::string & fileName = "", VectorImageType * pIm = nullptr, const std::string & transformFileName = "", const std::string & subjectString = "" );
+ 
+   /** Auxiliary function for InternalAddImage which does not keep track
+     * of any JSON information, but just adds an image to the image manager. */
+-  int InternalAddImageWithoutJSONUpdate( FloatType timePoint, int subjectId, const std::string & fileName = "", VectorImageType * pIm = NULL, const std::string & transformFileName = "", const std::string & subjectString = "" );
++  int InternalAddImageWithoutJSONUpdate( FloatType timePoint, int subjectId, const std::string & fileName = "", VectorImageType * pIm = nullptr, const std::string & transformFileName = "", const std::string & subjectString = "" );
+ 
+ 
+   int m_DatasetGlobalIdCounter; /**< Internal running id for datasets */
+diff --git a/Code/Libraries/ImageManager/CImageManager.txx b/Code/Libraries/ImageManager/CImageManager.txx
+index f8ffdb6..623847d 100644
+--- a/Code/Libraries/ImageManager/CImageManager.txx
++++ b/Code/Libraries/ImageManager/CImageManager.txx
+@@ -319,7 +319,7 @@ void CImageManager< TFloat, VImageDimension >::ReadInputsFromDataJSONConfigurati
+ 
+   for ( iter = inputData.begin(); iter != inputData.end(); ++iter )
+     {
+-      VectorImageType * nullImage = NULL;
++      VectorImageType * nullImage = nullptr;
+       this->InternalAddImageWithoutJSONUpdate( iter->timePoint, iter->subjectId, iter->fileName, nullImage, iter->transformFileName, iter->subjectString );
+     }
+ }
+@@ -411,7 +411,7 @@ CImageManager< TFloat, VImageDimension >::GetOriginalImageById( int uid )
+     }
+ 
+   // uid was not found
+-  return NULL;
++  return nullptr;
+ }
+ 
+ //
+@@ -446,7 +446,7 @@ CImageManager< TFloat, VImageDimension >::GetImageById( int uid )
+     }
+ 
+   // uid was not found
+-  return NULL;
++  return nullptr;
+ }
+ 
+ template < class TFloat, unsigned int VImageDimension >
+@@ -464,7 +464,7 @@ int CImageManager< TFloat, VImageDimension >::InternalAddImageWithoutJSONUpdate(
+   imageInformation.SetUniqueId( uniqueId );
+   imageInformation.SetSubjectId( subjectId );
+   imageInformation.SetTimePoint( timePoint );
+-  if( pIm != NULL )
++  if( pIm != nullptr )
+     {
+     imageInformation.SetExternallySpecifiedImage( pIm );
+     }
+@@ -704,7 +704,7 @@ int CImageManager< TFloat, VImageDimension >::AddCommonImage( VectorImageType* p
+ template < class TFloat, unsigned int VImageDimension >
+ int CImageManager< TFloat, VImageDimension>::AddImageAndTransform( const std::string & fileName, const std::string & transformFileName, FloatType timePoint, int subjectId )
+ {
+-  VectorImageType * nullImage = NULL;
++  VectorImageType * nullImage = nullptr;
+   return this->InternalAddImage( timePoint, subjectId, fileName, nullImage, transformFileName );
+ }
+ 
+@@ -714,7 +714,7 @@ int CImageManager< TFloat, VImageDimension>::AddImageAndTransform( const std::st
+ template < class TFloat, unsigned int VImageDimension >
+ int CImageManager< TFloat, VImageDimension>::AddCommonImageAndTransform( const std::string & fileName, const std::string & transformFileName, FloatType timePoint )
+ {
+-  VectorImageType * nullImage = NULL;
++  VectorImageType * nullImage = nullptr;
+   return this->InternalAddImage( timePoint, COMMON_SUBJECT_ID, fileName, nullImage, transformFileName );
+ }
+ 
+@@ -989,7 +989,7 @@ CImageManager< TFloat, VImageDimension >::GetTimePointByUniqueId( int uid )
+     }
+ 
+   throw std::runtime_error( "Could not find common dataset with given unique id." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ //
+@@ -1013,7 +1013,7 @@ CImageManager< TFloat, VImageDimension >::GetOnlyCommonTimePointSavely()
+   if ( m_AllCommonSubjectInformation.size() != 1 )
+     {
+       throw std::runtime_error( "More than one common time-point stored." );
+-      return NULL;
++      return nullptr;
+     }
+   return GetCommonTimePointByVectorIndex( 0 );
+ }
+diff --git a/Code/Libraries/Interfaces/CApplication.cxx b/Code/Libraries/Interfaces/CApplication.cxx
+index d392740..a4b5735 100644
+--- a/Code/Libraries/Interfaces/CApplication.cxx
++++ b/Code/Libraries/Interfaces/CApplication.cxx
+@@ -214,11 +214,11 @@ void CApplication::Solve()
+   // Check to make sure we have an algorithm and data input.
+   Json::Value & combinedAlgorithmConfigRoot = *(this->m_CombinedAlgorithmJSONConfig->GetRootPointer());
+   Json::Value & combinedDataConfigRoot = *(this->m_CombinedDataJSONConfig->GetRootPointer());
+-  if( &combinedAlgorithmConfigRoot == NULL )
++  if( &combinedAlgorithmConfigRoot == nullptr )
+     {
+     throw std::logic_error( "Algorithm configuration was not set for CApplication" );
+     }
+-  if( &combinedDataConfigRoot == NULL )
++  if( &combinedDataConfigRoot == nullptr )
+     {
+     throw std::logic_error( "Data configuration was not set for CApplication" );
+     }
+diff --git a/Code/Libraries/Kernels/CFourierDomainKernel.txx b/Code/Libraries/Kernels/CFourierDomainKernel.txx
+index dd50446..d98bcf4 100644
+--- a/Code/Libraries/Kernels/CFourierDomainKernel.txx
++++ b/Code/Libraries/Kernels/CFourierDomainKernel.txx
+@@ -29,13 +29,13 @@ template <class T, unsigned int VImageDimension >
+ CFourierDomainKernel< T, VImageDimension >::CFourierDomainKernel():
+   m_MemoryWasAllocated( false )
+ {
+-  fftwData = NULL;
++  fftwData = nullptr;
+ }
+ 
+ template <class T, unsigned int VImageDimension >
+ void CFourierDomainKernel< T, VImageDimension >::DeleteData()
+ {
+-  if ( fftwData != NULL )
++  if ( fftwData != nullptr )
+     {
+     // clean up fftw data
+     //CFFTDataType<T>::FFTDestroyPlan( fftwData->fwd );
+@@ -47,11 +47,11 @@ void CFourierDomainKernel< T, VImageDimension >::DeleteData()
+     CFFTDataType<T>::FFTFreeOut( fftwData->out );
+ 
+     delete fftwData;
+-    fftwData = NULL;
++    fftwData = nullptr;
+     }
+ 
+-  //this->m_ptrL = NULL;
+-  //this->m_ptrLInv = NULL;
++  //this->m_ptrL = nullptr;
++  //this->m_ptrLInv = nullptr;
+ 
+   this->m_MemoryWasAllocated = false;
+   this->m_KernelsNeedToBeComputed = true;
+@@ -77,7 +77,7 @@ void CFourierDomainKernel< T, VImageDimension >::AllocateFFTDataStructures1D( un
+   // Set up the fftw data
+   const unsigned int numElts = szX;
+ 
+-  assert( fftwData==NULL );
++  assert( fftwData==nullptr );
+ 
+   fftwData = new CFFTDataType<T>();
+ 
+@@ -96,7 +96,7 @@ void CFourierDomainKernel< T, VImageDimension >::AllocateFFTDataStructures2D( un
+   // Set up the fftw data
+   const unsigned int numElts = szX*szY;
+ 
+-  assert( fftwData == NULL );
++  assert( fftwData == nullptr );
+ 
+   fftwData = new CFFTDataType<T>();
+ 
+@@ -116,7 +116,7 @@ void CFourierDomainKernel< T, VImageDimension >::AllocateFFTDataStructures3D( un
+  // Set up the fftw data
+   const unsigned int numElts = szX*szY*szZ;
+ 
+-  assert( fftwData == NULL );
++  assert( fftwData == nullptr );
+ 
+   fftwData = new CFFTDataType<T>();
+ 
+@@ -413,7 +413,7 @@ void CFourierDomainKernel< T, VImageDimension >::AllocateMemoryAndComputeKernels
+     this->ConfirmKernelsWereComputed();
+     }
+ 
+-  assert( this->m_ptrL.GetPointer() != NULL );
++  assert( this->m_ptrL.GetPointer() != nullptr );
+ 
+   if ( ptrVectorImage->GetSizeX() != this->m_ptrL->GetSizeX() ||
+        ptrVectorImage->GetSizeY() != this->m_ptrL->GetSizeY() ||
+@@ -422,7 +422,7 @@ void CFourierDomainKernel< T, VImageDimension >::AllocateMemoryAndComputeKernels
+     throw std::runtime_error( "Kernel incompatible with velocity field size.");
+     }
+ 
+-  assert( this->m_ptrLInv.GetPointer() != NULL );
++  assert( this->m_ptrLInv.GetPointer() != nullptr );
+   
+   if ( ptrVectorImage->GetSizeX() != this->m_ptrLInv->GetSizeX() ||
+        ptrVectorImage->GetSizeY() != this->m_ptrLInv->GetSizeY() ||
+diff --git a/Code/Libraries/Kernels/CKernel.txx b/Code/Libraries/Kernels/CKernel.txx
+index 317bb16..7f80d4f 100644
+--- a/Code/Libraries/Kernels/CKernel.txx
++++ b/Code/Libraries/Kernels/CKernel.txx
+@@ -28,8 +28,8 @@ namespace CALATK
+ template <class T, unsigned int VImageDimension >
+ CKernel< T, VImageDimension >::CKernel()
+   : m_KernelsNeedToBeComputed( true ),
+-    m_ptrL( NULL ),
+-    m_ptrLInv( NULL )
++    m_ptrL( nullptr ),
++    m_ptrLInv( nullptr )
+ {
+ }
+ 
+@@ -45,8 +45,8 @@ void CKernel< T, VImageDimension >::AllocateMemoryForKernelAndInverseKernel( con
+   const unsigned int szY = inputImage->GetSizeY();
+   const unsigned int szZ = inputImage->GetSizeZ();
+ 
+-  this->m_ptrL = NULL;
+-  this->m_ptrLInv = NULL;
++  this->m_ptrL = nullptr;
++  this->m_ptrLInv = nullptr;
+ 
+   switch ( VImageDimension )
+     {
+diff --git a/Code/Libraries/Kernels/CKernelFactory.txx b/Code/Libraries/Kernels/CKernelFactory.txx
+index 0ce4e16..7bb885d 100644
+--- a/Code/Libraries/Kernels/CKernelFactory.txx
++++ b/Code/Libraries/Kernels/CKernelFactory.txx
+@@ -41,7 +41,7 @@ template < class T, unsigned int VImageDimension >
+ typename CKernelFactory< T, VImageDimension >::KernelType*
+ CKernelFactory< T, VImageDimension >::CreateNewKernel( NumericKernelType kernelType )
+ {
+-  KernelType * kernel = NULL;
++  KernelType * kernel = nullptr;
+   switch ( kernelType )
+   {
+   case KernelType::HelmholtzKernel:
+diff --git a/Code/Libraries/Kernels/CMultiGaussianKernel.txx b/Code/Libraries/Kernels/CMultiGaussianKernel.txx
+index 3d86c3b..f27c684 100644
+--- a/Code/Libraries/Kernels/CMultiGaussianKernel.txx
++++ b/Code/Libraries/Kernels/CMultiGaussianKernel.txx
+@@ -382,7 +382,7 @@ std::vector< T > CMultiGaussianKernel< T, VImageDimension >::ComputeDataDependen
+     return vecWeights;
+   }
+ 
+-  if ( this->m_ptrObjectiveFunction.GetPointer() == NULL )
++  if ( this->m_ptrObjectiveFunction.GetPointer() == nullptr )
+   {
+     // cannot determine this in a data-driven manner; just initialize to constants
+     std::cerr << "Cannot compute data-dependent scaling factors for multi-Gaussian kernels, because objective function was not set." << std::endl;
+diff --git a/Code/Libraries/Metrics/CMetricFactory.txx b/Code/Libraries/Metrics/CMetricFactory.txx
+index ab3ce74..ed08a7c 100644
+--- a/Code/Libraries/Metrics/CMetricFactory.txx
++++ b/Code/Libraries/Metrics/CMetricFactory.txx
+@@ -34,7 +34,7 @@ template < class T, unsigned int VImageDimension >
+ typename CMetricFactory< T, VImageDimension >::MetricType*
+ CMetricFactory< T, VImageDimension >::CreateNewMetric( NumericMetricType metric )
+ {
+-  MetricType* ptrMetric = NULL;
++  MetricType* ptrMetric = nullptr;
+   switch ( metric )
+   {
+   default:
+diff --git a/Code/Libraries/Numerics/CEvolver.txx b/Code/Libraries/Numerics/CEvolver.txx
+index 1d702f6..db57200 100644
+--- a/Code/Libraries/Numerics/CEvolver.txx
++++ b/Code/Libraries/Numerics/CEvolver.txx
+@@ -23,7 +23,7 @@
+ template <class T, unsigned int VImageDimension >
+ CEvolver< T, VImageDimension >::CEvolver()
+ {
+-  m_ptrOneStepEvolver = NULL;
++  m_ptrOneStepEvolver = nullptr;
+ }
+ 
+ template <class T, unsigned int VImageDimension >
+diff --git a/Code/Libraries/Numerics/COneStepEvolverSemiLagrangianAdvection.txx b/Code/Libraries/Numerics/COneStepEvolverSemiLagrangianAdvection.txx
+index 0ec1ec4..77ce744 100644
+--- a/Code/Libraries/Numerics/COneStepEvolverSemiLagrangianAdvection.txx
++++ b/Code/Libraries/Numerics/COneStepEvolverSemiLagrangianAdvection.txx
+@@ -33,8 +33,8 @@ COneStepEvolverSemiLagrangianAdvection<T, VImageDimension >::COneStepEvolverSemi
+   this->m_TimeStepFactor = DefaultTimeStepFactor;
+   this->m_NumberOfIterationsToDetermineFlowField = DefaultNumberOfIterationsToDetermineFlowField;
+ 
+-  this->m_ptrAdjustedVectorField = NULL;
+-  this->m_ptrTmpVectorField = NULL;
++  this->m_ptrAdjustedVectorField = nullptr;
++  this->m_ptrTmpVectorField = nullptr;
+ }
+ 
+ template <class T, unsigned int VImageDimension >
+@@ -74,7 +74,7 @@ void COneStepEvolverSemiLagrangianAdvection<T, VImageDimension >::PerformStepWit
+   
+ #ifdef DEBUG
+   // data defined
+-  if (In == NULL || v == NULL || Inp1 == NULL) {
++  if (In == nullptr || v == nullptr || Inp1 == nullptr) {
+     throw std::runtime_error("No Data");
+   }
+ #endif
+diff --git a/Code/Libraries/Numerics/CSolverFactory.txx b/Code/Libraries/Numerics/CSolverFactory.txx
+index aaccd63..e3ca402 100644
+--- a/Code/Libraries/Numerics/CSolverFactory.txx
++++ b/Code/Libraries/Numerics/CSolverFactory.txx
+@@ -34,7 +34,7 @@ template < class TState >
+ typename CSolverFactory< TState >::SolverType*
+ CSolverFactory< TState >::CreateNewSolver( NumericSolverType solver )
+ {
+-  SolverType* ptrSolver = NULL;
++  SolverType* ptrSolver = nullptr;
+   switch ( solver )
+   {
+   case LineSearchConstrained:
+@@ -44,7 +44,7 @@ CSolverFactory< TState >::CreateNewSolver( NumericSolverType solver )
+ #ifdef USE_IPOPT
+     ptrSolver = new SolverIpOptType;
+ #else
+-    ptrSolver = NULL;
++    ptrSolver = nullptr;
+     std::cerr << "ERROR: Requested IpOpt solver, but not compiled for support of IpOpt." << std::endl;
+ #endif
+     break;
+@@ -52,7 +52,7 @@ CSolverFactory< TState >::CreateNewSolver( NumericSolverType solver )
+ #ifdef USE_LBFGS
+     ptrSolver = new SolverLBFGSType;
+ #else
+-    ptrSolver = NULL;
++    ptrSolver = nullptr;
+     std::cerr << "ERROR: Requested LBFGS solver, but not compiled for support of LBFGS." << std::endl;
+ #endif
+     break;
+@@ -60,7 +60,7 @@ CSolverFactory< TState >::CreateNewSolver( NumericSolverType solver )
+ #ifdef USE_NLOPT
+     ptrSolver = new SolverNLOptType;
+ #else
+-    ptrSolver = NULL;
++    ptrSolver = nullptr;
+     std::cerr << "ERROR: Requested NLOpt solver, but not compiled for support of NLOpt (and NLOpt is not a recommended solver -- use at your own risk)." << std::endl;
+ #endif
+     break;
+diff --git a/Code/Libraries/Numerics/CSolverIpOpt.txx b/Code/Libraries/Numerics/CSolverIpOpt.txx
+index d48c169..35d91e2 100644
+--- a/Code/Libraries/Numerics/CSolverIpOpt.txx
++++ b/Code/Libraries/Numerics/CSolverIpOpt.txx
+@@ -22,7 +22,7 @@
+ 
+ template < class TState >
+ CSolverIpOpt< TState >::CSolverIpOpt()
+-  : m_x( NULL ),
++  : m_x( nullptr ),
+     Defaulttol( 1e-7 ),
+     m_ExternallySettol( false ),
+     Defaultprint_level( 5 ),
+@@ -58,10 +58,10 @@ CSolverIpOpt< TState >::CSolverIpOpt()
+ template < class TState >
+ CSolverIpOpt< TState >::~CSolverIpOpt()
+ {
+-  if ( m_x != NULL )
++  if ( m_x != nullptr )
+   {
+     delete [] m_x;
+-    m_x = NULL;
++    m_x = nullptr;
+   }
+ }
+ 
+@@ -117,7 +117,7 @@ bool CSolverIpOpt< TState >::SolvePreInitialized()
+   // Probably no need to copy here. TODO, make this more efficient
+   T *ptrMX = new T[ liNumberOfStateVectorElements ];
+ 
+-  if ( ptrMX == NULL )
++  if ( ptrMX == nullptr )
+   {
+     throw std::runtime_error( "State has no memory allocated" );
+   }
+@@ -160,17 +160,17 @@ bool CSolverIpOpt< TState >::SolvePreInitialized( double* ptr, long int liNumber
+ 
+   Index n=-1;                          /* number of variables */
+   Index m=-1;                          /* number of constraints */
+-  Number* x_L = NULL;                  /* lower bounds on x */
+-  Number* x_U = NULL;                  /* upper bounds on x */
+-  Number* g_L = NULL;                  /* lower bounds on g */
+-  Number* g_U = NULL;                  /* upper bounds on g */
++  Number* x_L = nullptr;                  /* lower bounds on x */
++  Number* x_U = nullptr;                  /* upper bounds on x */
++  Number* g_L = nullptr;                  /* lower bounds on g */
++  Number* g_U = nullptr;                  /* upper bounds on g */
+ 
+-  IpoptProblem nlp = NULL;             /* IpoptProblem */
++  IpoptProblem nlp = nullptr;             /* IpoptProblem */
+   enum ApplicationReturnStatus status; /* Solve return code */
+ 
+-  Number* mult_g = NULL;               /* constraint multipliers at the solution */
+-  Number* mult_x_L = NULL;             /* lower bound multipliers at the solution */
+-  Number* mult_x_U = NULL;             /* upper bound multipliers at the solution */
++  Number* mult_g = nullptr;               /* constraint multipliers at the solution */
++  Number* mult_x_L = nullptr;             /* lower bound multipliers at the solution */
++  Number* mult_x_U = nullptr;             /* upper bound multipliers at the solution */
+   Number obj;                          /* objective value */
+   Index i;                             /* generic counter */
+ 
+@@ -239,7 +239,7 @@ bool CSolverIpOpt< TState >::SolvePreInitialized( double* ptr, long int liNumber
+   mult_x_U = (Number*)malloc(sizeof(Number)*n);
+ 
+    /* solve the problem */
+-   status = IpoptSolve(nlp, m_x, NULL, &obj, mult_g, mult_x_L, mult_x_U, &user_data);
++   status = IpoptSolve(nlp, m_x, nullptr, &obj, mult_g, mult_x_L, mult_x_U, &user_data);
+ 
+   if (status == Solve_Succeeded)
+   {
+diff --git a/Code/Libraries/Numerics/CSolverLBFGS.txx b/Code/Libraries/Numerics/CSolverLBFGS.txx
+index b74544d..1321f84 100644
+--- a/Code/Libraries/Numerics/CSolverLBFGS.txx
++++ b/Code/Libraries/Numerics/CSolverLBFGS.txx
+@@ -22,7 +22,7 @@
+ 
+ template < class TState >
+ CSolverLBFGS< TState >::CSolverLBFGS()
+-  : m_x( NULL ),
++  : m_x( nullptr ),
+     Defaultepsilon( 1e-10 ),
+     m_ExternallySetepsilon( false ),
+     Defaultmin_step( 1e-10 ),
+@@ -47,10 +47,10 @@ CSolverLBFGS< TState >::CSolverLBFGS()
+ template < class TState >
+ CSolverLBFGS< TState >::~CSolverLBFGS()
+ {
+-  if ( m_x != NULL )
++  if ( m_x != nullptr )
+   {
+     delete [] m_x;
+-    m_x = NULL;
++    m_x = nullptr;
+   }
+ }
+ 
+@@ -97,7 +97,7 @@ bool CSolverLBFGS< TState >::SolvePreInitialized()
+ 
+   T *ptrMX = new T[ liNumberOfStateVectorElements ];
+ 
+-  if ( ptrMX == NULL )
++  if ( ptrMX == nullptr )
+   {
+     throw std::runtime_error( "State has no memory allocated" );
+   }
+diff --git a/Code/Libraries/Numerics/CSolverLineSearchConstrained.txx b/Code/Libraries/Numerics/CSolverLineSearchConstrained.txx
+index bcff066..3f46344 100644
+--- a/Code/Libraries/Numerics/CSolverLineSearchConstrained.txx
++++ b/Code/Libraries/Numerics/CSolverLineSearchConstrained.txx
+@@ -32,7 +32,7 @@ CSolverLineSearchConstrained< TState >::CSolverLineSearchConstrained()
+   m_AugmentedLagrangianNumberOfIterations = DefaultAugmentedLagrangianNumberOfIterations;
+   m_AugmentedLagrangianPenaltyIncreaseFactor = DefaultAugmentedLagrangianPenaltyIncreaseFactor;
+   m_AugmentedLagrangianInitialMu = DefaultAugmentedLagrangianInitialMu;
+-  pTempState = NULL;
++  pTempState = nullptr;
+ }
+ 
+ 
+diff --git a/Code/Libraries/Numerics/CSolverLineSearchUnconstrained.txx b/Code/Libraries/Numerics/CSolverLineSearchUnconstrained.txx
+index 3e5389b..c9da9c6 100644
+--- a/Code/Libraries/Numerics/CSolverLineSearchUnconstrained.txx
++++ b/Code/Libraries/Numerics/CSolverLineSearchUnconstrained.txx
+@@ -23,7 +23,7 @@
+ template < class TState >
+ CSolverLineSearchUnconstrained< TState >::CSolverLineSearchUnconstrained()
+ {
+-  this->m_TempState = NULL;
++  this->m_TempState = nullptr;
+ }
+ 
+ //
+diff --git a/Code/Libraries/Numerics/CSolverMultiScale.txx b/Code/Libraries/Numerics/CSolverMultiScale.txx
+index e7f043f..b8d475c 100644
+--- a/Code/Libraries/Numerics/CSolverMultiScale.txx
++++ b/Code/Libraries/Numerics/CSolverMultiScale.txx
+@@ -29,7 +29,7 @@ CSolverMultiScale< TState >::CSolverMultiScale()
+ {
+   m_SingleScaleSolver = DefaultSingleScaleSolver;
+   m_NumberOfSubIterations = DefaultNumberOfSubIterations;
+-  this->m_ptrSolver = NULL;
++  this->m_ptrSolver = nullptr;
+ }
+ 
+ template < class TState >
+@@ -103,13 +103,13 @@ bool CSolverMultiScale< TState >::Solve()
+   // get the objective function which should be minimized and holds the data
+   ObjectiveFunctionType * objectiveFunction = this->GetObjectiveFunction();
+ 
+-  assert( objectiveFunction != NULL );
++  assert( objectiveFunction != nullptr );
+ 
+-  if ( m_ptrSolver.GetPointer() == NULL )
++  if ( m_ptrSolver.GetPointer() == nullptr )
+     {
+     this->SetDefaultSingleScaleSolver();
+     }
+-  assert( m_ptrSolver.GetPointer() != NULL );
++  assert( m_ptrSolver.GetPointer() != nullptr );
+   this->m_ptrSolver->SetObjectiveFunction( this->GetObjectiveFunction() );
+ 
+   // get its image manager
+diff --git a/Code/Libraries/Numerics/CSolverNLOpt.txx b/Code/Libraries/Numerics/CSolverNLOpt.txx
+index 29e1d27..75fac6f 100644
+--- a/Code/Libraries/Numerics/CSolverNLOpt.txx
++++ b/Code/Libraries/Numerics/CSolverNLOpt.txx
+@@ -22,7 +22,7 @@
+ 
+ template < class TState >
+ CSolverNLOpt< TState >::CSolverNLOpt()
+-  : m_x( NULL ),
++  : m_x( nullptr ),
+     Defaultinitial_step1( 1e-5 ),
+     m_ExternallySetinitial_step1( false ),
+     Defaultmaxeval( 1000 ),
+@@ -44,10 +44,10 @@ CSolverNLOpt< TState >::CSolverNLOpt()
+ template < class TState >
+ CSolverNLOpt< TState >::~CSolverNLOpt()
+ {
+-  if ( m_x != NULL )
++  if ( m_x != nullptr )
+   {
+     delete [] m_x;
+-    m_x = NULL;
++    m_x = nullptr;
+   }
+ }
+ 
+@@ -90,7 +90,7 @@ bool CSolverNLOpt< TState >::SolvePreInitialized()
+ 
+   T *ptrMX = new T[ liNumberOfStateVectorElements ];
+ 
+-  if ( ptrMX == NULL )
++  if ( ptrMX == nullptr )
+   {
+     throw std::runtime_error( "State has no memory allocated" );
+   }
+diff --git a/Code/Libraries/ObjectiveFunctions/CAugmentedLagrangianInterface.h b/Code/Libraries/ObjectiveFunctions/CAugmentedLagrangianInterface.h
+index ecc00cb..bfb0b86 100644
+--- a/Code/Libraries/ObjectiveFunctions/CAugmentedLagrangianInterface.h
++++ b/Code/Libraries/ObjectiveFunctions/CAugmentedLagrangianInterface.h
+@@ -44,12 +44,12 @@ public:
+ 
+   virtual VectorImageType* GetPointerToImageLagrangianMultiplier()
+   {
+-    return NULL;
++    return nullptr;
+   };
+ 
+   virtual const VectorImageType* GetPointerToCurrentImageResidual()
+   {
+-    return NULL;
++    return nullptr;
+   };
+ 
+ };
+diff --git a/Code/Libraries/ObjectiveFunctions/CLDDMMAdjointGeodesicShootingObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CLDDMMAdjointGeodesicShootingObjectiveFunction.txx
+index c132b18..bf000b2 100644
+--- a/Code/Libraries/ObjectiveFunctions/CLDDMMAdjointGeodesicShootingObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CLDDMMAdjointGeodesicShootingObjectiveFunction.txx
+@@ -25,35 +25,35 @@ template < class TState >
+ CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::CLDDMMAdjointGeodesicShootingObjectiveFunction()
+ {
+     // storage for the map
+-    m_ptrMapIn = NULL;
+-    m_ptrMapOut = NULL;
+-    m_ptrMapTmp = NULL;
++    m_ptrMapIn = nullptr;
++    m_ptrMapOut = nullptr;
++    m_ptrMapTmp = nullptr;
+ 
+-    m_ptrMapIdentity = NULL;
+-    m_ptrMapIncremental = NULL;
++    m_ptrMapIdentity = nullptr;
++    m_ptrMapIncremental = nullptr;
+ 
+-    m_ptrCurrentAdjointIDifference = NULL;
++    m_ptrCurrentAdjointIDifference = nullptr;
+ 
+-    m_ptrDeterminantOfJacobian = NULL;
++    m_ptrDeterminantOfJacobian = nullptr;
+ 
+-    m_ptrCurrentLambdaI = NULL;
+-    m_ptrCurrentLambdaP = NULL;
+-    m_ptrCurrentLambdaV = NULL;
++    m_ptrCurrentLambdaI = nullptr;
++    m_ptrCurrentLambdaP = nullptr;
++    m_ptrCurrentLambdaV = nullptr;
+ 
+     // temporary storage
+-    m_ptrTmpField = NULL;
+-    m_ptrTmpFieldConv = NULL;
+-    m_ptrTmpScalarImage = NULL;
+-    m_ptrTmpImage = NULL;
++    m_ptrTmpField = nullptr;
++    m_ptrTmpFieldConv = nullptr;
++    m_ptrTmpScalarImage = nullptr;
++    m_ptrTmpImage = nullptr;
+ 
+-    m_ptrDI = NULL;
+-    m_ptrDP = NULL;
++    m_ptrDI = nullptr;
++    m_ptrDP = nullptr;
+ 
+     // tstLamI, tstLamP: just for testing, if EXTREME_DEBUG is defined it will store the full timecoarse of lamI and lamP
+     // this is very memory intensive for 3D, hence disabled by default.
+ 
+     // convenience pointer to the initial image (from the image manager)
+-    ptrI0 = NULL;
++    ptrI0 = nullptr;
+ 
+ }
+ 
+@@ -62,14 +62,14 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::DeleteData()
+ {
+   this->m_ptrKernel->DeallocateMemory();
+ 
+-  ptrI0 = NULL;
++  ptrI0 = nullptr;
+ 
+   m_vecMeasurementTimepoints.clear();
+   m_vecTimeDiscretization.clear();
+   m_vecTimeIncrements.clear();
+ 
+-  this->m_ptrState = NULL;
+-  this->m_ptrGradient = NULL;
++  this->m_ptrState = nullptr;
++  this->m_ptrGradient = nullptr;
+ }
+ 
+ template< class TState >
+@@ -82,7 +82,7 @@ CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::~CLDDMMAdjointGeodesic
+ template < class TState >
+ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::CreateNewStateStructures()
+ {
+-    assert( this->m_ptrState.GetPointer() == NULL );
++    assert( this->m_ptrState.GetPointer() == nullptr );
+     assert( m_vecTimeDiscretization.size() > 1 );
+ 
+     // get the subject ids
+@@ -101,7 +101,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::CreateNewStateStr
+ template< class TState >
+ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::ShallowCopyStateStructures( TState * ptrState )
+ {
+-    assert ( this->m_ptrState.GetPointer() == NULL );
++    assert ( this->m_ptrState.GetPointer() == nullptr );
+     this->m_ptrState = ptrState;
+ }
+ 
+@@ -225,7 +225,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::InitializeDataStr
+ {
+   DeleteData();
+ 
+-  assert (this->m_ptrGradient.GetPointer() == NULL );
++  assert (this->m_ptrGradient.GetPointer() == nullptr );
+ 
+   CreateTimeDiscretization();
+ 
+@@ -280,7 +280,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::GetSourceImage( V
+   // TODO: account for appearance changes, based on closeby images
+   GetMap( m_ptrMapTmp, dTime );
+   // now compute the image by interpolation
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -339,7 +339,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::GetMapFromTo( Vec
+ template< class TState >
+ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState>::CreateTimeDiscretization()
+ {
+-    if ( this->m_ptrImageManager.GetPointer() == NULL )
++    if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+       throw std::runtime_error( "ERROR: No image manager specified." );
+       return;
+@@ -412,7 +412,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::ComputeImageMomen
+     *
+     */
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -458,7 +458,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::ComputeAdjointsBa
+     *
+     */
+ 
+-    VectorImageType* ptrInitialImage = NULL;
++    VectorImageType* ptrInitialImage = nullptr;
+     if ( this->m_ptrState->StateContainsInitialImage() )
+     {
+       ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -615,7 +615,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState>::ComputeGradient()
+       \f]
+       */
+ 
+-    VectorImageType* ptrInitialImage = NULL;
++    VectorImageType* ptrInitialImage = nullptr;
+     if ( this->m_ptrState->StateContainsInitialImage() )
+     {
+       ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -626,7 +626,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState>::ComputeGradient()
+     }
+     VectorImageType* ptrInitialMomentum = this->m_ptrState->GetPointerToInitialMomentum();
+ 
+-    VectorImageType* ptrI0Gradient = NULL;
++    VectorImageType* ptrI0Gradient = nullptr;
+     if ( this->m_ptrGradient->StateContainsInitialImage() )
+     {
+       ptrI0Gradient = this->m_ptrGradient->GetPointerToInitialImage();
+@@ -708,7 +708,7 @@ void CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::ComputeInitialUns
+   // \f$ \nabla E = (\sum_i \lambda_i \nabla I_0 ) \f$
+   // where the \lambda_i are the respective adjoints (based on the chosen metric)
+ 
+-  VectorImageType* ptrCurrentI0 = NULL;
++  VectorImageType* ptrCurrentI0 = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrCurrentI0 = this->m_ptrState->GetPointerToInitialImage();
+@@ -772,7 +772,7 @@ CLDDMMAdjointGeodesicShootingObjectiveFunction< TState >::GetCurrentEnergy()
+   // computing \f$ 0.5\langle p(t_0) \nabla I(t_0) +  K*( p(t_0)\nabla I(t_0) ) \rangle \f$
+   // this is done dimension for dimension (i.e., if we have a multidimensional image, we have as many of these terms as we have dimensions)
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+diff --git a/Code/Libraries/ObjectiveFunctions/CLDDMMGeometricMetamorphosisObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CLDDMMGeometricMetamorphosisObjectiveFunction.txx
+index 4d3d1ad..4bd7f7b 100644
+--- a/Code/Libraries/ObjectiveFunctions/CLDDMMGeometricMetamorphosisObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CLDDMMGeometricMetamorphosisObjectiveFunction.txx
+@@ -34,48 +34,48 @@ CLDDMMGeometricMetamorphosisObjectiveFunction< TState >::CLDDMMGeometricMetamorp
+   m_W = DefaultW;
+ 
+   // mask image at different time-points
+-  ptrT0 = NULL;
+-  ptrT2 = NULL;
++  ptrT0 = nullptr;
++  ptrT2 = nullptr;
+ 
+   // measured images at different time-points
+-  ptrI0 = NULL;
+-  ptrI1 = NULL;
++  ptrI0 = nullptr;
++  ptrI1 = nullptr;
+ 
+   // estimates at different time-points (subjected to the velocity field)
+-  ptrEstI1 = NULL;
+-  ptrEstT1 = NULL;
+-  ptrEstT2 = NULL;
++  ptrEstI1 = nullptr;
++  ptrEstT1 = nullptr;
++  ptrEstT2 = nullptr;
+ 
+   // storage difference images to control the image composition
+-  m_ptrT2M1 = NULL;
+-  m_ptrEstT1M1 = NULL;
++  m_ptrT2M1 = nullptr;
++  m_ptrEstT1M1 = nullptr;
+ 
+   // temporary storage to compute maps
+-  m_ptrMapIn = NULL;
+-  m_ptrMapOut = NULL;
+-  m_ptrMapTmp = NULL;
++  m_ptrMapIn = nullptr;
++  m_ptrMapOut = nullptr;
++  m_ptrMapTmp = nullptr;
+ 
+   // temporary storage for adjoint differences
+-  m_ptrCurrentAdjointDifference = NULL;
+-  m_ptrCurrentAdjointDifferenceT = NULL;
++  m_ptrCurrentAdjointDifference = nullptr;
++  m_ptrCurrentAdjointDifferenceT = nullptr;
+ 
+   // temporary storage for adjoint values
+-  m_ptrCurrentLambdaEnd = NULL;
+-  m_ptrCurrentLambdaTEnd = NULL;
++  m_ptrCurrentLambdaEnd = nullptr;
++  m_ptrCurrentLambdaTEnd = nullptr;
+   
+   // determinant of Jacobian
+-  m_ptrDeterminantOfJacobian = NULL;
++  m_ptrDeterminantOfJacobian = nullptr;
+ 
+   // temporary storage for composed images
+-  m_ptrI1Comp = NULL;
+-  m_ptrEstI1Comp = NULL;
++  m_ptrI1Comp = nullptr;
++  m_ptrEstI1Comp = nullptr;
+ 
+   // temporary storage for velocity field and gradient
+-  m_ptrTmpVelocityField = NULL;
+-  m_ptrTmpGradient = NULL;
++  m_ptrTmpVelocityField = nullptr;
++  m_ptrTmpGradient = nullptr;
+ 
+   // kernel pointer
+-  m_ptrMaskKernel = NULL;
++  m_ptrMaskKernel = nullptr;
+ 
+ }
+ 
+diff --git a/Code/Libraries/ObjectiveFunctions/CLDDMMGrowthModelObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CLDDMMGrowthModelObjectiveFunction.txx
+index de496e6..dc99d3a 100644
+--- a/Code/Libraries/ObjectiveFunctions/CLDDMMGrowthModelObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CLDDMMGrowthModelObjectiveFunction.txx
+@@ -23,16 +23,16 @@
+ template < class TState >
+ CLDDMMGrowthModelObjectiveFunction< TState >::CLDDMMGrowthModelObjectiveFunction()
+ {
+-  m_ptrI0 = NULL;
+-  m_ptrTmpVelocityField = NULL;
+-  m_ptrTmpGradient = NULL;
+-  m_ptrCurrentLambdaEnd = NULL;
+-  m_ptrCurrentAdjointDifference = NULL;
+-  m_ptrDeterminantOfJacobian = NULL;
++  m_ptrI0 = nullptr;
++  m_ptrTmpVelocityField = nullptr;
++  m_ptrTmpGradient = nullptr;
++  m_ptrCurrentLambdaEnd = nullptr;
++  m_ptrCurrentAdjointDifference = nullptr;
++  m_ptrDeterminantOfJacobian = nullptr;
+ 
+-  m_ptrMapIn = NULL;
+-  m_ptrMapOut = NULL;
+-  m_ptrMapTmp = NULL;
++  m_ptrMapIn = nullptr;
++  m_ptrMapOut = nullptr;
++  m_ptrMapTmp = nullptr;
+ 
+ }
+ 
+@@ -113,17 +113,17 @@ void CLDDMMGrowthModelObjectiveFunction< TState >::CreateAuxiliaryStructures()
+ template < class TState >
+ void CLDDMMGrowthModelObjectiveFunction< TState >::DeleteAuxiliaryStructures()
+ {
+-  this->m_ptrMapIn  = NULL;
+-  this->m_ptrMapOut = NULL;
+-  this->m_ptrMapTmp = NULL;
++  this->m_ptrMapIn  = nullptr;
++  this->m_ptrMapOut = nullptr;
++  this->m_ptrMapTmp = nullptr;
+ 
+-  this->m_ptrTmpVelocityField = NULL;
+-  this->m_ptrTmpGradient      = NULL;
++  this->m_ptrTmpVelocityField = nullptr;
++  this->m_ptrTmpGradient      = nullptr;
+ 
+-  this->m_ptrDeterminantOfJacobian    = NULL;
+-  this->m_ptrI0                       = NULL;
+-  this->m_ptrCurrentLambdaEnd         = NULL;
+-  this->m_ptrCurrentAdjointDifference = NULL;
++  this->m_ptrDeterminantOfJacobian    = nullptr;
++  this->m_ptrI0                       = nullptr;
++  this->m_ptrCurrentLambdaEnd         = nullptr;
++  this->m_ptrCurrentAdjointDifference = nullptr;
+ 
+   this->m_ptrI.clear();
+   this->m_ptrLambda.clear();
+diff --git a/Code/Libraries/ObjectiveFunctions/CLDDMMSimplifiedGeodesicShootingObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CLDDMMSimplifiedGeodesicShootingObjectiveFunction.txx
+index ea4dfe7..b628c06 100644
+--- a/Code/Libraries/ObjectiveFunctions/CLDDMMSimplifiedGeodesicShootingObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CLDDMMSimplifiedGeodesicShootingObjectiveFunction.txx
+@@ -24,28 +24,28 @@ template < class TState >
+ CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::CLDDMMSimplifiedGeodesicShootingObjectiveFunction()
+ {
+   // storage for the map
+-  m_ptrMapIn = NULL;
+-  m_ptrMapOut = NULL;
+-  m_ptrMapTmp = NULL;
++  m_ptrMapIn = nullptr;
++  m_ptrMapOut = nullptr;
++  m_ptrMapTmp = nullptr;
+ 
+-  m_ptrDeterminantOfJacobian = NULL;
++  m_ptrDeterminantOfJacobian = nullptr;
+ 
+-  m_ptrCurrentI = NULL;
+-  m_ptrCurrentP = NULL;
+-  m_ptrCurrentVelocity = NULL;
++  m_ptrCurrentI = nullptr;
++  m_ptrCurrentP = nullptr;
++  m_ptrCurrentVelocity = nullptr;
+ 
+-  m_ptrTmpField = NULL;
+-  m_ptrTmpFieldConv = NULL;
++  m_ptrTmpField = nullptr;
++  m_ptrTmpFieldConv = nullptr;
+ 
+-  m_ptrCurrentBackMap = NULL;
+-  m_ptrMapIdentity = NULL;
++  m_ptrCurrentBackMap = nullptr;
++  m_ptrMapIdentity = nullptr;
+ 
+-  m_ptrCurrentFinalAdjoint = NULL;
+-  m_ptrWarpedFinalToInitialAdjoint = NULL;
++  m_ptrCurrentFinalAdjoint = nullptr;
++  m_ptrWarpedFinalToInitialAdjoint = nullptr;
+ 
+   // convencience pointers to the source and the target image respectively
+-  ptrI0 = NULL;
+-  ptrI1 = NULL;
++  ptrI0 = nullptr;
++  ptrI1 = nullptr;
+ 
+ }
+ 
+@@ -54,15 +54,15 @@ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::DeleteData()
+ {
+   this->m_ptrKernel->DeallocateMemory();
+ 
+-  ptrI0 = NULL;
+-  ptrI1 = NULL;
++  ptrI0 = nullptr;
++  ptrI1 = nullptr;
+ 
+   m_vecMeasurementTimepoints.clear();
+   m_vecTimeDiscretization.clear();
+   m_vecTimeIncrements.clear();
+ 
+-  this->m_ptrState = NULL;
+-  this->m_ptrGradient = NULL;
++  this->m_ptrState = nullptr;
++  this->m_ptrGradient = nullptr;
+ }
+ 
+ template < class TState >
+@@ -74,7 +74,7 @@ CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::~CLDDMMSimplifiedGe
+ template < class TState >
+ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::CreateNewStateStructures()
+ {
+-  assert( this->m_ptrState.GetPointer() == NULL );
++  assert( this->m_ptrState.GetPointer() == nullptr );
+   assert( m_vecTimeDiscretization.size() > 1 );
+ 
+   // get the subject ids
+@@ -93,7 +93,7 @@ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::CreateNewState
+ template< class TState >
+ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::ShallowCopyStateStructures( TState* ptrState )
+ {
+-  assert ( this->m_ptrState.GetPointer() == NULL );  
++  assert ( this->m_ptrState.GetPointer() == nullptr );  
+   this->m_ptrState = ptrState;
+ }
+ 
+@@ -172,7 +172,7 @@ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::InitializeData
+ {
+     DeleteData();
+ 
+-    assert (this->m_ptrGradient.GetPointer() == NULL );
++    assert (this->m_ptrGradient.GetPointer() == nullptr );
+ 
+     CreateTimeDiscretization();
+ 
+@@ -476,7 +476,7 @@ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::GetMapFromTo(
+ template< class TState >
+ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::CreateTimeDiscretization()
+ {
+-    if ( this->m_ptrImageManager.GetPointer() == NULL )
++    if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+       throw std::runtime_error( "ERROR: No image manager specified." );
+       return;
+@@ -523,7 +523,7 @@ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::ComputeImageMo
+     *
+     */
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -608,7 +608,7 @@ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::ComputeGradien
+ 
+   VectorImageType* ptrInitialMomentum = this->m_ptrState->GetPointerToInitialMomentum();
+ 
+-  VectorImageType* ptrI0Gradient = NULL;
++  VectorImageType* ptrI0Gradient = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrI0Gradient = this->m_ptrGradient->GetPointerToInitialImage();
+@@ -695,7 +695,7 @@ CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState>::GetCurrentEnergy()
+   // computing \f$ 0.5\langle p(t_0) \nabla I(t_0) +  K*( p(t_0)\nabla I(t_0) ) \rangle \f$
+   // this is done dimension for dimension (i.e., if we have a multidimensional image, we have as many of these terms as we have dimensions)
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -767,7 +767,7 @@ void CLDDMMSimplifiedGeodesicShootingObjectiveFunction< TState >::OutputStateInf
+ 
+   VectorImageType* ptrInitialMomentum = this->m_ptrState->GetPointerToInitialMomentum();
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+diff --git a/Code/Libraries/ObjectiveFunctions/CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction.txx
+index 336e7bd..ec71629 100644
+--- a/Code/Libraries/ObjectiveFunctions/CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction.txx
+@@ -25,35 +25,35 @@ CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::CLDDMM
+   : DefaultRho( 1 ),
+     m_ExternallySetRho( false ),
+     m_AugmentedLagrangianMu( 0.1 ),
+-    m_ptrImageLagrangianMultiplier( NULL )
++    m_ptrImageLagrangianMultiplier( nullptr )
+ {
+   m_Rho = DefaultRho;
+ 
+   // storage for the map
+-  m_ptrMapIn = NULL;
+-  m_ptrMapOut = NULL;
+-  m_ptrMapTmp = NULL;
++  m_ptrMapIn = nullptr;
++  m_ptrMapOut = nullptr;
++  m_ptrMapTmp = nullptr;
+ 
+-  m_ptrDeterminantOfJacobian = NULL;
++  m_ptrDeterminantOfJacobian = nullptr;
+ 
+-  m_ptrCurrentI = NULL;
+-  m_ptrCurrentP = NULL;
+-  m_ptrCurrentVelocity = NULL;
++  m_ptrCurrentI = nullptr;
++  m_ptrCurrentP = nullptr;
++  m_ptrCurrentVelocity = nullptr;
+ 
+-  m_ptrTmpField = NULL;
+-  m_ptrTmpFieldConv = NULL;
+-  m_ptrTmpImage = NULL;
++  m_ptrTmpField = nullptr;
++  m_ptrTmpFieldConv = nullptr;
++  m_ptrTmpImage = nullptr;
+ 
+-  m_ptrCurrentBackMap = NULL;
+-  m_ptrMapIdentity = NULL;
+-  m_ptrMapIncremental = NULL;
++  m_ptrCurrentBackMap = nullptr;
++  m_ptrMapIdentity = nullptr;
++  m_ptrMapIncremental = nullptr;
+ 
+-  m_ptrCurrentFinalAdjoint = NULL;
+-  m_ptrWarpedFinalToInitialAdjoint = NULL;
++  m_ptrCurrentFinalAdjoint = nullptr;
++  m_ptrWarpedFinalToInitialAdjoint = nullptr;
+ 
+   // convencience pointers to the source and the target image respectively
+-  ptrI0 = NULL;
+-  ptrI1 = NULL;
++  ptrI0 = nullptr;
++  ptrI1 = nullptr;
+ 
+ }
+ 
+@@ -62,15 +62,15 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::D
+ {
+   this->m_ptrKernel->DeallocateMemory();
+ 
+-  ptrI0 = NULL;
+-  ptrI1 = NULL;
++  ptrI0 = nullptr;
++  ptrI1 = nullptr;
+ 
+   m_vecMeasurementTimepoints.clear();
+   m_vecTimeDiscretization.clear();
+   m_vecTimeIncrements.clear();
+ 
+-  this->m_ptrState = NULL;
+-  this->m_ptrGradient = NULL;
++  this->m_ptrState = nullptr;
++  this->m_ptrGradient = nullptr;
+ }
+ 
+ template < class TState >
+@@ -97,7 +97,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::S
+ template < class TState >
+ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::CreateNewStateStructures()
+ {
+-  assert( this->m_ptrState.GetPointer() == NULL );
++  assert( this->m_ptrState.GetPointer() == nullptr );
+   assert( m_vecTimeDiscretization.size() > 1 );
+ 
+   // get the subject ids
+@@ -116,7 +116,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::C
+ template< class TState >
+ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::ShallowCopyStateStructures( TState* ptrState )
+ {
+-  assert ( this->m_ptrState.GetPointer() == NULL );
++  assert ( this->m_ptrState.GetPointer() == nullptr );
+   this->m_ptrState = ptrState;
+ }
+ 
+@@ -204,7 +204,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::I
+ {
+   DeleteData();
+ 
+-  assert ( this->m_ptrGradient.GetPointer() == NULL );
++  assert ( this->m_ptrGradient.GetPointer() == nullptr );
+ 
+   CreateTimeDiscretization();
+ 
+@@ -251,7 +251,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+   // This is more complicated than for the standard models, because we have an appearance change here
+   // required an integration forward in time
+   T dTimeFrom = m_vecTimeDiscretization[0].dTime;
+-  GetMapFromToAndImageAtFinalTime( NULL, ptrIm, dTimeFrom, dTime );
++  GetMapFromToAndImageAtFinalTime( nullptr, ptrIm, dTimeFrom, dTime );
+ }
+ 
+ template < class TState >
+@@ -276,7 +276,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+ template < class TState >
+ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::GetMapFromTo( VectorFieldType* ptrMap, T dTimeFrom, T dTimeTo )
+ {
+-  GetMapFromToAndImageAtFinalTime( ptrMap, NULL, dTimeFrom, dTimeTo );
++  GetMapFromToAndImageAtFinalTime( ptrMap, nullptr, dTimeFrom, dTimeTo );
+ }
+ 
+ template < class TState >
+@@ -300,7 +300,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+     return;
+     }
+ 
+-  if ( ptrMap != NULL )
++  if ( ptrMap != nullptr )
+   {
+     LDDMMUtilsType::identityMap( ptrMap );
+   }
+@@ -308,7 +308,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+   // identity map if the time points are the same
+   if ( dTimeFrom == dTimeTo )
+   {
+-    if ( ptrIm != NULL )
++    if ( ptrIm != nullptr )
+     {
+       if ( this->m_ptrState->StateContainsInitialImage() )
+       {
+@@ -341,7 +341,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+   LDDMMUtilsType::identityMap( ptrMapIn );
+   LDDMMUtilsType::identityMap( ptrMapIdentity );
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -360,7 +360,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+   bool bInitializedMap = false;
+   bool bReachedLastTimeInterval = false;
+ 
+-  if ( ptrMap != NULL )
++  if ( ptrMap != nullptr )
+   {
+     LDDMMUtilsType::identityMap( ptrMap );
+   }
+@@ -414,7 +414,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+ 
+     ptrMapIn->Copy( ptrMapOut );
+ 
+-    if ( ( m_vecTimeDiscretization[ iI+1 ].dTime > dTimeFrom ) && !bInitializedMap && ( ptrMap!=NULL ) )
++    if ( ( m_vecTimeDiscretization[ iI+1 ].dTime > dTimeFrom ) && !bInitializedMap && ( ptrMap!=nullptr ) )
+     {
+       T dCurrentMapDT;
+       dCurrentMapDT = dTimeFrom - m_vecTimeDiscretization[ iI ].dTime;
+@@ -429,7 +429,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+ 
+   }
+ 
+-  if ( ptrIm != NULL )
++  if ( ptrIm != nullptr )
+   {
+     ptrIm->Copy( ptrCurrentI );
+   }
+@@ -441,7 +441,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::G
+ template< class TState >
+ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::CreateTimeDiscretization()
+ {
+-    if ( this->m_ptrImageManager.GetPointer() == NULL )
++    if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+       throw std::runtime_error( "ERROR: No image manager specified." );
+       return;
+@@ -487,7 +487,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::C
+     *
+     */
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -650,7 +650,7 @@ CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState>::GetCurr
+   // computing \f$ 0.5\langle p(t_0) \nabla I(t_0) +  K*( p(t_0)\nabla I(t_0) ) \rangle \f$
+   // this is done dimension for dimension (i.e., if we have a multidimensional image, we have as many of these terms as we have dimensions)
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -727,7 +727,7 @@ void CLDDMMSimplifiedMetamorphosisGeodesicShootingObjectiveFunction< TState >::O
+   ComputeImageMomentumForwardAndFinalAdjointWarpedToInitialImage( m_ptrWarpedFinalToInitialAdjoint );
+ 
+   VectorImageType* ptrInitialMomentum = this->m_ptrState->GetPointerToInitialMomentum();
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+diff --git a/Code/Libraries/ObjectiveFunctions/CLDDMMSpatioTemporalVelocityFieldObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CLDDMMSpatioTemporalVelocityFieldObjectiveFunction.txx
+index e8153f1..9c0f1f3 100644
+--- a/Code/Libraries/ObjectiveFunctions/CLDDMMSpatioTemporalVelocityFieldObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CLDDMMSpatioTemporalVelocityFieldObjectiveFunction.txx
+@@ -32,8 +32,8 @@ void CLDDMMSpatioTemporalVelocityFieldObjectiveFunction< TState >::DeleteData()
+ {
+   this->m_ptrKernel->DeallocateMemory();
+ 
+-  this->m_ptrState = NULL;
+-  this->m_ptrGradient = NULL;
++  this->m_ptrState = nullptr;
++  this->m_ptrGradient = nullptr;
+ 
+   m_vecTimeIncrements.clear();
+   m_vecTimeDiscretization.clear();
+@@ -65,7 +65,7 @@ template < class TState >
+ void CLDDMMSpatioTemporalVelocityFieldObjectiveFunction< TState >::CreateTimeDiscretization()
+ {
+ 
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "ERROR: No image manager specified." );
+     return;
+@@ -86,7 +86,7 @@ void CLDDMMSpatioTemporalVelocityFieldObjectiveFunction< TState >::CreateNewStat
+   // Images and adjoints will be saved at all time-points
+   // velocity fields have one less entry (because they 'live' in between the measurement points)
+ 
+-  assert( this->m_ptrState.GetPointer() == NULL );
++  assert( this->m_ptrState.GetPointer() == nullptr );
+   assert( m_vecTimeDiscretization.size() > 1 );
+ 
+   const VectorImageType* graftImage = this->m_ptrImageManager->GetGraftImagePointer( this->GetActiveSubjectId() );
+@@ -110,7 +110,7 @@ void CLDDMMSpatioTemporalVelocityFieldObjectiveFunction< TState >::CreateNewStat
+ template < class TState >
+ void CLDDMMSpatioTemporalVelocityFieldObjectiveFunction< TState >::CreateNewGradientStructures()
+ {
+-  assert( this->m_ptrGradient.GetPointer() == NULL );
++  assert( this->m_ptrGradient.GetPointer() == nullptr );
+   assert( m_vecTimeDiscretization.size() > 1 );
+ 
+   const VectorImageType* graftImage = this->m_ptrImageManager->GetGraftImagePointer( this->GetActiveSubjectId() );
+@@ -136,7 +136,7 @@ void CLDDMMSpatioTemporalVelocityFieldObjectiveFunction< TState >::CreateNewGrad
+ template < class TState >
+ void CLDDMMSpatioTemporalVelocityFieldObjectiveFunction< TState >::ShallowCopyStateStructures( TState* ptrState )
+ {
+-  assert( this->m_ptrState.GetPointer() == NULL );
++  assert( this->m_ptrState.GetPointer() == nullptr );
+ 
+   // allocate memory for the state
+   typedef typename TState::VectorFieldTimeSeriesType VectorFieldTimeSeriesType;
+@@ -179,8 +179,8 @@ void CLDDMMSpatioTemporalVelocityFieldObjectiveFunction< TState >::InitializeDat
+ 
+   this->DeleteData();
+ 
+-  assert( this->m_ptrGradient.GetPointer() == NULL );
+-  assert( this->m_ptrState.GetPointer() == NULL );
++  assert( this->m_ptrGradient.GetPointer() == nullptr );
++  assert( this->m_ptrState.GetPointer() == nullptr );
+ 
+   this->CreateTimeDiscretization();
+ 
+diff --git a/Code/Libraries/ObjectiveFunctions/CMetamorphosisAdjointGeodesicShootingObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CMetamorphosisAdjointGeodesicShootingObjectiveFunction.txx
+index 070e01c..762560e 100644
+--- a/Code/Libraries/ObjectiveFunctions/CMetamorphosisAdjointGeodesicShootingObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CMetamorphosisAdjointGeodesicShootingObjectiveFunction.txx
+@@ -28,40 +28,40 @@ CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::CMetamorphosis
+   : DefaultRho( 1 ),
+     m_ExternallySetRho( false ),
+     m_AugmentedLagrangianMu( 0.1 ),
+-    m_ptrImageLagrangianMultiplier( NULL )
++    m_ptrImageLagrangianMultiplier( nullptr )
+ {
+   m_Rho = DefaultRho;
+ 
+   // storage for the map
+-  m_ptrMapIn = NULL;
+-  m_ptrMapOut = NULL;
+-  m_ptrMapTmp = NULL;
++  m_ptrMapIn = nullptr;
++  m_ptrMapOut = nullptr;
++  m_ptrMapTmp = nullptr;
+ 
+-  m_ptrMapIdentity = NULL;
+-  m_ptrMapIncremental = NULL;
++  m_ptrMapIdentity = nullptr;
++  m_ptrMapIncremental = nullptr;
+ 
+-  m_ptrCurrentAdjointIDifference = NULL;
++  m_ptrCurrentAdjointIDifference = nullptr;
+ 
+-  m_ptrDeterminantOfJacobian = NULL;
++  m_ptrDeterminantOfJacobian = nullptr;
+ 
+-  m_ptrCurrentLambdaI = NULL;
+-  m_ptrCurrentLambdaP = NULL;
+-  m_ptrCurrentLambdaV = NULL;
++  m_ptrCurrentLambdaI = nullptr;
++  m_ptrCurrentLambdaP = nullptr;
++  m_ptrCurrentLambdaV = nullptr;
+ 
+   // temporary storage
+-  m_ptrTmpField = NULL;
+-  m_ptrTmpFieldConv = NULL;
+-  m_ptrTmpScalarImage = NULL;
+-  m_ptrTmpImage = NULL;
++  m_ptrTmpField = nullptr;
++  m_ptrTmpFieldConv = nullptr;
++  m_ptrTmpScalarImage = nullptr;
++  m_ptrTmpImage = nullptr;
+ 
+-  m_ptrDI = NULL;
+-  m_ptrDP = NULL;
++  m_ptrDI = nullptr;
++  m_ptrDP = nullptr;
+ 
+   // tstLamI, tstLamP: just for testing, if EXTREME_DEBUGGING is defined it will store the full timecoarse of lamI and lamP
+   // this is very memory intensive for 3D, hence disabled by default.
+ 
+   // convenience pointer to the initial image (from the image manager)
+-  ptrI0 = NULL;
++  ptrI0 = nullptr;
+ }
+ 
+ template< class TState >
+@@ -69,14 +69,14 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::DeleteDat
+ {
+   this->m_ptrKernel->DeallocateMemory();
+ 
+-  ptrI0 = NULL;
++  ptrI0 = nullptr;
+ 
+   m_vecMeasurementTimepoints.clear();
+   m_vecTimeDiscretization.clear();
+   m_vecTimeIncrements.clear();
+ 
+-  this->m_ptrState = NULL;
+-  this->m_ptrGradient = NULL;
++  this->m_ptrState = nullptr;
++  this->m_ptrGradient = nullptr;
+ }
+ 
+ template< class TState >
+@@ -103,7 +103,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::SetAutoCo
+ template < class TState >
+ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::CreateNewStateStructures()
+ {
+-  assert( this->m_ptrState.GetPointer() == NULL );
++  assert( this->m_ptrState.GetPointer() == nullptr );
+   assert( m_vecTimeDiscretization.size() > 1 );
+ 
+   // get the subject ids
+@@ -122,7 +122,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::CreateNew
+ template< class TState >
+ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::ShallowCopyStateStructures( TState* ptrState )
+ {
+-  assert ( this->m_ptrState.GetPointer() == NULL );
++  assert ( this->m_ptrState.GetPointer() == nullptr );
+   this->m_ptrState = ptrState;
+ }
+ 
+@@ -248,7 +248,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::Initializ
+ {
+   DeleteData();
+ 
+-  assert ( this->m_ptrGradient.GetPointer() == NULL );
++  assert ( this->m_ptrGradient.GetPointer() == nullptr );
+ 
+   CreateTimeDiscretization();
+ 
+@@ -373,7 +373,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::GetMapFro
+ template< class TState >
+ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState>::CreateTimeDiscretization()
+ {
+-  if ( this->m_ptrImageManager.GetPointer() == NULL )
++  if ( this->m_ptrImageManager.GetPointer() == nullptr )
+   {
+     throw std::runtime_error( "ERROR: No image manager specified." );
+     return;
+@@ -448,7 +448,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::ComputeIm
+     *
+     */
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -507,7 +507,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::ComputeAd
+   * \f$ \lambda^p(1) = 0, \lambda^I(1) = r-\mu(I(1)-I_1) \f$
+   */
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -662,7 +662,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState>::ComputeGra
+     \f]
+     */
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+@@ -673,7 +673,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState>::ComputeGra
+   }
+   VectorImageType* ptrInitialMomentum = this->m_ptrState->GetPointerToInitialMomentum();
+ 
+-  VectorImageType* ptrI0Gradient = NULL;
++  VectorImageType* ptrI0Gradient = nullptr;
+   if ( this->m_ptrGradient->StateContainsInitialImage() )
+   {
+     ptrI0Gradient = this->m_ptrGradient->GetPointerToInitialImage();
+@@ -726,7 +726,7 @@ void CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::ComputeIn
+   // \f$ \nabla E = \sum_i \mu(I_0-I_1)\nabla I_0  \f$
+   // sum is over dimensions
+ 
+-  VectorImageType* ptrCurrentI0 = NULL;
++  VectorImageType* ptrCurrentI0 = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrCurrentI0 = this->m_ptrState->GetPointerToInitialImage();
+@@ -775,7 +775,7 @@ CMetamorphosisAdjointGeodesicShootingObjectiveFunction< TState >::GetCurrentEner
+   // computing \f$ 0.5\langle p(t_0) \nabla I(t_0) +  K*( p(t_0)\nabla I(t_0) ) \rangle \f$
+   // this is done dimension for dimension (i.e., if we have a multidimensional image, we have as many of these terms as we have dimensions)
+ 
+-  VectorImageType* ptrInitialImage = NULL;
++  VectorImageType* ptrInitialImage = nullptr;
+   if ( this->m_ptrState->StateContainsInitialImage() )
+   {
+     ptrInitialImage = this->m_ptrState->GetPointerToInitialImage();
+diff --git a/Code/Libraries/ObjectiveFunctions/CObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CObjectiveFunction.txx
+index ef563be..884d410 100644
+--- a/Code/Libraries/ObjectiveFunctions/CObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CObjectiveFunction.txx
+@@ -26,8 +26,8 @@
+ template < class TState >
+ CObjectiveFunction< TState >::CObjectiveFunction()
+ {
+-  m_ptrState = NULL;
+-  m_ptrGradient = NULL;
++  m_ptrState = nullptr;
++  m_ptrGradient = nullptr;
+ }
+ 
+ //
+@@ -44,7 +44,7 @@ CObjectiveFunction< TState >::~CObjectiveFunction()
+ template < class TState >
+ void CObjectiveFunction< TState >::ComputeGradient()
+ {
+-  if ( m_ptrGradient.GetPointer() == NULL )
++  if ( m_ptrGradient.GetPointer() == nullptr )
+     {
+     throw std::runtime_error( "Memory for gradient not allocated, nothing will be computed." );
+     }
+diff --git a/Code/Libraries/ObjectiveFunctions/CObjectiveFunctionBase.txx b/Code/Libraries/ObjectiveFunctions/CObjectiveFunctionBase.txx
+index 98c12b8..ece2298 100644
+--- a/Code/Libraries/ObjectiveFunctions/CObjectiveFunctionBase.txx
++++ b/Code/Libraries/ObjectiveFunctions/CObjectiveFunctionBase.txx
+@@ -36,8 +36,8 @@ CObjectiveFunctionBase< T, VImageDimension >::CObjectiveFunctionBase()
+     DefaultEnergyWeight( 1.0 ),
+     m_ExternallySetEnergyWeight( false )
+ {
+-  m_ptrMetric = NULL;
+-  m_ptrImageManager = NULL;
++  m_ptrMetric = nullptr;
++  m_ptrImageManager = nullptr;
+ 
+   m_SigmaSqr = DefaultSigmaSqr;
+   m_EnergyWeight = DefaultEnergyWeight;
+diff --git a/Code/Libraries/ObjectiveFunctions/CObjectiveFunctionFactory.txx b/Code/Libraries/ObjectiveFunctions/CObjectiveFunctionFactory.txx
+index 9f74423..2325ff7 100644
+--- a/Code/Libraries/ObjectiveFunctions/CObjectiveFunctionFactory.txx
++++ b/Code/Libraries/ObjectiveFunctions/CObjectiveFunctionFactory.txx
+@@ -39,7 +39,7 @@ template < class T, unsigned int VImageDimension >
+ typename CObjectiveFunctionFactory< T, VImageDimension >::ObjectiveFunctionBaseType*
+ CObjectiveFunctionFactory< T, VImageDimension >::CreateNewObjectiveFunction( NumericObjectiveFunctionType objectiveFunction )
+ {
+-  ObjectiveFunctionBaseType* ptrObjectiveFunction = NULL;
++  ObjectiveFunctionBaseType* ptrObjectiveFunction = nullptr;
+   switch ( objectiveFunction )
+   {
+   default:
+diff --git a/Code/Libraries/ObjectiveFunctions/CVelocityFieldObjectiveFunction.txx b/Code/Libraries/ObjectiveFunctions/CVelocityFieldObjectiveFunction.txx
+index 786f661..a5f8a6c 100644
+--- a/Code/Libraries/ObjectiveFunctions/CVelocityFieldObjectiveFunction.txx
++++ b/Code/Libraries/ObjectiveFunctions/CVelocityFieldObjectiveFunction.txx
+@@ -23,8 +23,8 @@
+ template < class TState >
+ CVelocityFieldObjectiveFunction< TState >::CVelocityFieldObjectiveFunction()
+ {
+-  m_ptrEvolver = NULL;
+-  m_ptrKernel = NULL;
++  m_ptrEvolver = nullptr;
++  m_ptrKernel = nullptr;
+ }
+ 
+ template < class TState >
+diff --git a/Code/Libraries/States/CState.h b/Code/Libraries/States/CState.h
+index 910b791..e99d33f 100644
+--- a/Code/Libraries/States/CState.h
++++ b/Code/Libraries/States/CState.h
+@@ -62,12 +62,12 @@ public:
+ 
+   virtual FloatType* GetPointerToStateVector()
+   {
+-    return NULL;
++    return nullptr;
+   };
+ 
+   virtual FloatType* GetPointerToStateVectorElementsToEstimate()
+   {
+-    return NULL;
++    return nullptr;
+   };
+ 
+   virtual void WriteStateToFile( std::string /* prefix */, std::string /* xxpostfix */, int /* offset = 0 */)
+diff --git a/Code/Libraries/States/CStateFactory.txx b/Code/Libraries/States/CStateFactory.txx
+index 06292ac..a301e9a 100644
+--- a/Code/Libraries/States/CStateFactory.txx
++++ b/Code/Libraries/States/CStateFactory.txx
+@@ -44,7 +44,7 @@ template< class TFloat, unsigned int VImageDimension >
+ typename CStateFactory< TFloat, VImageDimension >::StateType *
+ CStateFactory< TFloat, VImageDimension >::CreateNewState( OptimizationStateType stateType )
+ {
+-  StateType * state = NULL;
++  StateType * state = nullptr;
+   switch( stateType )
+     {
+   case StateScalar:
+diff --git a/Code/Libraries/States/CStateImageDomain.txx b/Code/Libraries/States/CStateImageDomain.txx
+index f9a4f67..791a657 100644
+--- a/Code/Libraries/States/CStateImageDomain.txx
++++ b/Code/Libraries/States/CStateImageDomain.txx
+@@ -31,7 +31,7 @@ typename CStateImageDomain< TFloat, VImageDimension >::VectorImageType*
+ CStateImageDomain< TFloat, VImageDimension>::GetPointerToInitialImage() const
+ {
+   throw std::runtime_error( "Not yet implemented." );
+-  return NULL;
++  return nullptr;
+ }
+ 
+ template< class TFloat, unsigned int VImageDimension >
+diff --git a/Code/Libraries/States/CStateImageMultipleStates.h b/Code/Libraries/States/CStateImageMultipleStates.h
+index 171c423..a65ae33 100644
+--- a/Code/Libraries/States/CStateImageMultipleStates.h
++++ b/Code/Libraries/States/CStateImageMultipleStates.h
+@@ -98,7 +98,7 @@ public:
+   /**
+    * @brief Returns the state pointer for one of the underlying objective functions of the MultipleStates builder
+    *
+-   * @param idx - nr of the state to be returned, if it does not exist will return NULL
++   * @param idx - nr of the state to be returned, if it does not exist will return nullptr
+    * @return TState * - returned state pointer
+    */
+   IndividualStateType* GetIndividualStatePointer( unsigned int idx );
+diff --git a/Code/Libraries/States/CStateImageMultipleStates.txx b/Code/Libraries/States/CStateImageMultipleStates.txx
+index 8d1ed1a..13cafd1 100644
+--- a/Code/Libraries/States/CStateImageMultipleStates.txx
++++ b/Code/Libraries/States/CStateImageMultipleStates.txx
+@@ -72,7 +72,7 @@ template < class TState >
+ void CStateImageMultipleStates< TState >::ClearDataStructure()
+ {
+   this->m_IndividualStatesCollection.clear();
+-  m_Image = NULL;
++  m_Image = nullptr;
+ }
+ 
+ //
+@@ -263,7 +263,7 @@ CStateImageMultipleStates< TState >::GetIndividualStatePointer( unsigned int idx
+   const size_t numberOfStates = m_IndividualStatesCollection.size();
+   if ( numberOfStates == 0 || numberOfStates <= idx )
+     {
+-    return NULL;
++    return nullptr;
+     }
+   else
+     {
+diff --git a/Code/Libraries/States/CStateInitialImageMomentum.txx b/Code/Libraries/States/CStateInitialImageMomentum.txx
+index a61475e..df01f12 100644
+--- a/Code/Libraries/States/CStateInitialImageMomentum.txx
++++ b/Code/Libraries/States/CStateInitialImageMomentum.txx
+@@ -27,10 +27,10 @@ namespace CALATK
+ 
+ template< class TFloat, unsigned int VImageDimension >
+ CStateInitialImageMomentum< TFloat, VImageDimension >::CStateInitialImageMomentum()
+-  : m_ptrInitialImage( NULL ), 
+-    m_ptrInitialMomentum( NULL ),
++  : m_ptrInitialImage( nullptr ), 
++    m_ptrInitialMomentum( nullptr ),
+     m_NumberOfStateVectorElements( 0 ),
+-    m_ptrRawData( NULL ),
++    m_ptrRawData( nullptr ),
+     DefaultEstimateInitialImage( false ),
+     m_ExternallySetEstimateInitialImage( false )
+ {
+@@ -39,10 +39,10 @@ CStateInitialImageMomentum< TFloat, VImageDimension >::CStateInitialImageMomentu
+ 
+ template< class TFloat, unsigned int VImageDimension >
+ CStateInitialImageMomentum< TFloat, VImageDimension >::CStateInitialImageMomentum( const CStateInitialImageMomentum & c)
+-  : m_ptrInitialImage( NULL ), 
+-    m_ptrInitialMomentum( NULL ),
++  : m_ptrInitialImage( nullptr ), 
++    m_ptrInitialMomentum( nullptr ),
+     m_NumberOfStateVectorElements( 0 ),
+-    m_ptrRawData( NULL ),
++    m_ptrRawData( nullptr ),
+     DefaultEstimateInitialImage( false ),
+     m_ExternallySetEstimateInitialImage( false )
+ {
+@@ -85,10 +85,10 @@ CStateInitialImageMomentum< TFloat, VImageDimension >::CStateInitialImageMomentu
+ //
+ template < class TFloat, unsigned int VImageDimension >
+ CStateInitialImageMomentum< TFloat, VImageDimension >::CStateInitialImageMomentum( const VectorImageType* ptrGraftImage )
+-  : m_ptrInitialImage( NULL ), 
+-    m_ptrInitialMomentum( NULL ),
++  : m_ptrInitialImage( nullptr ), 
++    m_ptrInitialMomentum( nullptr ),
+     m_NumberOfStateVectorElements( 0 ),
+-    m_ptrRawData( NULL ),
++    m_ptrRawData( nullptr ),
+     DefaultEstimateInitialImage( false ),
+     m_ExternallySetEstimateInitialImage( false )
+ {
+@@ -127,12 +127,12 @@ void CStateInitialImageMomentum < TFloat, VImageDimension >::CopyDataStructure(
+     // create the image and momentum data structures with external memory allocation 
+     // memory comes from the raw data vector
+ 
+-    if ( ptrImage != NULL)
++    if ( ptrImage != nullptr)
+     {
+     m_ptrInitialImage = new VectorImageType( ptrImage, m_ptrRawData );
+     }
+ 
+-    if (ptrMomentum != NULL)
++    if (ptrMomentum != nullptr)
+     {
+     m_ptrInitialMomentum = new VectorImageType( ptrMomentum, m_ptrRawData + uiLengthOfImage );
+     }
+@@ -150,10 +150,10 @@ CStateInitialImageMomentum < TFloat, VImageDimension >::~CStateInitialImageMomen
+ template < class TFloat, unsigned int VImageDimension >
+ void CStateInitialImageMomentum< TFloat, VImageDimension >::ClearDataStructure()
+ {
+-  if ( m_ptrRawData != NULL )
++  if ( m_ptrRawData != nullptr )
+     {
+     delete [] m_ptrRawData;
+-    m_ptrRawData = NULL;
++    m_ptrRawData = nullptr;
+     m_NumberOfStateVectorElements = 0;
+     }
+ }
+diff --git a/Code/Libraries/States/CStateInitialMomentum.txx b/Code/Libraries/States/CStateInitialMomentum.txx
+index 1ba72d3..c17a603 100644
+--- a/Code/Libraries/States/CStateInitialMomentum.txx
++++ b/Code/Libraries/States/CStateInitialMomentum.txx
+@@ -27,17 +27,17 @@ namespace CALATK
+ 
+ template< class TFloat, unsigned int VImageDimension >
+ CStateInitialMomentum< TFloat, VImageDimension >::CStateInitialMomentum()
+-  : m_ptrInitialMomentum( NULL ),
++  : m_ptrInitialMomentum( nullptr ),
+     m_NumberOfStateVectorElements( 0 ),
+-    m_ptrRawData( NULL )
++    m_ptrRawData( nullptr )
+ {
+ }
+ 
+ template< class TFloat, unsigned int VImageDimension >
+ CStateInitialMomentum< TFloat, VImageDimension >::CStateInitialMomentum( const CStateInitialMomentum & c)
+-  : m_ptrInitialMomentum( NULL ),
++  : m_ptrInitialMomentum( nullptr ),
+     m_NumberOfStateVectorElements( 0 ),
+-    m_ptrRawData( NULL )
++    m_ptrRawData( nullptr )
+ {
+ 
+   if (this != &c)
+@@ -71,9 +71,9 @@ CStateInitialMomentum< TFloat, VImageDimension >::CStateInitialMomentum( TFloat*
+ //
+ template < class TFloat, unsigned int VImageDimension >
+ CStateInitialMomentum< TFloat, VImageDimension >::CStateInitialMomentum( const VectorImageType* ptrGraftImage )
+-  : m_ptrInitialMomentum( NULL ),
++  : m_ptrInitialMomentum( nullptr ),
+     m_NumberOfStateVectorElements( 0 ),
+-    m_ptrRawData( NULL )
++    m_ptrRawData( nullptr )
+ {
+   // here the memory allocation is performed externally
+   
+@@ -106,7 +106,7 @@ void CStateInitialMomentum < TFloat, VImageDimension >::CopyDataStructure( const
+     // create the momentum data structure with external memory allocation 
+     // memory comes from the raw data vector
+ 
+-    if (ptrMomentum != NULL)
++    if (ptrMomentum != nullptr)
+     {
+     m_ptrInitialMomentum = new VectorImageType( ptrMomentum, m_ptrRawData );
+     }
+@@ -124,10 +124,10 @@ CStateInitialMomentum < TFloat, VImageDimension >::~CStateInitialMomentum()
+ template < class TFloat, unsigned int VImageDimension >
+ void CStateInitialMomentum< TFloat, VImageDimension >::ClearDataStructure()
+ {
+-  if ( m_ptrRawData != NULL )
++  if ( m_ptrRawData != nullptr )
+     {
+     delete [] m_ptrRawData;
+-    m_ptrRawData = NULL;
++    m_ptrRawData = nullptr;
+     m_NumberOfStateVectorElements = 0;
+     }
+ }
+diff --git a/Code/Libraries/States/CStateMultipleStates.h b/Code/Libraries/States/CStateMultipleStates.h
+index 692f779..c96dd5a 100644
+--- a/Code/Libraries/States/CStateMultipleStates.h
++++ b/Code/Libraries/States/CStateMultipleStates.h
+@@ -97,7 +97,7 @@ public:
+   /**
+    * @brief Returns the state pointer for one of the underlying objectuve functions of the MultipleStates builder
+    *
+-   * @param idx - index of the state to be returned, if it does not exist will return NULL
++   * @param idx - index of the state to be returned, if it does not exist will return nullptr
+    * @return individualState - returned state pointer
+    */
+ 
+diff --git a/Code/Libraries/States/CStateMultipleStates.txx b/Code/Libraries/States/CStateMultipleStates.txx
+index ddd00f8..7e488a3 100644
+--- a/Code/Libraries/States/CStateMultipleStates.txx
++++ b/Code/Libraries/States/CStateMultipleStates.txx
+@@ -181,7 +181,7 @@ CStateMultipleStates< TState >::operator-=(const CStateMultipleStates & p )
+   if ( m_IndividualStatesCollection.size() != p.m_IndividualStatesCollection.size() )
+     {
+     throw std::runtime_error( "Size mismatch of vector of vector fields. ABORT." );
+-    return;
++    return *this;
+     }
+ 
+   typename IndividualStatesCollectionType::const_iterator iterSource;
+@@ -246,7 +246,7 @@ CStateMultipleStates< TState >::GetIndividualStatePointer( unsigned int idx )
+   const size_t numberOfStates = m_IndividualStatesCollection.size();
+   if ( numberOfStates == 0 || numberOfStates <= idx )
+     {
+-    return NULL;
++    return nullptr;
+     }
+   else
+     {
+diff --git a/Code/Libraries/States/CStateSpatioTemporalVelocityField.txx b/Code/Libraries/States/CStateSpatioTemporalVelocityField.txx
+index f91110b..4537052 100644
+--- a/Code/Libraries/States/CStateSpatioTemporalVelocityField.txx
++++ b/Code/Libraries/States/CStateSpatioTemporalVelocityField.txx
+@@ -63,7 +63,7 @@ void CStateSpatioTemporalVelocityField< T, VImageDimension >::CopyDataStructure(
+ {
+   this->ClearDataStructure();
+ 
+-  if ( ptrSource != NULL )
++  if ( ptrSource != nullptr )
+     {
+     // iterate through it and create a new vector field here
+     typename VectorFieldTimeSeriesType::const_iterator iter;
+@@ -107,7 +107,7 @@ CStateSpatioTemporalVelocityField< T, VImageDimension >::CreateUpsampledStateAnd
+ 
+ //
+ // sets the size of the datastructure, only needed if the vector field pointers should be assigned manually
+-// initializes all the entries to NULL
++// initializes all the entries to nullptr
+ //
+ template <class T, unsigned int VImageDimension >
+ void CStateSpatioTemporalVelocityField< T, VImageDimension >::SetSize( unsigned int iS )
+@@ -115,7 +115,7 @@ void CStateSpatioTemporalVelocityField< T, VImageDimension >::SetSize( unsigned
+   ClearDataStructure();
+   for ( unsigned int iI=0; iI<iS; ++iI )
+     {
+-    m_VectorFieldTimeSeries.push_back( NULL );
++    m_VectorFieldTimeSeries.push_back( nullptr );
+     }
+ }
+ 
+diff --git a/Code/Libraries/Utilities/CJSONConfiguration.cxx b/Code/Libraries/Utilities/CJSONConfiguration.cxx
+index c5241b8..9c1b66e 100644
+--- a/Code/Libraries/Utilities/CJSONConfiguration.cxx
++++ b/Code/Libraries/Utilities/CJSONConfiguration.cxx
+@@ -28,7 +28,7 @@ CJSONConfiguration::CJSONConfiguration( bool printSettings )
+   : m_Indent( 2 ),
+     m_AllowHelpComments( false ),
+     m_IsMasterRoot( true ),
+-    m_ptrRoot( NULL ),
++    m_ptrRoot( nullptr ),
+     m_ConfType( CONF_EXPERT )
+ {
+   m_PrintSettings = printSettings;
+@@ -136,7 +136,7 @@ void CJSONConfiguration::WriteJSONConfigurationFile( const std::string & fileNam
+       }
+     }
+ 
+-  if ( m_ptrRoot != NULL )
++  if ( m_ptrRoot != nullptr )
+     {
+     outFile << *m_ptrRoot;
+     }
+@@ -147,8 +147,8 @@ void CJSONConfiguration::WriteJSONConfigurationFile( const std::string & fileNam
+ 
+ Json::Value* CJSONConfiguration::GetRootPointer()
+ {
+-  // if the root is NULL, generate an empty root node
+-  if ( m_ptrRoot == NULL )
++  // if the root is nullptr, generate an empty root node
++  if ( m_ptrRoot == nullptr )
+     {
+     std::cout << "JSON: Created an empty root for a request for the root pointer." << std::endl;
+     this->InitializeEmptyRoot();
+@@ -267,7 +267,7 @@ Json::Value& CJSONConfiguration::GetFromKey( std::string sKey, Json::Value vDefa
+   // only create a key if really needed
+   if ( this->IsOfSufficientImportance( confType ) )
+   {
+-    if ( m_ptrRoot == NULL )
++    if ( m_ptrRoot == nullptr )
+       {
+       std::cerr << "ERROR: root needs to be initialized before it can be accessed." << std::endl;
+       std::cerr << "WARNING: Initializing empty root." << std::endl;
+@@ -419,10 +419,10 @@ void CJSONConfiguration::ReadJSONConfigurationFile( const std::string & fileName
+ 
+ void CJSONConfiguration::DeleteRoot()
+ {
+-  if ( this->m_IsMasterRoot && m_ptrRoot != NULL )
++  if ( this->m_IsMasterRoot && m_ptrRoot != nullptr )
+     {
+     delete m_ptrRoot;
+-    m_ptrRoot = NULL;
++    m_ptrRoot = nullptr;
+     }
+ }
+ 
+diff --git a/Code/Libraries/Utilities/CJSONDataParser.h b/Code/Libraries/Utilities/CJSONDataParser.h
+index de8e1a3..0701915 100644
+--- a/Code/Libraries/Utilities/CJSONDataParser.h
++++ b/Code/Libraries/Utilities/CJSONDataParser.h
+@@ -49,8 +49,8 @@ public:
+     std::string subjectString;
+   };
+ 
+-  void ParseInputDataFromJSONConfiguration( std::vector< SImageDatum > &parsedData, CJSONConfiguration *jsonConfiguration, CJSONConfiguration *jsonConfigurationCleaned = NULL );
+-  void ParseOutputDataFromJSONConfiguration( std::vector< SImageDatum > &parsedData, CJSONConfiguration *jsonConfiguration, CJSONConfiguration *jsonConfigurationCleaned = NULL );
++  void ParseInputDataFromJSONConfiguration( std::vector< SImageDatum > &parsedData, CJSONConfiguration *jsonConfiguration, CJSONConfiguration *jsonConfigurationCleaned = nullptr );
++  void ParseOutputDataFromJSONConfiguration( std::vector< SImageDatum > &parsedData, CJSONConfiguration *jsonConfiguration, CJSONConfiguration *jsonConfigurationCleaned = nullptr );
+   bool IsAdvancedDataConfigurationFormat( CJSONConfiguration* jsonConfiguration );
+ 
+ protected:
+@@ -58,14 +58,14 @@ protected:
+   /** Parses the given input images and their associated metadata into the
+    * ImageManager memory when the JSON configuration file is in the Basic
+    * format. */
+-  void ParseDataFromBasicJSONConfigurationInternal( std::string dataType, std::vector< SImageDatum > &parsedData, CJSONConfiguration *jsonConfiguration, CJSONConfiguration *jsonConfigurationCleaned = NULL );
++  void ParseDataFromBasicJSONConfigurationInternal( std::string dataType, std::vector< SImageDatum > &parsedData, CJSONConfiguration *jsonConfiguration, CJSONConfiguration *jsonConfigurationCleaned = nullptr );
+ 
+   /** Parses the given input images and their associated metadata into the
+    * ImageManager memory when the JSON configuration file is in the Advanced
+    * format. The Advanced data configuration format is more descriptive, can
+    * accept more optional fields, and is distinguished from the Basic format by
+    * the presence of a "CalaTKDataConfigurationVersion" entry. */
+-  void ParseDataFromAdvancedJSONConfigurationInternal( std::string dataType, std::vector< SImageDatum > &parsedData, CJSONConfiguration *jsonConfiguration, CJSONConfiguration *jsonConfigurationCleaned = NULL );
++  void ParseDataFromAdvancedJSONConfigurationInternal( std::string dataType, std::vector< SImageDatum > &parsedData, CJSONConfiguration *jsonConfiguration, CJSONConfiguration *jsonConfigurationCleaned = nullptr );
+ 
+   /** Determined by the presence of a "CalaTKDataConfigurationVersion" entry. */
+   bool IsAdvancedDataConfigurationFormat();
+diff --git a/Code/Libraries/Utilities/CJSONDataParser.txx b/Code/Libraries/Utilities/CJSONDataParser.txx
+index 41d1186..b074e9b 100644
+--- a/Code/Libraries/Utilities/CJSONDataParser.txx
++++ b/Code/Libraries/Utilities/CJSONDataParser.txx
+@@ -119,7 +119,7 @@ void CJSONDataParser< TFloat >::ParseDataFromBasicJSONConfigurationInternal( std
+ 
+         }
+ 
+-      if ( jsonConfigurationCleaned != NULL )
++      if ( jsonConfigurationCleaned != nullptr )
+         {
+           Json::Value & dataCleanedConfigRoot  = *(jsonConfigurationCleaned->GetRootPointer());
+           dataCleanedConfigRoot[ dataType ][ subject ] = cleanedSubject;
+@@ -215,7 +215,7 @@ void CJSONDataParser< TFloat >::ParseDataFromAdvancedJSONConfigurationInternal(
+     cleanedSubjects[subjectId] = cleanedSubject;
+     }
+ 
+-  if ( jsonConfigurationCleaned != NULL )
++  if ( jsonConfigurationCleaned != nullptr )
+     {
+       Json::Value & dataCleanedConfigRoot  = *(jsonConfigurationCleaned->GetRootPointer());
+       dataCleanedConfigRoot[dataType]["Subjects"] = cleanedSubjects;
+diff --git a/Code/Libraries/Utilities/CQueryEnvironmentVariables.txx b/Code/Libraries/Utilities/CQueryEnvironmentVariables.txx
+index 86d379e..f5f6f3e 100644
+--- a/Code/Libraries/Utilities/CQueryEnvironmentVariables.txx
++++ b/Code/Libraries/Utilities/CQueryEnvironmentVariables.txx
+@@ -101,7 +101,7 @@ std::vector< std::string > CQueryEnvironmentVariables::GetPathFromString( std::s
+ std::string CQueryEnvironmentVariables::GetEnv( const std::string & query )
+ {
+   const char * queryResult = std::getenv( query.c_str() );
+-  if ( queryResult == NULL )
++  if ( queryResult == nullptr )
+     {
+     return "";
+     }
+diff --git a/Code/Libraries/Utilities/KernelUtils.txx b/Code/Libraries/Utilities/KernelUtils.txx
+index 61571ed..0699d4b 100644
+--- a/Code/Libraries/Utilities/KernelUtils.txx
++++ b/Code/Libraries/Utilities/KernelUtils.txx
+@@ -30,7 +30,7 @@ void KernelUtils< TFloat, VImageDimension >::SetObjectiveFunctionAndKernelNumber
+   if ( kernel->GetKernelType() == KernelType::MultiGaussianKernel ) // we need to set the objective function
+   {
+     typedef CMultiGaussianKernel< TFloat, VImageDimension > MultiGaussianKernelType;
+-    MultiGaussianKernelType* multiGaussianKernel = NULL;
++    MultiGaussianKernelType* multiGaussianKernel = nullptr;
+ 
+     std::cout << "Detected a multi-gaussian kernel " << std::endl;
+     multiGaussianKernel = static_cast< MultiGaussianKernelType * >( kernel );
+diff --git a/Code/Libraries/Utilities/LogUtils.cxx b/Code/Libraries/Utilities/LogUtils.cxx
+index 70bc842..a002a8d 100644
+--- a/Code/Libraries/Utilities/LogUtils.cxx
++++ b/Code/Libraries/Utilities/LogUtils.cxx
+@@ -44,7 +44,7 @@ void LogRegister::register_stream( std::ostream& stream, unsigned int minLevel,
+       LevelRangeType defaultRange;
+       defaultRange.levelFrom = 0;
+       defaultRange.levelTo = 0;
+-      defaultRange.stream = NULL;
++      defaultRange.stream = nullptr;
+       log_vector.resize( streamId + 1, defaultRange );
+       log_vector[ streamId ] = range;
+     }
+diff --git a/Code/Libraries/Utilities/VectorImageUtils.txx b/Code/Libraries/Utilities/VectorImageUtils.txx
+index cab035d..6513869 100644
+--- a/Code/Libraries/Utilities/VectorImageUtils.txx
++++ b/Code/Libraries/Utilities/VectorImageUtils.txx
+@@ -189,7 +189,7 @@ VectorImageUtils< T, VImageDimension >::AllocateMemoryForScaledVectorImage( cons
+       std::runtime_error("Unsupported dimension for memory allocation.");
+     }
+ 
+-  return NULL;
++  return nullptr;
+ }
+ 
+ //
+@@ -380,7 +380,7 @@ T VectorImageUtils< T, VImageDimension >::interpolatePosGridCoordinates( const V
+ // interpolate 3D
+ //
+ template <class T, unsigned int VImageDimension >
+-void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType3D* imIn, const VectorImageType3D* pos, VectorImageType3D* imOut, unsigned int /* uiNrOfThreads */ )
++void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType3D* imIn, const VectorImageType3D* pos, VectorImageType3D* imOut, unsigned int uiNrOfThreads )
+ {
+ 
+   int dim = (int)imIn->GetDimension();
+@@ -428,7 +428,7 @@ void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType3
+ // interpolate 2D
+ //
+ template <class T, unsigned int VImageDimension >
+-void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType2D* imIn, const VectorImageType2D* pos, VectorImageType2D* imOut, unsigned int /* uiNrOfThreads */ )
++void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType2D* imIn, const VectorImageType2D* pos, VectorImageType2D* imOut, unsigned int uiNrOfThreads )
+ {
+ 
+   int dim = (int)imIn->GetDimension();
+@@ -472,7 +472,7 @@ void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType2
+ // interpolate 1D
+ //
+ template <class T, unsigned int VImageDimension >
+-void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType1D* imIn, const VectorImageType1D* pos, VectorImageType1D* imOut, unsigned int /* uiNrOfThreads */ )
++void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType1D* imIn, const VectorImageType1D* pos, VectorImageType1D* imOut, unsigned int uiNrOfThreads )
+ {
+ 
+   int dim = (int)imIn->GetDimension();
+@@ -510,7 +510,7 @@ void VectorImageUtils< T, VImageDimension >::interpolate( const VectorImageType1
+ // interpolateNegativeVelocityPos 3D
+ //
+ template <class T, unsigned int VImageDimension >
+-void VectorImageUtils< T, VImageDimension >::interpolateNegativeVelocityPos( const VectorImageType3D* imIn, const VectorFieldType3D* v, T dt, VectorImageType3D* imOut, unsigned int /* uiNrOfThreads */ )
++void VectorImageUtils< T, VImageDimension >::interpolateNegativeVelocityPos( const VectorImageType3D* imIn, const VectorFieldType3D* v, T dt, VectorImageType3D* imOut, unsigned int uiNrOfThreads )
+ {
+ 
+   int dim = (int)imIn->GetDimension();
+@@ -557,7 +557,7 @@ void VectorImageUtils< T, VImageDimension >::interpolateNegativeVelocityPos( con
+ // interpolateNegativeVelocityPos 2D
+ //
+ template <class T, unsigned int VImageDimension >
+-void VectorImageUtils< T, VImageDimension >::interpolateNegativeVelocityPos( const VectorImageType2D* imIn, const VectorFieldType2D* v, T dt, VectorImageType2D* imOut, unsigned int /* uiNrOfThreads */ )
++void VectorImageUtils< T, VImageDimension >::interpolateNegativeVelocityPos( const VectorImageType2D* imIn, const VectorFieldType2D* v, T dt, VectorImageType2D* imOut, unsigned int uiNrOfThreads )
+ {
+ 
+   int dim = (int)imIn->GetDimension();
+@@ -599,7 +599,7 @@ void VectorImageUtils< T, VImageDimension >::interpolateNegativeVelocityPos( con
+ // interpolateNegativeVelocityPos 1D
+ //
+ template <class T, unsigned int VImageDimension >
+-void VectorImageUtils< T, VImageDimension >::interpolateNegativeVelocityPos( const VectorImageType1D* imIn, const VectorFieldType1D* v, T dt, VectorImageType1D* imOut, unsigned int /* uiNrOfThreads */ )
++void VectorImageUtils< T, VImageDimension >::interpolateNegativeVelocityPos( const VectorImageType1D* imIn, const VectorFieldType1D* v, T dt, VectorImageType1D* imOut, unsigned int uiNrOfThreads )
+ {
+ 
+   int dim = (int)imIn->GetDimension();
+@@ -1149,7 +1149,7 @@ template < class T, unsigned int VImageDimension >
+ bool VectorImageUtils< T, VImageDimension >::IsSameSize( const VectorImageType* im1, const VectorImageType* im2)
+ {
+ 
+-  if ( im1 == NULL || im2 == NULL )
++  if ( im1 == nullptr || im2 == nullptr )
+   {
+     return false;
+   }
+@@ -3014,7 +3014,7 @@ VectorImageUtils< T, VImageDimension >::readFileITK(const std::string& filename)
+   catch( itk::ExceptionObject & err )
+     {
+     throw std::runtime_error( "VectorImageUtils< T, VImageDimension >::readFileITK -> Reading Failed" );
+-    return NULL;
++    return nullptr;
+     }
+ 
+   // Convert to VectorImageType and return
+diff --git a/Code/Statistics/lstatGEE/itkLongitudinalStatisticsFilter.txx b/Code/Statistics/lstatGEE/itkLongitudinalStatisticsFilter.txx
+index 004d621..03ba5cd 100644
+--- a/Code/Statistics/lstatGEE/itkLongitudinalStatisticsFilter.txx
++++ b/Code/Statistics/lstatGEE/itkLongitudinalStatisticsFilter.txx
+@@ -92,52 +92,52 @@ LongitudinalStatisticsFilter<MyRealType, MyIntegerType>
+ 
+ // here come Hongtu's data structures
+ 
+-  allDimTime = NULL;
+-  CCID = NULL;
+-  cov_beta = NULL;
+-  ExactTime = NULL;
+-  indxMi = NULL;
+-  indxMi2 = NULL;
+-  INRR = NULL;
+-  INRRnew = NULL;
+-  INRRnewD = NULL;
+-  Irank = NULL;
+-  LCOVL = NULL;
+-  LLBB = NULL;
+-  imageMask = NULL;
+-  midRR = NULL;
+-  RR = NULL;
+-  rr00 = NULL;
+-  simulationBias = NULL;
+-  simulationRMS = NULL;
+-  simulationSD = NULL;
+-  tempLB = NULL;
+-  TXX = NULL;
+-
+-  x0x = NULL;
+-
+-  designXX = NULL;
+-  betaGEE = NULL;
+-
+-  Epsilon = NULL;
+-  ImageData = NULL;
+-  Scorevalue = NULL;
+-  SmaxEmp = NULL;
+-  Spvalue = NULL;
+-  Srawpvalue = NULL;
+-  tempoScorevalue = NULL;
+-  tensors = NULL;
+-  UUmu = NULL;
+-  UUsgMu = NULL;
+-  Waldtest = NULL;
+-  Yresponse = NULL;
+-
+-  BrainTheta = NULL;
+-  corrMatrix = NULL;
+-  residualli = NULL;
+-  sum1 = NULL;
+-  varGEE = NULL;
+-  varMatrix = NULL;
++  allDimTime = nullptr;
++  CCID = nullptr;
++  cov_beta = nullptr;
++  ExactTime = nullptr;
++  indxMi = nullptr;
++  indxMi2 = nullptr;
++  INRR = nullptr;
++  INRRnew = nullptr;
++  INRRnewD = nullptr;
++  Irank = nullptr;
++  LCOVL = nullptr;
++  LLBB = nullptr;
++  imageMask = nullptr;
++  midRR = nullptr;
++  RR = nullptr;
++  rr00 = nullptr;
++  simulationBias = nullptr;
++  simulationRMS = nullptr;
++  simulationSD = nullptr;
++  tempLB = nullptr;
++  TXX = nullptr;
++
++  x0x = nullptr;
++
++  designXX = nullptr;
++  betaGEE = nullptr;
++
++  Epsilon = nullptr;
++  ImageData = nullptr;
++  Scorevalue = nullptr;
++  SmaxEmp = nullptr;
++  Spvalue = nullptr;
++  Srawpvalue = nullptr;
++  tempoScorevalue = nullptr;
++  tensors = nullptr;
++  UUmu = nullptr;
++  UUsgMu = nullptr;
++  Waldtest = nullptr;
++  Yresponse = nullptr;
++
++  BrainTheta = nullptr;
++  corrMatrix = nullptr;
++  residualli = nullptr;
++  sum1 = nullptr;
++  varGEE = nullptr;
++  varMatrix = nullptr;
+   
+ }
+ 
+@@ -176,8 +176,8 @@ LongitudinalStatisticsFilter<MyRealType, MyIntegerType>
+   globals::NcovDim = 0;
+   globals::DimXX = 0;
+ 
+-  globals::allDimTime = NULL;
+-  globals::outputDir = NULL;
++  globals::allDimTime = nullptr;
++  globals::outputDir = nullptr;
+ }
+ 
+ template <class MyRealType, class MyIntegerType>
+@@ -216,7 +216,7 @@ LongitudinalStatisticsFilter<MyRealType, MyIntegerType>
+   globals::DimYY = 0; // not used in this code
+ 
+   globals::allDimTime = this->allDimTime;
+-  globals::outputDir = NULL; // not used in this code
++  globals::outputDir = nullptr; // not used in this code
+   
+   globals::TotalImg = TotalImg;
+ }
