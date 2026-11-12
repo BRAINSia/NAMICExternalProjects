@@ -10,7 +10,7 @@ ExternalProject_SetIfNotDefined(
   )
 ExternalProject_SetIfNotDefined(
   ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-  v3.4.0
+  v3.3.1 # v3.4.0 requires CMake 3.29
   QUIET
   )
 
