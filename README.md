@@ -37,92 +37,54 @@ __NAMICExternalProjects/__
 
     A directory of support files.
     
-### Build Instruction
-1. Install Anaconda Python Environment: https://www.continuum.io/downloads
-    
-   (Nipype/BRAINS Auto Workup dependes on python 2.7v)
-   
-   ```bash
-   $ ${conda_dir}/conda create --name namicAnacondaEnv python=2.7
-   export ${conda_dir}:PATH # Add conda build on your PATH. 
-   source activate namicAnacondaEnv
-   ```
-  
-2. Install SimpleITK Against above Anaconda Python Environment: http://www.itk.org/Wiki/SimpleITK/GettingStarted
+### Requirements
 
-   ```bash
-   $ conda install -c https://conda.binstar.org/simpleitk SimpleITK
-   ```
-3. Install NiPype against above Anaconda Python Environment: http://nipy.org/nipype/users/install.html
+* CMake 3.28 through 4.2
+* A C++17 compiler (GCC 13 and Clang are tested)
+* Python 3.12 or newer, found at configure time
+* Ninja (recommended); ccache is used automatically when found
+* FFTW 3 development files for calatk (`libfftw3-dev` on Ubuntu)
 
-   ```bash
-   $ pip install nipype
-   ```
-   ### Please check out following if you encounter any issues at this stage.
-   
-   > #### BLAS/LAPACK for OSX:
-   > See https://www.continuum.io/blog/developer/mkl-optimizations-anaconda for blas/lapack if not installed. 
-   > ```bash
-   > $ pip install mkl
-   > ```
-   
-   > #### Scipy Issue for Mac/Linux:
-   >    >
-   >    > Failed building wheel for scipy
-   >
-   > ```bash
-   > $ conda install numpy 
-   > $ conda install scipy
-   > $ pip install nipype
-   > ```
-   >
-   > If that does not work try:
-   >
-   > #### Scipy Issue for Linux:
-   >    >
-   >    > Failed building wheel for scipy
-   >
-   > See http://stackoverflow.com/questions/24353267/build-wheel-for-a-package-like-scipy-lacking-dependency-declaration
-   > 
-   > ```bash
-   > $ pip wheel numpy
-   > $ pip install nipype
-   > ```
-   
-4. TBB Build: https://www.threadingbuildingblocks.org/download
-    
-   > Download source code
-    
-   ```bash
-    $ cd "tbb44_20151115oss"
-    $ make
-    $ mv macos_intel64_clang_cc4.2.1_os10.10.4_release/ ../lib
-    
-    $ cd Namic_build_Dir
-    $ cmake -DCMAKE_CXX_STANDARD:STRING=11 -DTBB_ROOT:PATH=/Shared/sinapse/scratch/eunyokim/src/tbb44_20151115oss  ../NAMICExternalProjects  -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.9
-    ```
-5. Build Namic against all above:
+### Building
 
-  ```bash
-  $ git clone https://github.com/BRAINSia/NAMICExternalProjects.git
-  $ mkdir ${build_dir_name}
-  $ cd ${build_dir_name}
-  $ ccmake ../NAMICExternalProjects
-  $ make
-  ```
-6. Additional Package Installation for BRAINS Auto Workup:
+```bash
+git clone https://github.com/BRAINSia/NAMICExternalProjects.git
+cmake -S NAMICExternalProjects -B NEP-build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build NEP-build
+```
 
-  ```
-  $pip install docopt
-  $pip install pydas
-  $pip install joblib
-  $pip install dipy
-  $pip install future
-  $pip install ipython
-  $pip install simplejson
-  ```
-7. Deactivate Anaconda environment when finished:
+Each tool installs or builds into its own directory under `NEP-build`;
+most command line tools are also placed in `NEP-build/bin`.
 
-  ```
-  $ source deactivate
-  ```
+### Options
+
+* `NAMICExternalProjects_REQUIRES_VTK` (ON): build VTK and the tools
+  that need it (DTIProcess, niral_utilities, UKF).
+* `NAMICExternalProjects_REQUIRES_TBB` (ON): build oneTBB and use it in
+  ITK and VTK; BRAINSABC is built only when this is ON.
+* `NAMICExternalProjects_BUILD_SimpleITK` (OFF): build SimpleITK with
+  Python wrapping against the superbuild ITK.  `pip install SimpleITK`
+  is the quicker route when the superbuild ITK is not needed.
+* `BUILD_STYLE_UTILS` (OFF): build KWStyle, Cppcheck, and Uncrustify.
+* `BUILD_CALATK` (ON): build calatk.
+* `NAMICExternalProjects_EP_GIT_SHALLOW` (OFF): shallow clones.
+
+### What is built
+
+The toolkits are ITK 5.4.8, VTK 9, oneTBB, zlib-ng, DCMTK, teem,
+Eigen, and SlicerExecutionModel.  The tools are BRAINSTools, ANTs,
+DTIProcess, niral_utilities, UKFTractography, dcm2niix,
+MRParameterMaps, LogSymmetricDemons, MultiAtlas (MABMIS), calatk,
+JointRicianAnisotropicLMMSEFilter, UnbiasedNonLocalMeans, and
+DoubleConvert.  The nipype and tract_querier Python sources are
+fetched for installation with pip.
+
+Tools whose upstream has not been updated for ITK 5 carry a patch in
+`SuperBuild/patches/`, applied in the external project's patch step.
+
+### Diffusion MRI quality control
+
+DTIPrep is no longer built.  Its quality control is superseded by
+`dmriprep` in [DTIPlayground](https://github.com/NIRALUser/DTIPlayground),
+which installs with `pip install dtiplayground` and calls the
+DTIProcess and niral_utilities tools built here.
