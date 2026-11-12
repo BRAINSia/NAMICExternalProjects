@@ -1,73 +1,45 @@
-# Make sure that the ExtProjName/IntProjName variables are unique globally
-# even if other External_${ExtProjName}.cmake files are sourced by
-set(extProjName Uncrustify) #The find_package known name
-set(proj        Uncrustify) #This local name
-set(${extProjName}_REQUIRED_VERSION "")  #If a required version is necessary, then set this, else leave blank
+set(proj Uncrustify)
 
-#if(${USE_SYSTEM_${extProjName}})
-#  unset(${extProjName}_EXE CACHE)
-#endif()
-
-# Sanity checks
-if(DEFINED ${extProjName}_EXE AND NOT EXISTS ${${extProjName}_EXE})
-  message(FATAL_ERROR "${extProjName}_EXE variable is defined but corresponds to non-existing file")
-endif()
-
-# Set dependency list
 set(${proj}_DEPENDENCIES "")
-
-# Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
-if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" ) )
-  #message(STATUS "${__indent}Adding project ${proj}")
-
-  ### --- Project specific additions here
-  set(${proj}_CMAKE_OPTIONS
-    ${EXTERNAL_PROJECT_DEFAULTS}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-      -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
-      -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/Utils
-  )
-
-  ### --- End Project specific additions
-  set(${proj}_REPOSITORY "${git_protocol}://github.com/uncrustify/uncrustify.git")
-  set(${proj}_GIT_TAG "uncrustify-0.83.0")
-  ExternalProject_Add(${proj}
-    ${${proj}_EP_ARGS}
-    GIT_REPOSITORY ${${proj}_REPOSITORY}
-    GIT_TAG ${${proj}_GIT_TAG}
-    SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-    BINARY_DIR ${proj}-build
-    LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
-    LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
-    LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
-    LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
-    ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
-    CMAKE_CACHE_ARGS
-      ${${proj}_CMAKE_OPTIONS}
-    DEPENDS
-      ${${proj}_DEPENDENCIES}
-  )
-  set(${extProjName}_EXE ${CMAKE_BINARY_DIR}/Utils/bin/uncrustify)
-else()
-  if(${USE_SYSTEM_${extProjName}})
-    find_package(${extProjName} ${${extProjName}_REQUIRED_VERSION} REQUIRED)
-    message("USING the system ${extProjName}, set ${extProjName}_EXE=${${extProjName}_EXE}")
-  endif()
-  # The project is provided using ${extProjName}_EXE, nevertheless since other
-  # project may depend on ${extProjName}, let's add an 'empty' one
+if(USE_SYSTEM_Uncrustify)
+  find_program(Uncrustify_EXE uncrustify DOC "Path of uncrustify")
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
+  mark_as_superbuild(VARS Uncrustify_EXE:FILEPATH LABELS "FIND_PACKAGE")
+  return()
 endif()
 
-mark_as_superbuild(
-  VARS
-    ${extProjName}_EXE:FILE
-  LABELS
-     "FIND_PACKAGE"
-)
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
+  "${git_protocol}://github.com/uncrustify/uncrustify.git"
+  QUIET
+  )
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
+  uncrustify-0.83.0
+  QUIET
+  )
+
+ExternalProject_Add(${proj}
+  ${${proj}_EP_ARGS}
+  GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
+  GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+  GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}
+  UPDATE_DISCONNECTED TRUE
+  SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
+  BINARY_DIR ${proj}-build
+  LOG_CONFIGURE ON
+  LOG_BUILD ON
+  LOG_INSTALL ON
+  LOG_OUTPUT_ON_FAILURE ON
+  CMAKE_ARGS -Wno-dev --no-warn-unused-cli
+  CMAKE_CACHE_ARGS
+    ${EXTERNAL_PROJECT_DEFAULTS}
+    -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/Utils
+  DEPENDS
+    ${${proj}_DEPENDENCIES}
+  )
+set(Uncrustify_EXE ${CMAKE_BINARY_DIR}/Utils/bin/uncrustify)
+mark_as_superbuild(VARS Uncrustify_EXE:FILEPATH LABELS "FIND_PACKAGE")
