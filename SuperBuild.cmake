@@ -203,13 +203,12 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   niral_utilities
   DTIProcess
   UKF
-  # NOT CURRENTLY USED DTIReg
 )
 endif()
 
 if(NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   message("NOTE: Following toolkits are dependent to VTK:
-           - DTIReg
+           - niral_utilities
            - DTIProcess
            - UKF
            You need to set ${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK to ON to build above applications.")
@@ -219,10 +218,6 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_SimpleITK)
   list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES SimpleITK)
 endif()
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES NIPYPE)
-
-if(BUILD_STYLE_UTILS)
-  list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES Cppcheck KWStyle ) #Uncrustify)
-endif()
 
 #-----------------------------------------------------------------------------
 # Enable and setup External project global properties
@@ -237,7 +232,6 @@ mark_as_superbuild(
 #    SlicerExecutionModel_DIR:PATH
 #    ITK_DIR:PATH
     VTK_DIR:PATH
-    #BOOST_INCLUDE_DIR:PATH
 
     BRAINSTools_LIBRARY_PATH:PATH
     BRAINSTools_MAX_TEST_LEVEL:STRING
@@ -247,8 +241,6 @@ mark_as_superbuild(
     ${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_DICOM_SUPPORT:BOOL
     BRAINS_DEBUG_IMAGE_WRITE:BOOL
 
-    BRAINSTools_USE_CTKAPPLAUNCHER:BOOL
-    BRAINSTools_USE_GIT_PROTOCOL:BOOL
     EXTERNAL_PROJECT_BUILD_TYPE:STRING
 
     USE_SYSTEM_DCMTK:BOOL
