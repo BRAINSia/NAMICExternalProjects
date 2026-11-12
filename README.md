@@ -69,14 +69,16 @@ most command line tools are also placed in `NEP-build/bin`.
 
 ### What is built
 
-The toolkits are ITK 5.4.8, VTK 9, oneTBB, zlib-ng, DCMTK, teem,
-Eigen, and SlicerExecutionModel.  The tools are BRAINSTools, ANTs,
-DTIProcess, niral_utilities, UKFTractography, dcm2niix,
-MRParameterMaps, JointRicianAnisotropicLMMSEFilter,
-UnbiasedNonLocalMeans, and DoubleConvert.  The nipype and tract_querier Python sources are
+The toolkits are ITK 6.0 (pinned to a main branch commit), VTK 9,
+oneTBB, zlib-ng, DCMTK, teem, and SlicerExecutionModel.  ITK uses the
+superbuild's DCMTK, and UKFTractography uses the Eigen bundled with
+ITK.  The tools are BRAINSTools, ANTs, DTIProcess, niral_utilities,
+UKFTractography, dcm2niix, MRParameterMaps,
+JointRicianAnisotropicLMMSEFilter, UnbiasedNonLocalMeans, and
+DoubleConvert.  The nipype and tract_querier Python sources are
 fetched for installation with pip.
 
-Tools whose upstream has not been updated for ITK 5 carry a patch in
+Tools whose upstream has not been updated for ITK 6 carry a patch in
 `SuperBuild/patches/`, applied in the external project's patch step.
 
 ### Diffusion MRI quality control
