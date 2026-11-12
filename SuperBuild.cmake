@@ -215,8 +215,9 @@ if(NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
            You need to set ${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK to ON to build above applications.")
 endif()
 
-# Use Anaconda version list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES SimpleITK)
-# Use Anaconda version list(APPEND SimpleITK_DEPENDENCIES PCRE Swig)
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_SimpleITK)
+  list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES SimpleITK)
+endif()
 list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES NIPYPE)
 
 if(BUILD_STYLE_UTILS)
@@ -272,22 +273,6 @@ mark_as_superbuild(
   PROJECTS ${LOCAL_PROJECT_NAME}
 )
 
-#
-# SimpleITK has large internal libraries, which take an extremely long
-# time to link on windows when they are static. Creating shared
-# SimpleITK internal libraries can reduce linking time. Also the size
-# of the debug libraries are monstrous. Using shared libraries for
-# debug, reduce disc requirements, and can improve linking
-# times. However, these shared libraries take longer to load than the
-# monolithic target from static libraries.
-#
-set( ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED_DEFAULT OFF)
-string(TOUPPER "${CMAKE_BUILD_TYPE}" _CMAKE_BUILD_TYPE)
-if(MSVC OR _CMAKE_BUILD_TYPE MATCHES "DEBUG")
-  set(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED_DEFAULT ON)
-endif()
-CMAKE_DEPENDENT_OPTION(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED "Build SimpleITK with shared libraries. Reduces linking time, increases run-time load time." ${${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED_DEFAULT} "${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK" OFF )
-mark_as_superbuild(${SUPERBUILD_TOPLEVEL_PROJECT}_USE_SimpleITK_SHARED)
 
 #------------------------------------------------------------------------------
 # Calling this macro last will ensure all prior calls to 'mark_as_superbuild' are
