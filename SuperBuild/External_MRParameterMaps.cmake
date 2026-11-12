@@ -57,11 +57,13 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
 
   ### --- End Project specific additions
   set(${proj}_REPOSITORY https://github.com/BRAINSia/MRParameterMaps.git)
-  set(${proj}_GIT_TAG "d9c1d5f7957913a4f085eff0b760ae24294d8d40") # C++11 fixes
+  set(${proj}_GIT_TAG "04054693e8a03e9d112490edc92384165d225a60") # master 2022-02-13
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
+    UPDATE_DISCONNECTED TRUE
+    PATCH_COMMAND ${GIT_EXECUTABLE} apply --whitespace=nowarn ${CMAKE_CURRENT_LIST_DIR}/patches/MRParameterMaps-itk54.patch
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
     BINARY_DIR ${proj}-build
     INSTALL_COMMAND ""

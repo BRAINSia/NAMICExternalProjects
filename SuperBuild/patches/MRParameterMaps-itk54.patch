@@ -1,0 +1,44 @@
+diff --git a/itkFDFImageIO.cxx b/itkFDFImageIO.cxx
+index 9c1af9a..d0ad8b9 100644
+--- a/itkFDFImageIO.cxx
++++ b/itkFDFImageIO.cxx
+@@ -254,7 +254,7 @@ const itk::ImageIOBase::IOPixelType FDFImageIO::GetPixelType() const
+ */
+ unsigned int FDFImageIO::GetComponentSize() const
+ {
+-  switch(m_PixelType)
++  switch(m_ComponentType)
+     {
+     case UCHAR:
+       return sizeof(unsigned char);
+@@ -278,7 +278,7 @@ unsigned int FDFImageIO::GetComponentSize() const
+       return sizeof(double);
+     default:
+     {
+-    itkExceptionMacro ("Invalid type: " << m_PixelType
++    itkExceptionMacro ("Invalid type: " << m_ComponentType
+                        << ", only unsigned char and unsigned short are allowed.");
+     return 0;
+     }
+@@ -364,7 +364,7 @@ bool FDFImageIO::CanWriteFile( const char * /* name */)
+ 
+ void FDFImageIO::SwapBytesIfNecessary( void* buffer, unsigned long numberOfPixels )
+ {
+-  switch(m_PixelType)
++  switch(m_ComponentType)
+     {
+     case CHAR:
+     {
+diff --git a/itkFDFImageIOFactory.h b/itkFDFImageIOFactory.h
+index 7b5bd53..9cc4d85 100644
+--- a/itkFDFImageIOFactory.h
++++ b/itkFDFImageIOFactory.h
+@@ -42,7 +42,7 @@ public:
+   itkFactorylessNewMacro(Self);
+ 
+   /** Run-time type information (and related methods). */
+-  itkTypeMacro(DicomImageIOFactory, ObjectFactoryBase);
++  itkTypeMacro(FDFImageIOFactory, ObjectFactoryBase);
+ 
+   /** Register one factory of this type  */
+   static void RegisterOneFactory(void)
