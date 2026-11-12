@@ -212,7 +212,6 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   VTK
   #  This does not build currently  MultiAtlas
   # NOT CURRENTLY USED DTIReg
-  #   BatchMake  Needed by DTIReg
   # THIS DOES NOT WORK YET  DTIProcess --- Requires ITK 4.13
   # -- Needs update for VTK and ITK 20220214 UKF
 )
