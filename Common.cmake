@@ -67,7 +67,6 @@ include(PreventInBuildInstalls)
 include(itkCheckSourceTree)
 
 include(CMakeDependentOption)
-include(CMakeParseArguments)
 
 #------------------------------------------------------------------------------
 find_package(Python3 3.12 REQUIRED COMPONENTS Interpreter)
