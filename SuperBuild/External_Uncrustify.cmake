@@ -32,11 +32,12 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
       -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
       -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
+      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/Utils
   )
 
   ### --- End Project specific additions
-  set(${proj}_REPOSITORY "${git_protocol}://github.com/bengardner/uncrustify.git")
-  set(${proj}_GIT_TAG "60f3681da60462eda539b78e0c6c3eea823481e5")
+  set(${proj}_REPOSITORY "${git_protocol}://github.com/uncrustify/uncrustify.git")
+  set(${proj}_GIT_TAG "uncrustify-0.83.0")
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
@@ -48,9 +49,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
     LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
     ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
-    SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-    BINARY_DIR ${proj}-build
-    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${CMAKE_BINARY_DIR}/Utils
+    CMAKE_CACHE_ARGS
+      ${${proj}_CMAKE_OPTIONS}
     DEPENDS
       ${${proj}_DEPENDENCIES}
   )
@@ -62,7 +62,7 @@ else()
   endif()
   # The project is provided using ${extProjName}_EXE, nevertheless since other
   # project may depend on ${extProjName}, let's add an 'empty' one
-  SlicerMacroEmptyExternalProject(${proj} "${${proj}_DEPENDENCIES}")
+  ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
 
 mark_as_superbuild(
