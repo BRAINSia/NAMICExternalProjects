@@ -195,6 +195,7 @@ list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
   #${CALATK_DEP}
   tract_querier
   LogSymmetricDemons
+  MultiAtlas
   )
 if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
@@ -202,7 +203,6 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   niral_utilities
   DTIProcess
   UKF
-  #  This does not build currently  MultiAtlas
   # NOT CURRENTLY USED DTIReg
 )
 endif()

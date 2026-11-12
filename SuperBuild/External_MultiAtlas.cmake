@@ -28,12 +28,14 @@ set(${proj}_CMAKE_OPTIONS
   )
 
 ### --- End Project specific additions
-set(${proj}_REPOSITORY "https://github.com/BRAINSia/MultiAtlas.git")
+set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/MultiAtlas.git")
 set(${proj}_GIT_TAG "742848031ae486169d4c39b5069d4a911835509e")
 ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
+  UPDATE_DISCONNECTED TRUE
+  PATCH_COMMAND ${GIT_EXECUTABLE} apply --whitespace=nowarn ${CMAKE_CURRENT_LIST_DIR}/patches/MultiAtlas-itk54.patch
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-build
   LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
