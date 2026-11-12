@@ -38,7 +38,7 @@ if(NOT SWIG_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     # not windows
 
     # Set dependency list
-    set(${proj}_DEPENDENCIES PCRE python)
+    set(${proj}_DEPENDENCIES PCRE)
 
     # Include dependent projects if any
     ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
@@ -79,7 +79,7 @@ ExternalProject_Execute(${proj} \"configure\" sh ${swig_source_dir}/configure
     --prefix=${swig_install_dir}
     --with-pcre-prefix=${pcre_install_dir}
     --without-octave
-    --with-python=${PYTHON_EXECUTABLE})
+    --with-python=${Python3_EXECUTABLE})
 ")
 
     ExternalProject_add(Swig

@@ -27,8 +27,6 @@ set(git_protocol "https")
 
 find_package(Git REQUIRED)
 
-cmake_dependent_option(${CMAKE_PROJECT_NAME}_USE_CTKAPPLAUNCHER "CTKAppLauncher used with python" ON
-  "NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_python" OFF)
 
 if(NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT)
   message("NOTE: Following toolkit is dependent to Qt:

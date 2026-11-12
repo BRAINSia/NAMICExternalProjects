@@ -7,9 +7,6 @@ set(${proj}_REQUIRED_VERSION "9.6")  #If a required version is necessary, then s
 
 # Set dependency list
 set(${proj}_DEPENDENCIES "zlib")
-if (Slicer_USE_PYTHONQT)
-  list(APPEND ${proj}_DEPENDENCIES python)
-endif()
 if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB)
   list(APPEND ${proj}_DEPENDENCIES tbb)
 endif()
