@@ -79,8 +79,6 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_TBB)
   list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES tbb)
 endif()
 
-#  list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES Boost)
-
 if(BUILD_STYLE_UTILS)
   list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES Cppcheck KWStyle Uncrustify)
 endif()
@@ -194,7 +192,6 @@ list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
   ${QT_DEPENDENT_PACKAGES}
 
 ## These packages are not yet needed, but will evenutally be needed.
-  #qhull
   #${CALATK_DEP}
   tract_querier
   LogSymmetricDemons
