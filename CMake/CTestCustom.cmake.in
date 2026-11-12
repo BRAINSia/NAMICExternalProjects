@@ -93,9 +93,6 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
   "warning.*argument unused during compilation"
 
   # Open-CV warnings:
-  ".*OpenCV-build.*warning.*"
-  ".*OpenCV-install.*warning.*"
-  ".*OpenCV.*"
   "opencv"
   "opencv2"
 
@@ -307,7 +304,6 @@ set(CTEST_CUSTOM_WARNING_EXCEPTION
   "Note.*SWIG"
   ".*parser.y.*"
   "maximum warning verbosity"
-  ".*OpenCV.*"
   ".*VTK.*"
   ".*has no symbols."
   "ITKv4"
@@ -360,7 +356,6 @@ set(CTEST_CUSTOM_ERROR_EXCEPTION
   "Note.*SWIG"
   ".*parser.y.*"
   "maximum warning verbosity"
-  ".*OpenCV.*"
   ".*VTK.*"
   ".*has no symbols."
   "ITKv4"
