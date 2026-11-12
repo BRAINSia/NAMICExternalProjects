@@ -204,9 +204,9 @@ if(${SUPERBUILD_TOPLEVEL_PROJECT}_REQUIRES_VTK)
   VTK
   niral_utilities
   DTIProcess
+  UKF
   #  This does not build currently  MultiAtlas
   # NOT CURRENTLY USED DTIReg
-  # -- Needs update for VTK and ITK 20220214 UKF
 )
 endif()
 
