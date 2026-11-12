@@ -114,8 +114,10 @@ if(NOT DEFINED ITK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       )
   endif()
 
-  # Many of the older tools still use legacy ITK API.
-  set(_itk_legacy_remove OFF)
+  option(${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_LEGACY_REMOVE
+    "Build ITK with ITK_LEGACY_REMOVE and ITK_FUTURE_LEGACY_REMOVE ON." OFF)
+  mark_as_advanced(${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_LEGACY_REMOVE)
+  set(_itk_legacy_remove ${${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_LEGACY_REMOVE})
 
   set(EP_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
   set(EP_BINARY_DIR ${CMAKE_BINARY_DIR}/${proj}-${EXTERNAL_PROJECT_BUILD_TYPE}-build)
