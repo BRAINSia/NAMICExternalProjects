@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.2)
+cmake_minimum_required(VERSION 3.28...4.2)
 
 #-----------------------------------------------------------------------------
 # Require C++17 (ITK 5.4 minimum)
