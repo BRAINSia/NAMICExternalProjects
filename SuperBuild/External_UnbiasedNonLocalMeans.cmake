@@ -33,6 +33,7 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
+    ${EXTERNAL_PROJECT_DEFAULTS}
       -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
