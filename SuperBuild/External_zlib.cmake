@@ -93,6 +93,14 @@ mark_as_superbuild(
     ZLIB_ROOT:PATH
   LABELS "FIND_PACKAGE"
   )
+# ITK 6 resolves ZLIB::ZLIB with find_package(ZLIB) in every consumer.
+mark_as_superbuild(
+  VARS
+    ZLIB_INCLUDE_DIR:PATH
+    ZLIB_LIBRARY:FILEPATH
+    ZLIB_ROOT:PATH
+  ALL_PROJECTS
+  )
 
 ExternalProject_Message(${proj} "ZLIB_INCLUDE_DIR:${ZLIB_INCLUDE_DIR}")
 ExternalProject_Message(${proj} "ZLIB_LIBRARY:${ZLIB_LIBRARY}")
