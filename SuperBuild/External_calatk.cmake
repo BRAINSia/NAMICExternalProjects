@@ -20,7 +20,7 @@ ExternalProject_Add(${proj}
   GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
   GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
   UPDATE_DISCONNECTED TRUE
-  PATCH_COMMAND ${GIT_EXECUTABLE} apply --whitespace=nowarn ${CMAKE_CURRENT_LIST_DIR}/patches/calatk-itk54.patch
+  PATCH_COMMAND ${CMAKE_COMMAND} -DGIT_EXECUTABLE=${GIT_EXECUTABLE} -DPATCH_FILE=${CMAKE_CURRENT_LIST_DIR}/patches/calatk-itk54.patch -P ${CMAKE_CURRENT_LIST_DIR}/../CMake/ExternalProjectApplyPatch.cmake
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-build
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
