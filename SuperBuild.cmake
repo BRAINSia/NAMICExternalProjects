@@ -28,12 +28,6 @@ set(git_protocol "https")
 find_package(Git REQUIRED)
 
 
-if(NOT ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT)
-  message("NOTE: Following toolkit is dependent to Qt:
-          - DTIPrep
-          You need to set ${SUPERBUILD_TOPLEVEL_PROJECT}_USE_QT to ON to build above application.")
-endif()
-
 # Compute -G arg for configuring external projects with the same CMake generator:
 if(CMAKE_EXTRA_GENERATOR)
   set(gen "${CMAKE_EXTRA_GENERATOR} - ${CMAKE_GENERATOR}")
