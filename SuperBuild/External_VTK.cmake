@@ -68,13 +68,17 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   #   -DVTK_MODULE_ENABLE_VTK_SplineDrivenImageSlicer:BOOL=YES
   #   )
 
-  # ChartsCore/Context2D/ViewsContext2D are Slicer-specific; these tools
-  # do not render charts — disable to reduce build footprint.
+  # Only vv uses the chart and 2D context modules.
+  if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_vv)
+    set(_vtk_context YES)
+  else()
+    set(_vtk_context DONT_WANT)
+  endif()
   list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
-    -DVTK_MODULE_ENABLE_VTK_ChartsCore:STRING=DONT_WANT
-    -DVTK_MODULE_ENABLE_VTK_ViewsContext2D:STRING=DONT_WANT
-    -DVTK_MODULE_ENABLE_VTK_RenderingContext2D:STRING=DONT_WANT
-    -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2:STRING=DONT_WANT
+    -DVTK_MODULE_ENABLE_VTK_ChartsCore:STRING=${_vtk_context}
+    -DVTK_MODULE_ENABLE_VTK_ViewsContext2D:STRING=${_vtk_context}
+    -DVTK_MODULE_ENABLE_VTK_RenderingContext2D:STRING=${_vtk_context}
+    -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2:STRING=${_vtk_context}
     # Parallel VTK not used here
     -DVTK_GROUP_ENABLE_Parallel:STRING=DONT_WANT
     )
@@ -84,7 +88,19 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
   # ExternalProject_Add CMAKE_CACHE_ARGS block below.
   # Without this guard the Qt VTK modules are forced to YES even when Qt5 is
   # not installed, causing a fatal configure error on headless CI runners.
-  if(Qt5_DIR)
+  if(${SUPERBUILD_TOPLEVEL_PROJECT}_BUILD_vv)
+    set(VTK_QT_ARGS
+      -DVTK_QT_VERSION:STRING=6
+      -DVTK_GROUP_ENABLE_Qt:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_GUISupportQt:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_GUISupportQtQuick:STRING=NO
+      -DVTK_MODULE_ENABLE_VTK_InteractionImage:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_IOMovie:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_RenderingLOD:STRING=YES
+      -DVTK_MODULE_ENABLE_VTK_RenderingAnnotation:STRING=YES
+      -DQt6_DIR:PATH=${Qt6_DIR}
+      )
+  elseif(Qt5_DIR)
     list(APPEND EXTERNAL_PROJECT_OPTIONAL_VTK9_CMAKE_CACHE_ARGS
       -DVTK_MODULE_ENABLE_VTK_GUISupportQt:STRING=YES
       -DVTK_GROUP_ENABLE_Qt:STRING=YES
@@ -164,8 +180,8 @@ if((NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR) AND NOT ${CMAKE_PROJECT_N
       -DVTK_GROUP_ENABLE_Rendering:STRING=DEFAULT
       -DVTK_MODULE_ENABLE_VTK_RenderingOpenGL2:STRING=YES
       -DVTK_MODULE_ENABLE_VTK_RenderingFreeType:STRING=YES
-      -DVTK_MODULE_ENABLE_VTK_RenderingContext2D:STRING=DONT_WANT
-      -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2:STRING=DONT_WANT
+      -DVTK_MODULE_ENABLE_VTK_RenderingContext2D:STRING=${_vtk_context}
+      -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2:STRING=${_vtk_context}
       -DVTK_MODULE_ENABLE_VTK_RenderingQt:STRING=DONT_WANT
       -DVTK_GROUP_ENABLE_Interaction:STRING=DEFAULT
       -DVTK_MODULE_ENABLE_VTK_InteractionStyle:STRING=YES
