@@ -1,6 +1,6 @@
 set(proj UKF)
 
-set(${proj}_DEPENDENCIES ITKv5 VTK teem Eigen SlicerExecutionModel zlib)
+set(${proj}_DEPENDENCIES ITKv5 VTK teem SlicerExecutionModel zlib)
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 ExternalProject_SetIfNotDefined(
@@ -36,7 +36,7 @@ ExternalProject_Add(${proj}
     -DVTK_DIR:PATH=${VTK_DIR}
     -DTeem_DIR:PATH=${Teem_DIR}
     -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
-    -DEigen_INCLUDE_DIR:PATH=${Eigen_INCLUDE_DIR}
+    -DEigen_INCLUDE_DIR:PATH=${CMAKE_INSTALL_PREFIX}/include/ITK-${${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_VERSION}/itkeigen
     -DZLIB_ROOT:PATH=${ZLIB_ROOT}
     -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIR}
     -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARY}
