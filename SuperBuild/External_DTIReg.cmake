@@ -11,7 +11,7 @@ if(DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR})
 endif()
 
 # Set dependency list
-set(${proj}_DEPENDENCIES ITKv5 BatchMake SlicerExecutionModel)
+set(${proj}_DEPENDENCIES ITKv5 SlicerExecutionModel)
 #if(${PROJECT_NAME}_BUILD_DICOM_SUPPORT)
 #  list(APPEND ${proj}_DEPENDENCIES DCMTK)
 #endif()
@@ -40,11 +40,9 @@ if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
     -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-    -DUSE_SYSTEM_BatchMake:BOOL=ON
     -DUSE_SYSTEM_ITK:BOOL=ON
     -DUSE_SYSTEM_VTK:BOOL=ON
     -DUSE_SYSTEM_SlicerExecutionModel:BOOL=ON
-     -DBatchMake_DIR:PATH=${BatchMake_DIR}
      -DITK_DIR:PATH=${ITK_DIR}
      -DVTK_DIR:PATH=${VTK_DIR}
      -DCOMPILE_EXTERNAL_dtiprocess:BOOL=OFF
