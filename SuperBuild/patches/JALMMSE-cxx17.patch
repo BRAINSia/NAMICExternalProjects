@@ -1,0 +1,209 @@
+diff --git a/NoiseEstimation/itkComputeRestrictedHistogram.h b/NoiseEstimation/itkComputeRestrictedHistogram.h
+index 4f64872..7f887ff 100644
+--- a/NoiseEstimation/itkComputeRestrictedHistogram.h
++++ b/NoiseEstimation/itkComputeRestrictedHistogram.h
+@@ -74,7 +74,7 @@ protected:
+   virtual ~ComputeRestrictedHistogram()
+   {
+   }
+-  void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
++  void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) override;
+ 
+   // Override Modified() method to fix the ready variable:
+   void Modified()
+@@ -84,9 +84,9 @@ protected:
+   }
+ 
+   using itk::Object::Modified;
+-  void BeforeThreadedGenerateData() ITK_OVERRIDE;
++  void BeforeThreadedGenerateData() override;
+ 
+-  void AfterThreadedGenerateData() ITK_OVERRIDE;
++  void AfterThreadedGenerateData() override;
+ 
+ private:
+   ComputeRestrictedHistogram(const Self &); // purposely not implemented
+diff --git a/NoiseEstimation/itkOtsuStatistics.h b/NoiseEstimation/itkOtsuStatistics.h
+index 960c98a..4efb7d4 100644
+--- a/NoiseEstimation/itkOtsuStatistics.h
++++ b/NoiseEstimation/itkOtsuStatistics.h
+@@ -92,17 +92,17 @@ protected:
+   virtual ~OtsuStatistics()
+   {
+   }
+-  void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
++  void PrintSelf(std::ostream& os, Indent indent) const override;
+ 
+   // Threaded filter!
+-  void BeforeThreadedGenerateData( void ) ITK_OVERRIDE;
++  void BeforeThreadedGenerateData( void ) override;
+ 
+-  void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
++  void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) override;
+ 
+-  void AfterThreadedGenerateData( void ) ITK_OVERRIDE;
++  void AfterThreadedGenerateData( void ) override;
+ 
+   virtual void GenerateInputRequestedRegion()
+-  throw (InvalidRequestedRegionError) ITK_OVERRIDE;
++ override;
+ 
+ private:
+   OtsuStatistics(const Self &);  // purposely not implemented
+diff --git a/NoiseEstimation/itkOtsuStatistics.txx b/NoiseEstimation/itkOtsuStatistics.txx
+index 73fb813..a9729fc 100644
+--- a/NoiseEstimation/itkOtsuStatistics.txx
++++ b/NoiseEstimation/itkOtsuStatistics.txx
+@@ -38,7 +38,6 @@ namespace itk
+     template <class TInputImage, class TOutputImage>
+     void OtsuStatistics<TInputImage, TOutputImage>
+     ::GenerateInputRequestedRegion()
+-    throw (InvalidRequestedRegionError)
+     {
+         // Call the superclass' implementation of this method
+         Superclass::GenerateInputRequestedRegion();
+diff --git a/NoiseEstimation/itkOtsuThreshold.h b/NoiseEstimation/itkOtsuThreshold.h
+index adb4fe5..ddd16a3 100644
+--- a/NoiseEstimation/itkOtsuThreshold.h
++++ b/NoiseEstimation/itkOtsuThreshold.h
+@@ -66,14 +66,14 @@ protected:
+   virtual ~OtsuThreshold()
+   {
+   }
+-  void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
++  void PrintSelf(std::ostream& os, Indent indent) const override;
+ 
+   // Threaded filter!
+-  void BeforeThreadedGenerateData( void ) ITK_OVERRIDE;
++  void BeforeThreadedGenerateData( void ) override;
+ 
+-  void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
++  void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) override;
+ 
+-  void AfterThreadedGenerateData( void ) ITK_OVERRIDE;
++  void AfterThreadedGenerateData( void ) override;
+ 
+ private:
+   OtsuThreshold(const Self &);   // purposely not implemented
+diff --git a/NoiseEstimation/itkThresholdToMaskImageFilter.h b/NoiseEstimation/itkThresholdToMaskImageFilter.h
+index 9c88017..b0d2bc0 100644
+--- a/NoiseEstimation/itkThresholdToMaskImageFilter.h
++++ b/NoiseEstimation/itkThresholdToMaskImageFilter.h
+@@ -50,7 +50,7 @@ namespace itk
+     protected:
+         ThresholdToMaskImageFilter();
+         virtual ~ThresholdToMaskImageFilter(){}
+-        void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
++        void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) override;
+         
+     private:
+         // bool ComputeInverseMatrix( const double* measures, const double* squaredAverages, double normal, double* whitened )
+diff --git a/NoiseEstimation/itkVectorLocalStdImageFilter.h b/NoiseEstimation/itkVectorLocalStdImageFilter.h
+index 0cd0bff..f99528d 100644
+--- a/NoiseEstimation/itkVectorLocalStdImageFilter.h
++++ b/NoiseEstimation/itkVectorLocalStdImageFilter.h
+@@ -71,10 +71,10 @@ namespace itk
+     protected:
+         VectorLocalStdImageFilter();
+         virtual ~VectorLocalStdImageFilter(){}
+-        void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
++        void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) override;
+         
+-        void BeforeThreadedGenerateData(void) ITK_OVERRIDE;
+-        void AfterThreadedGenerateData(void) ITK_OVERRIDE;
++        void BeforeThreadedGenerateData(void) override;
++        void AfterThreadedGenerateData(void) override;
+         double ComputeStdCorrection( const double, const double ) const;
+         
+     private:
+diff --git a/ShapedNeighborhoods/itkCreateRGBProjectionsFromDWI.h b/ShapedNeighborhoods/itkCreateRGBProjectionsFromDWI.h
+index b2feb21..4ea6d86 100644
+--- a/ShapedNeighborhoods/itkCreateRGBProjectionsFromDWI.h
++++ b/ShapedNeighborhoods/itkCreateRGBProjectionsFromDWI.h
+@@ -111,8 +111,8 @@ namespace itk
+     protected:
+         CreateRGBProjectionsFromDWI();
+         virtual ~CreateRGBProjectionsFromDWI() {}
+-        void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
+-        void BeforeThreadedGenerateData( void ) ITK_OVERRIDE;
++        void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) override;
++        void BeforeThreadedGenerateData( void ) override;
+     private:
+         CreateRGBProjectionsFromDWI(const Self&); // purposely not implemented
+         void operator=(const Self&);              // purposely not implemented
+diff --git a/ShapedNeighborhoods/itkLSDerivatives.h b/ShapedNeighborhoods/itkLSDerivatives.h
+index 5c13d98..a6d3c71 100644
+--- a/ShapedNeighborhoods/itkLSDerivatives.h
++++ b/ShapedNeighborhoods/itkLSDerivatives.h
+@@ -86,9 +86,9 @@ protected:
+ 	LSDerivativesL0();
+ 	virtual ~LSDerivativesL0() {}
+ 	// Threaded filter!
+-        void ThreadedGenerateData( const OutputRegionType& outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
+-	void BeforeThreadedGenerateData() ITK_OVERRIDE;
+-	void GenerateInputRequestedRegion() ITK_OVERRIDE;
++        void ThreadedGenerateData( const OutputRegionType& outputRegionForThread, ThreadIdType threadId ) override;
++	void BeforeThreadedGenerateData() override;
++	void GenerateInputRequestedRegion() override;
+ private:
+ 	LSDerivativesL0(const Self&);   // purposely not implemented
+ 	void operator=(const Self&);    // purposely not implemented
+@@ -140,9 +140,9 @@ private:
+ 		LSDerivativesL1();
+ 		virtual ~LSDerivativesL1() {}
+ 		// Threaded filter!
+-                void ThreadedGenerateData( const OutputRegionType& outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
+-		void BeforeThreadedGenerateData() ITK_OVERRIDE;
+-		void GenerateInputRequestedRegion() ITK_OVERRIDE;
++                void ThreadedGenerateData( const OutputRegionType& outputRegionForThread, ThreadIdType threadId ) override;
++		void BeforeThreadedGenerateData() override;
++		void GenerateInputRequestedRegion() override;
+ 	private:
+ 		LSDerivativesL1(const Self&);   // purposely not implemented
+ 		void operator=(const Self&);    // purposely not implemented
+@@ -194,9 +194,9 @@ private:
+ 		LSDerivativesL2();
+ 		virtual ~LSDerivativesL2() {}
+ 		// Threaded filter!
+-                void ThreadedGenerateData( const OutputRegionType& outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
+-		void BeforeThreadedGenerateData() ITK_OVERRIDE;
+-		void GenerateInputRequestedRegion() ITK_OVERRIDE;
++                void ThreadedGenerateData( const OutputRegionType& outputRegionForThread, ThreadIdType threadId ) override;
++		void BeforeThreadedGenerateData() override;
++		void GenerateInputRequestedRegion() override;
+ 	private:
+ 		LSDerivativesL2(const Self&);   // purposely not implemented
+ 		void operator=(const Self&);    // purposely not implemented
+diff --git a/itkLMMSEVectorImageFilter.h b/itkLMMSEVectorImageFilter.h
+index 978588b..864b4f5 100644
+--- a/itkLMMSEVectorImageFilter.h
++++ b/itkLMMSEVectorImageFilter.h
+@@ -201,12 +201,12 @@ namespace itk
+         virtual ~LMMSEVectorImageFilter()
+         {
+         }
+-        void PrintSelf(std::ostream& os, Indent indent) const ITK_OVERRIDE;
++        void PrintSelf(std::ostream& os, Indent indent) const override;
+         
+-        void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) ITK_OVERRIDE;
+-        void BeforeThreadedGenerateData( void ) ITK_OVERRIDE;
++        void ThreadedGenerateData( const OutputImageRegionType & outputRegionForThread, ThreadIdType threadId ) override;
++        void BeforeThreadedGenerateData( void ) override;
+         
+-        virtual void GenerateInputRequestedRegion() throw (InvalidRequestedRegionError) ITK_OVERRIDE;
++        virtual void GenerateInputRequestedRegion() override;
+         
+         bool ComputeInverseMatrix( const double *, const double *, double, double *, unsigned int ) const;
+         
+diff --git a/itkLMMSEVectorImageFilter.txx b/itkLMMSEVectorImageFilter.txx
+index 9f880db..c0dbfea 100644
+--- a/itkLMMSEVectorImageFilter.txx
++++ b/itkLMMSEVectorImageFilter.txx
+@@ -224,7 +224,6 @@ namespace itk
+     template <class TInputImage, class TOutputImage>
+     void LMMSEVectorImageFilter<TInputImage, TOutputImage>
+     ::GenerateInputRequestedRegion()
+-    throw (InvalidRequestedRegionError)
+     {
+         // Call the superclass' implementation of this method
+         Superclass::GenerateInputRequestedRegion();
