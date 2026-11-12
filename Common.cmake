@@ -90,6 +90,10 @@ include(CMakeDependentOption)
 include(CMakeParseArguments)
 
 #------------------------------------------------------------------------------
+find_package(Python3 3.12 REQUIRED COMPONENTS Interpreter)
+mark_as_superbuild(VARS Python3_EXECUTABLE:FILEPATH ALL_PROJECTS)
+
+#------------------------------------------------------------------------------
 set(BUILD_SHARED_LIBS OFF) ## Build everything static for non-slicer builds
 
 #------------------------------------------------------------------------------
