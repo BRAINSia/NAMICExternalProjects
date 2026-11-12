@@ -46,7 +46,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
   )
   ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://github.com/Kitware/KWStyle.git)
-  set(${proj}_GIT_TAG 13f7a5dbbaab7aecd6fe7576e1fa8bc9ba0e14a1)
+  set(${proj}_GIT_TAG eb1e46d57db04a2f94a1a4709a67d8fb8f986400) # master
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
