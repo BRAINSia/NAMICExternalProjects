@@ -10,7 +10,7 @@ ExternalProject_SetIfNotDefined(
   )
 ExternalProject_SetIfNotDefined(
   ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-  3.4.0
+  3.4.1
   QUIET
   )
 
