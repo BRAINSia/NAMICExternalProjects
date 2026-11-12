@@ -192,7 +192,7 @@ list(APPEND ${SUPERBUILD_TOPLEVEL_PROJECT}_DEPENDENCIES
   ${QT_DEPENDENT_PACKAGES}
 
 ## These packages are not yet needed, but will evenutally be needed.
-  #${CALATK_DEP}
+  ${CALATK_DEP}
   tract_querier
   LogSymmetricDemons
   MultiAtlas
