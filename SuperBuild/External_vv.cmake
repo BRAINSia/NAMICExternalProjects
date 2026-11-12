@@ -1,87 +1,48 @@
-# Make sure this file is included only once by creating globally unique varibles
-# based on the name of this included file.
-# get_filename_component(CMAKE_CURRENT_LIST_FILENAME ${CMAKE_CURRENT_LIST_FILE} NAME_WE)
-# if(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED)
-#   return()
-# endif()
-# set(${CMAKE_CURRENT_LIST_FILENAME}_FILE_INCLUDED 1)
+set(proj vv)
 
-include(${CMAKE_CURRENT_LIST_DIR}/EP_Autoconf_Utils.cmake)
-
-# Make sure that the ExtProjName/IntProjName variables are unique globally
-# even if other External_${ExtProjName}.cmake files are sourced by
-# ExternalProject_Include_Dependencies
-set(proj        vv) #This local name
-
-#if(${USE_SYSTEM_${proj}})
-#  unset(${proj}_DIR CACHE)
-#endif()
-
-# Sanity checks
-if(DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR})
-  message(FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory (${${proj}_DIR})")
-endif()
-
-# Set dependency list
+# vv now requires ITK 6, VTK 9.5+ with rendering, and Qt 6.  It is not
+# part of any default dependency list; add it once the ITKv5 project
+# provides ITK 6.
 set(${proj}_DEPENDENCIES ITKv5 VTK)
-
-# Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
-if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
-  #message(STATUS "${__indent}Adding project ${proj}")
-
-  ### --- Project specific additions here
-
-  AutoConf_FLAGS(${proj}_CFLAGS C "${APPLE_CFLAGS}")
-  AutoConf_FLAGS(${proj}_CXXFLAGS CXX "${APPLE_CFLAGS}")
-
-  ### --- End Project specific additions
-  set(${proj}_REPOSITORY https://github.com/BRAINSia/vv.git)
-  set(${proj}_GIT_TAG "8db648a31e095cc2a4d291c23313938ce70c92ec")
-
-  ExternalProject_Add(${proj}
-    ${${proj}_EP_ARGS}
-    GIT_REPOSITORY ${${proj}_REPOSITORY}
-    GIT_TAG ${${proj}_GIT_TAG}
-    SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-    BINARY_DIR ${proj}-build
-    INSTALL_DIR ${proj}-install
-    INSTALL_COMMAND ""
-    LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
-    LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
-    LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
-    LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
-    ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
-    CMAKE_GENERATOR ${gen}
-    CMAKE_FLAGS
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-    -DVV_SUPERBUILD:BOOL=OFF
-    -DITK_DIR:PATH=${ITK_DIR}
-    -DVTK_DIR:PATH=${VTK_DIR}
-    DEPENDS
-      ${${proj}_DEPENDENCIES}
-  )
-  set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install)
-  set(${proj}_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${proj}-install/include)
-  set(${proj}_LIBRARY ${CMAKE_BINARY_DIR}/${proj}-install/lib/${CMAKE_STATIC_LIBRARY_PREFIX}tiff${CMAKE_STATIC_LIBRARY_SUFFIX})
-else()
-  if(${USE_SYSTEM_${proj}})
-    find_package(${proj} REQUIRED)
-    message("USING the system ${proj}, set ${proj}_DIR=${${proj}_DIR}")
-  endif()
-  # The project is provided using ${proj}_DIR, nevertheless since other
-  # project may depend on ${proj}, let's add an 'empty' one
-  ExternalProject_Add_Empty(${proj} "${${proj}_DEPENDENCIES}")
+if(${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_VERSION VERSION_LESS 6)
+  message(FATAL_ERROR "vv requires ITK 6; this superbuild provides ITK ${${SUPERBUILD_TOPLEVEL_PROJECT}_ITK_VERSION}")
 endif()
 
-mark_as_superbuild(
-  VARS
-    ${proj}_DIR:FILE
-  LABELS
-     "FIND_PACKAGE"
-)
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
+  "${git_protocol}://github.com/open-vv/vv.git"
+  QUIET
+  )
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
+  d74e0d414c7331763ccd823af28c84f6d9e8a3ab # master 2025-11-07
+  QUIET
+  )
+
+ExternalProject_Add(${proj}
+  ${${proj}_EP_ARGS}
+  GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
+  GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+  GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}
+  UPDATE_DISCONNECTED TRUE
+  SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
+  BINARY_DIR ${proj}-build
+  LOG_CONFIGURE ON
+  LOG_BUILD ON
+  LOG_INSTALL ON
+  LOG_OUTPUT_ON_FAILURE ON
+  CMAKE_ARGS -Wno-dev --no-warn-unused-cli
+  CMAKE_CACHE_ARGS
+    ${EXTERNAL_PROJECT_DEFAULTS}
+    -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+    -DITK_DIR:PATH=${ITK_DIR}
+    -DVTK_DIR:PATH=${VTK_DIR}
+  DEPENDS
+    ${${proj}_DEPENDENCIES}
+  )
+
+set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+mark_as_superbuild(VARS ${proj}_DIR:PATH LABELS "FIND_PACKAGE")
