@@ -1,59 +1,44 @@
-set(proj        MultiAtlas) #This local name
+set(proj MultiAtlas)
 
-# Sanity checks
-if(DEFINED ${extProjName}_DIR AND NOT EXISTS ${${extProjName}_DIR})
-  message(FATAL_ERROR "${extProjName}_DIR variable is defined but corresponds to non-existing directory (${${extProjName}_DIR})")
-endif()
-
-# Set dependency list
-set(${proj}_DEPENDENCIES SlicerExecutionModel ITKv5)
+set(${proj}_DEPENDENCIES ITKv5 SlicerExecutionModel)
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
-### --- Project specific additions here
-set(${proj}_CMAKE_OPTIONS
-  ${EXTERNAL_PROJECT_DEFAULTS}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-  -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
-  -DUSE_SYSTEM_ITK:BOOL=ON
-  -DUSE_SYSTEM_SLICER_EXECUTION_MODEL:BOOL=ON
-  -DITK_DIR:PATH=${ITK_DIR}
-  -DBUILD_EXAMPLES:BOOL=OFF
-  -DBUILD_TESTING:BOOL=OFF
-  -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
-  -DSlicer_SOURCE_DIR:BOOL=ON ## THIS is a hack to prevent looking for slicer
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
+  "${git_protocol}://github.com/BRAINSia/MultiAtlas.git"
+  QUIET
+  )
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
+  742848031ae486169d4c39b5069d4a911835509e
+  QUIET
   )
 
-### --- End Project specific additions
-set(${proj}_REPOSITORY "${git_protocol}://github.com/BRAINSia/MultiAtlas.git")
-set(${proj}_GIT_TAG "742848031ae486169d4c39b5069d4a911835509e")
 ExternalProject_Add(${proj}
-    ${${proj}_EP_ARGS}
-  GIT_REPOSITORY ${${proj}_REPOSITORY}
-  GIT_TAG ${${proj}_GIT_TAG}
+  ${${proj}_EP_ARGS}
+  GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
+  GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+  GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}
   UPDATE_DISCONNECTED TRUE
-  PATCH_COMMAND ${GIT_EXECUTABLE} apply --whitespace=nowarn ${CMAKE_CURRENT_LIST_DIR}/patches/MultiAtlas-itk54.patch
+  PATCH_COMMAND ${CMAKE_COMMAND} -DGIT_EXECUTABLE=${GIT_EXECUTABLE} -DPATCH_FILE=${CMAKE_CURRENT_LIST_DIR}/patches/MultiAtlas-itk54.patch -P ${CMAKE_CURRENT_LIST_DIR}/../CMake/ExternalProjectApplyPatch.cmake
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-build
-  LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
-  LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
-  LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
-  LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
-  ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
-  CMAKE_GENERATOR ${gen}
+  LOG_CONFIGURE ON
+  LOG_BUILD ON
+  LOG_INSTALL ON
+  LOG_OUTPUT_ON_FAILURE ON
   CMAKE_ARGS -Wno-dev --no-warn-unused-cli
   CMAKE_CACHE_ARGS
-  ${${proj}_CMAKE_OPTIONS}
-  ## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
+    ${EXTERNAL_PROJECT_DEFAULTS}
+    -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+    -DITK_DIR:PATH=${ITK_DIR}
+    -DSlicerExecutionModel_DIR:PATH=${SlicerExecutionModel_DIR}
+    -DSlicer_SOURCE_DIR:BOOL=ON # selects the standalone (non-Slicer) build
+    -DBUILD_TESTING:BOOL=OFF
+  INSTALL_COMMAND ""
   DEPENDS
-  ${${proj}_DEPENDENCIES}
+    ${${proj}_DEPENDENCIES}
   )
-set(${extProjName}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-
-mark_as_superbuild(
-  VARS ${extProjName}_DIR:PATH
-  LABELS "FIND_PACKAGE"
-  )
+set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+mark_as_superbuild(VARS ${proj}_DIR:PATH LABELS "FIND_PACKAGE")

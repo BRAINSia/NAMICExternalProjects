@@ -1,87 +1,39 @@
-# Make sure that the ExtProjName/IntProjName variables are unique globally
-# even if other External_${ExtProjName}.cmake files are sourced by
-# ExternalProject_Include_Dependencies
-set(proj        DoubleConvert) #This local name
-set(${proj}_REQUIRED_VERSION "")  #If a required version is necessary, then set this, else leave blank
+set(proj DoubleConvert)
 
-#if(${USE_SYSTEM_${proj}})
-#  unset(${proj}_DIR CACHE)
-#endif()
-
-# Sanity checks
-if(DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR})
-  message(FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory (${${proj}_DIR})")
-endif()
-
-# Set dependency list
 set(${proj}_DEPENDENCIES "")
-
-# Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
-if(NOT ( DEFINED "USE_SYSTEM_${proj}" AND "${USE_SYSTEM_${proj}}" ) )
-  #message(STATUS "${__indent}Adding project ${proj}")
-
-  # Set CMake OSX variable to pass down the external project
-  if(APPLE)
-    mark_as_superbuild(
-      VARS
-        CMAKE_OSX_ARCHITECTURES:STRING
-        CMAKE_OSX_SYSROOT:STRING
-        CMAKE_OSX_DEPLOYMENT_TARGET:STRING
-    )
-  endif()
-
-  ### --- Project specific additions here
-
-  set(${proj}_CMAKE_OPTIONS
-    ${EXTERNAL_PROJECT_DEFAULTS}
-      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
-      -DBUILD_TESTING:BOOL=OFF
-      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
-    )
-  ### --- End Project specific additions
-  #set(${proj}_REPOSITORY ${git_protocol}://github.com/BRAINSia/double-conversion.git)
-  set(${proj}_REPOSITORY ${git_protocol}://github.com/google/double-conversion.git)
-  set(${proj}_GIT_TAG    a109d7d05165b338513e3e379ecb5697a22b05c3) # 20220214
-  ExternalProject_Add(${proj}
-    ${${proj}_EP_ARGS}
-    GIT_REPOSITORY ${${proj}_REPOSITORY}
-    GIT_TAG ${${proj}_GIT_TAG}
-    SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-    BINARY_DIR ${proj}-build
-    LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
-    LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
-    LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
-    LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
-    ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
-    CMAKE_GENERATOR ${gen}
-    CMAKE_ARGS -Wno-dev --no-warn-unused-cli
-    CMAKE_CACHE_ARGS
-      ${${proj}_CMAKE_OPTIONS}
-## We really do want to install in order to limit # of include paths INSTALL_COMMAND ""
-    DEPENDS
-      ${${proj}_DEPENDENCIES}
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY
+  "${git_protocol}://github.com/google/double-conversion.git"
+  QUIET
   )
-  set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/ITK-4.4)
-else()
-  if(${USE_SYSTEM_${proj}})
-    find_package(${proj} ${${proj}_REQUIRED_VERSION} REQUIRED)
-    message("USING the system ${proj}, set ${proj}_DIR=${${proj}_DIR}")
-  endif()
-  # The project is provided using ${proj}_DIR, nevertheless since other
-  # project may depend on ${proj}, let's add an 'empty' one
-  ExternalProject_Add_Empty(${proj} "${${proj}_DEPENDENCIES}")
-endif()
+ExternalProject_SetIfNotDefined(
+  ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
+  a109d7d05165b338513e3e379ecb5697a22b05c3 # 2022-02-14
+  QUIET
+  )
 
-mark_as_superbuild(
-  VARS
-    ${proj}_DIR:PATH
-  LABELS
-    "FIND_PACKAGE"
-)
-
+ExternalProject_Add(${proj}
+  ${${proj}_EP_ARGS}
+  GIT_REPOSITORY "${${CMAKE_PROJECT_NAME}_${proj}_GIT_REPOSITORY}"
+  GIT_TAG "${${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG}"
+  GIT_SHALLOW ${${SUPERBUILD_TOPLEVEL_PROJECT}_EP_GIT_SHALLOW}
+  UPDATE_DISCONNECTED TRUE
+  SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
+  BINARY_DIR ${proj}-build
+  LOG_CONFIGURE ON
+  LOG_BUILD ON
+  LOG_INSTALL ON
+  LOG_OUTPUT_ON_FAILURE ON
+  CMAKE_ARGS -Wno-dev --no-warn-unused-cli
+  CMAKE_CACHE_ARGS
+    ${EXTERNAL_PROJECT_DEFAULTS}
+    -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}/${proj}-install
+    -DBUILD_TESTING:BOOL=OFF
+  DEPENDS
+    ${${proj}_DEPENDENCIES}
+  )
+set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-install/lib/cmake/double-conversion)
+mark_as_superbuild(VARS ${proj}_DIR:PATH LABELS "FIND_PACKAGE")
