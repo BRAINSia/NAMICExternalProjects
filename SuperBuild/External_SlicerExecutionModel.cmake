@@ -84,8 +84,7 @@ if(NOT DEFINED SlicerExecutionModel_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM
 
   ExternalProject_SetIfNotDefined(
     ${CMAKE_PROJECT_NAME}_${proj}_GIT_TAG
-    # "update-tclap" # format outputs
-    "91b921bd5977c3384916ba4b03705d87b26067f7"
+    "3a4419f0cfd011d57406e2366000eed9c1b53aa9" # master 2026-11-05
     QUIET
     )
 
