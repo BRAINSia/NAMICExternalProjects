@@ -32,6 +32,8 @@ ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
   GIT_REPOSITORY ${${proj}_GIT_REPOSITORY}
   GIT_TAG ${${proj}_GIT_TAG}
+  UPDATE_DISCONNECTED TRUE
+  PATCH_COMMAND ${GIT_EXECUTABLE} apply --whitespace=nowarn ${CMAKE_CURRENT_LIST_DIR}/patches/JALMMSE-cxx17.patch
   SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
   BINARY_DIR ${proj}-build
   INSTALL_COMMAND ""
