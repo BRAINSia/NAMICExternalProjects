@@ -23,26 +23,25 @@ ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj
 if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" ) )
   #message(STATUS "${__indent}Adding project ${proj}")
 
-  ### --- Project specific additions here
-  set(CPPCHECK_BUILD_ENVIRONMENT HAVE_RULES=no CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER}
-    DESTDIR=${CMAKE_BINARY_DIR}/ PREFIX=Utils )
-  ### --- End Project specific additions
   set(${proj}_REPOSITORY ${git_protocol}://github.com/danmar/cppcheck.git)
-  set(${proj}_GIT_TAG origin/master)
+  set(${proj}_GIT_TAG 2.22.0)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
+    UPDATE_DISCONNECTED TRUE
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
-    BUILD_IN_SOURCE 1
-    LOG_CONFIGURE 0  # Wrap configure in script to ignore log output from dashboards
-    LOG_BUILD     0  # Wrap build in script to to ignore log output from dashboards
-    LOG_TEST      0  # Wrap test in script to to ignore log output from dashboards
-    LOG_INSTALL   0  # Wrap install in script to to ignore log output from dashboards
-    ${cmakeversion_external_update} "${cmakeversion_external_update_value}"
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ${CPPCHECK_BUILD_ENVIRONMENT} ${CMAKE_MAKE_PROGRAM}
-    INSTALL_COMMAND ${CPPCHECK_BUILD_ENVIRONMENT} ${CMAKE_MAKE_PROGRAM} install
+    BINARY_DIR ${proj}-build
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+    LOG_OUTPUT_ON_FAILURE ON
+    CMAKE_CACHE_ARGS
+      ${EXTERNAL_PROJECT_DEFAULTS}
+      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/Utils
+      -DHAVE_RULES:BOOL=OFF
+      -DBUILD_GUI:BOOL=OFF
+      -DBUILD_TESTS:BOOL=OFF
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
@@ -54,12 +53,12 @@ else()
   endif()
   # The project is provided using ${extProjName}_EXE, nevertheless since other
   # project may depend on ${extProjName}, let's add an 'empty' one
-  ExternalProject_Add_empty(${proj} "${${proj}_DEPENDENCIES}")
+  ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
 
 mark_as_superbuild(
   VARS
-    ${extProjName}_EXE:PATHPATH
+    ${extProjName}_EXE:FILEPATH
   LABELS
     "FIND_PACKAGE"
 )
