@@ -31,26 +31,6 @@ if(NOT Slicer_BUILD_BRAINSTOOLS)
 endif()
 #-----------------------------------------------------------------------------
 if(APPLE)
-#-----------------------------------------------------------------------------
-# Platform check
-#-----------------------------------------------------------------------------
-  # See CMake/Modules/Platform/Darwin.cmake)
-  #   6.x == Mac OSX 10.2 (Jaguar)
-  #   7.x == Mac OSX 10.3 (Panther)
-  #   8.x == Mac OSX 10.4 (Tiger)
-  #   9.x == Mac OSX 10.5 (Leopard)
-  #  10.x == Mac OSX 10.6 (Snow Leopard)
-  #  11.x == Mac OSX 10.7 (Lion)
-  #  12.x == Mac OSX 10.8 (Mountain Lion)
-  #  13.x == Mac OSX 10.9 (Yosemite)
-  #  14.x == Mac OSX 10.10 (El Capitan)
-  #  15.x == Mac OSX 10.12 (Sierra)    # Sept 2016 -- Improve C++11 support by default, for TBB
-  #  17.x == Mac OSX 10.13 (High Sierra)
-  #  18.x == Mac OSX 10.14 (Mojave)
-  if (DARWIN_MAJOR_VERSION LESS "13")  #https://en.wikipedia.org/wiki/Darwin_(operating_system)
-    message(FATAL_ERROR "Only Mac OSX >= 10.13 are supported !")
-  endif()
-
   ## RPATH-RPATH-RPATH
   ## https://cmake.org/Wiki/CMake_RPATH_handling
   ## Always full RPATH
@@ -74,9 +54,9 @@ if(APPLE)
 
   # the RPATH to be used when installing, but only if it's not a system directory
   list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
-  if("${isSystemDir}" STREQUAL "-1")
-     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-  endif("${isSystemDir}" STREQUAL "-1")
+  if(isSystemDir EQUAL -1)
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  endif()
   ## RPATH-RPATH-RPATH
 endif()
 #-----------------------------------------------------------------------------
