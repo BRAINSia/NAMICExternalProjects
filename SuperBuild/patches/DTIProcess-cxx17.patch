@@ -1,0 +1,78 @@
+diff --git a/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.h b/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.h
+index e7b76cf..abd359e 100644
+--- a/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.h
++++ b/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.h
+@@ -127,7 +127,7 @@ protected:
+ 
+   void GenerateOutputInformation();
+ 
+-  void GenerateInputRequestedRegion() throw (InvalidRequestedRegionError);
++  void GenerateInputRequestedRegion();
+ 
+   void GenerateData();
+ 
+diff --git a/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.txx b/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.txx
+index e096ab9..5110b78 100644
+--- a/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.txx
++++ b/Applications/dwiAtlas/SphericalHarmonicsInterpolationFilter.txx
+@@ -46,7 +46,7 @@ SphericalHarmonicsInterpolationFilter<TInputImage, TOutputImage>
+ template <class TInputImage, class TOutputImage>
+ void
+ SphericalHarmonicsInterpolationFilter<TInputImage, TOutputImage>
+-::GenerateInputRequestedRegion() throw (InvalidRequestedRegionError)
++::GenerateInputRequestedRegion()
+ {
+   // call the superclass' implementation of this method
+   Superclass::GenerateInputRequestedRegion();
+diff --git a/Applications/dwiAtlas/itkMaskedMeanImageFilter.h b/Applications/dwiAtlas/itkMaskedMeanImageFilter.h
+index 2e0bfef..954e7f4 100644
+--- a/Applications/dwiAtlas/itkMaskedMeanImageFilter.h
++++ b/Applications/dwiAtlas/itkMaskedMeanImageFilter.h
+@@ -94,7 +94,7 @@ public:
+    * in order to inform the pipeline execution model.
+    *
+    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
+-  virtual void GenerateInputRequestedRegion() throw (InvalidRequestedRegionError) override;
++  virtual void GenerateInputRequestedRegion() override;
+ 
+ #ifdef ITK_USE_CONCEPT_CHECKING
+   /** Begin concept checking */
+diff --git a/Applications/dwiAtlas/itkMaskedMeanImageFilter.txx b/Applications/dwiAtlas/itkMaskedMeanImageFilter.txx
+index 83115f5..5d32730 100644
+--- a/Applications/dwiAtlas/itkMaskedMeanImageFilter.txx
++++ b/Applications/dwiAtlas/itkMaskedMeanImageFilter.txx
+@@ -40,7 +40,7 @@ MaskedMeanImageFilter<TInputImage, TOutputImage>
+ template <class TInputImage, class TOutputImage>
+ void
+ MaskedMeanImageFilter<TInputImage, TOutputImage>
+-::GenerateInputRequestedRegion() throw (InvalidRequestedRegionError)
++::GenerateInputRequestedRegion()
+ {
+   // call the superclass' implementation of this method
+   Superclass::GenerateInputRequestedRegion();
+diff --git a/Library/itkDeformationFieldJacobianFilter.h b/Library/itkDeformationFieldJacobianFilter.h
+index f63f6cf..14526f0 100644
+--- a/Library/itkDeformationFieldJacobianFilter.h
++++ b/Library/itkDeformationFieldJacobianFilter.h
+@@ -148,7 +148,7 @@ public:
+    * pipeline execution model.
+    *
+    * \sa ImageToImageFilter::GenerateInputRequestedRegion() */
+-  virtual void GenerateInputRequestedRegion() throw (InvalidRequestedRegionError) override;
++  virtual void GenerateInputRequestedRegion() override;
+ 
+   /** Set the derivative weights according to the spacing of the input image
+       (1/spacing). Use this option if you want to calculate the Jacobian
+diff --git a/Library/itkDeformationFieldJacobianFilter.txx b/Library/itkDeformationFieldJacobianFilter.txx
+index a752bb6..f5a3a45 100644
+--- a/Library/itkDeformationFieldJacobianFilter.txx
++++ b/Library/itkDeformationFieldJacobianFilter.txx
+@@ -87,7 +87,7 @@ DeformationFieldJacobianFilter<TInputImage, TRealType, TOutputImage>
+ template <typename TInputImage, typename TRealType, typename TOutputImage>
+ void
+ DeformationFieldJacobianFilter<TInputImage, TRealType, TOutputImage>
+-::GenerateInputRequestedRegion() throw (InvalidRequestedRegionError)
++::GenerateInputRequestedRegion()
+ {
+   // call the superclass' implementation of this method
+   Superclass::GenerateInputRequestedRegion();
