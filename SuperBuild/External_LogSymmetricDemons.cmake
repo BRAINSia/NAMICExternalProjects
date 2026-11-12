@@ -46,6 +46,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY ${${proj}_REPOSITORY}
     GIT_TAG ${${proj}_GIT_TAG}
+    UPDATE_DISCONNECTED TRUE
+    PATCH_COMMAND ${GIT_EXECUTABLE} apply --whitespace=nowarn ${CMAKE_CURRENT_LIST_DIR}/patches/LogSymmetricDemons-itk54.patch
     SOURCE_DIR ${SOURCE_DOWNLOAD_CACHE}/${proj}
     BINARY_DIR ${proj}-build
     INSTALL_COMMAND ""
